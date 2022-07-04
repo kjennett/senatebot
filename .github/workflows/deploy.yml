@@ -1,0 +1,22 @@
+name: SenateBot Deployment
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to thesenate.gg
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          password: ${{secrets.PASSWORD}}
+          port: 22
+          script: |
+            cd /etc/senatebot
+            git pull
+            npm i
+            pm2 restart /etc/senatebot/ecosystem.config.js --env production
