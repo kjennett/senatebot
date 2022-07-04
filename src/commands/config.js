@@ -125,7 +125,8 @@ module.exports = {
           await writeFileSync('./failedlist.txt', failedList.join('\n'));
           const fileAttachment = new MessageAttachment('./purgelist.txt');
           const fileAttachment2 = new MessageAttachment('./failedlist.txt');
-          await interaction.editReply({
+          await interaction.editReply('https://tenor.com/view/palpatine-star-wars-emperor-do-it-go-for-it-gif-17446081');
+          await interaction.followUp({
             content: `Order 66 is now complete - ${purgedList.length} users have been purged.`,
             files: [fileAttachment],
           });
