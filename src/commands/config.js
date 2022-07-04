@@ -73,7 +73,13 @@ module.exports = {
         .collection('guilds')
         .findOneAndUpdate(
           { name: guild },
-          { $set: { last_recruit_name: 'None', last_recruit_time: Date.now(), last_recruit_ally_code: '000000000' } }
+          {
+            $set: {
+              last_recruit_name: 'Entered manually',
+              last_recruit_time: Date.now(),
+              last_recruit_ally_code: '000000000',
+            },
+          }
         );
       await interaction.reply({ content: `${guild}'s Last Recruit Time was updated.`, ephemeral: true });
     }
