@@ -14,7 +14,7 @@ const priorityBoard = async () => {
 
   const tiers = await db.collection('tiers').find().sort({ number: -1 }).toArray();
   for (const tier of tiers) {
-    const tierEmbed = newEmbed().setFooter({ text: '', iconURL: '' }).setTitle(`__Tier ${tier.number}__`);
+    const tierEmbed = newEmbed().setTitle(`__Tier ${tier.number}__`);
 
     const guildsInTier = await db
       .collection('guilds')
