@@ -54,15 +54,22 @@ module.exports = {
     if (interaction.member.id !== process.env.OWNER) return;
     const sub = await interaction.options.getSubcommand();
 
+    // ---------- CONFIG RESTART ---------- //
+
     if (sub === 'restart') {
       await interaction.reply({ content: 'Restarting...', ephemeral: true });
       process.exit(1);
     }
 
+    // ---------- CONFIG TESTWELCOME ---------- //
+    // ---------- CONFIG TESTLEAVE ---------- //
+
     if (sub === 'testwelcome') return interaction.client.emit('guildMemberAdd', interaction.member);
     if (sub === 'testleave') return interaction.client.emit('guildMemberRemove', interaction.member);
 
-    if (sub === 'setrecruittime') {
+    // ---------- CONFIG UPDATEPRIORITY ---------- //
+
+    if (sub === 'updatepriority') {
       const guild = await interaction.options.getString('guild');
       const name = await interaction.options.getString('name');
       await db.collection('guilds').findOneAndUpdate(
@@ -74,11 +81,13 @@ module.exports = {
           },
         }
       );
-      await interaction.reply({ content: `${guild}'s Last Recruit Time was updated.`, ephemeral: true });
+      await interaction.reply({ content: `${guild}'s recruitment record was updated.`, ephemeral: true });
     }
 
+    // ---------- CONFIG ORDER66 ---------- //
+
     if (sub === 'order66') {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply();
 
       const allMembers = await interaction.guild.members.fetch();
       const hasPGM = await allMembers.filter(m => m.roles.cache.has(config.roles.potentialGuildMember));
@@ -143,6 +152,8 @@ module.exports = {
         }
       }
     }
+
+    // ---------- CONFIG TESTRECRUIT ---------- //
 
     if (sub === 'testrecruit') {
       await interaction.reply('Creating test recruitment thread, please wait...');
