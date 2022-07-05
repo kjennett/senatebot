@@ -23,18 +23,21 @@ module.exports = {
     .setName('config')
     .setDescription('Configuration and administration commands for SenateBot.')
     .addSubcommand(sub => sub.setName('restart').setDescription('Force-restarts SenateBot.'))
-    .addSubcommand(sub => sub.setName('updatecache').setDescription('Updates the cache of static game data.'))
     .addSubcommand(sub => sub.setName('testwelcome').setDescription('Tests welcome memu functionality.'))
     .addSubcommand(sub => sub.setName('testleave').setDescription('Tests member leave functionality.'))
     .addSubcommand(sub =>
       sub
-        .setName('setrecruittime')
-        .setDescription('Set a guilds recruit time in the database.')
+        .setName('updatepriority')
+        .setDescription("Updates a guild's recruitment time in the database.")
         .addStringOption(option =>
-          option.setName('name').setDescription('The name of the recruit claim to add.').setRequired(true)
+          option.setName('name').setDescription('The name of the recruit that was claimed.').setRequired(true)
         )
         .addStringOption(option =>
-          option.setName('guild').setDescription('The guild whos priority to set.').setAutocomplete(true).setRequired(true)
+          option
+            .setName('guild')
+            .setDescription('The guild who claimed the recruit.')
+            .setAutocomplete(true)
+            .setRequired(true)
         )
     )
     .addSubcommand(sub =>
@@ -56,18 +59,8 @@ module.exports = {
       process.exit(1);
     }
 
-    if (sub === 'updatecache') {
-      await interaction.client.cache.update();
-      await interaction.reply({ content: 'Static game data cache updated.', ephemeral: true });
-    }
-
-    if (sub === 'testwelcome') {
-      await interaction.client.emit('guildMemberAdd', interaction.member);
-    }
-
-    if (sub === 'testleave') {
-      await interaction.client.emit('guildMemberRemove', interaction.member);
-    }
+    if (sub === 'testwelcome') return interaction.client.emit('guildMemberAdd', interaction.member);
+    if (sub === 'testleave') return interaction.client.emit('guildMemberRemove', interaction.member);
 
     if (sub === 'setrecruittime') {
       const guild = await interaction.options.getString('guild');
@@ -160,17 +153,14 @@ module.exports = {
 
       await interaction.editReply(`Creating recruit thread for Veritable Quandary (Ally Code: 136663451), please wait... `);
 
-      // Fetch account information and determine starting tier based on account GP
       const playerData = await fetchHelp(parsedAllyCode);
       if (!playerData)
         return interaction.editReply('Unable to fetch account information. Please verify ally code and try again!');
       const gp = playerData.stats[0].value;
       const startingTier = await findStartingTier(gp);
 
-      // Generate the account summary embeds
       const accountSummary = await generateAccountSummary(parsedAllyCode);
 
-      // Create recruitment thread, and send the account summary embeds
       const recruitmentChannel = await interaction.client.channels.fetch(config.channels.recruitmentRoom);
       const thread = await recruitmentChannel.threads.create({
         name: `TESTING`,
@@ -181,7 +171,6 @@ module.exports = {
 
       const priorityMessage = await thread.send('Tier Priority:');
 
-      // Add the recruit to the database
       await db.collection('recruits').insertOne({
         ally_code: parsedAllyCode,
         discord_name: 'TESTING',
@@ -191,14 +180,12 @@ module.exports = {
         priority_message_id: priorityMessage.id,
       });
 
-      // Generate the priority list for the recruit's starting tier and send it in the thread
       const priorityEmbed = await generateTierPriority(parsedAllyCode);
       await priorityMessage.edit(priorityEmbed);
 
       await summaryMessage.pin();
       await priorityMessage.pin();
 
-      // Success message
       return interaction.editReply(`Test recruitment thread has been created.`);
     }
   },
