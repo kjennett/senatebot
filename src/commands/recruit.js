@@ -411,7 +411,9 @@ module.exports = {
 
       // Ping the new recruitment tier in the thread
       const tier = await db.collection('tiers').findOne({ number: recruit.tier - 1 });
-      await interaction.channel.send(`This recruit has been moved to ${roleMention(tier.recruiter_role_id)}`);
+      await interaction.channel.send(
+        `This recruit has been moved to ${roleMention(tier.recruiter_role_id)} by ${interaction.member}`
+      );
 
       // Success message
       return await interaction.editReply('Tier changed.');
