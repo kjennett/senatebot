@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { generateAccountSummary } = require('../functions/accountSummary');
-const { fetchHelp } = require('../functions/gamedata/playerData');
+const { generateAccountSummary } = require('../functions/generateAccountSummary');
+const { fetchHelp } = require('../functions/fetchPlayerData');
 const { parseAllyCode } = require('../functions/parseAllyCode');
 
 module.exports = {

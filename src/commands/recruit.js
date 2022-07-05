@@ -2,9 +2,9 @@ const { SlashCommandBuilder, roleMention, userMention } = require('@discordjs/bu
 const { newEmbed } = require('../functions/newEmbed');
 const { parseAllyCode } = require('../functions/parseAllyCode');
 const { config } = require('../config');
-const { fetchHelp } = require('../functions/gamedata/playerData');
-const { generateAccountSummary } = require('../functions/accountSummary');
-const { generateTierPriority } = require('../functions/recruitment/generateTierPriority');
+const { fetchHelp } = require('../functions/fetchPlayerData');
+const { generateAccountSummary } = require('../functions/generateAccountSummary');
+const { generateTierPriority } = require('../functions/generateTierPriority');
 const { db } = require('../database');
 
 async function findStartingTier(gp) {

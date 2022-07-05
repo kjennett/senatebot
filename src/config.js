@@ -38,10 +38,6 @@ const devConfig = {
     recruitment: '954525945438564402',
     allianceRecruitmentTeam: '954525945438564402',
   },
-  messages: {
-    purged:
-      'You have been automatically removed from ΞThe SenateΞ Alliance Discord Server, as you have not been granted a role within 14 days of joining the server.\n If you believe this to be in error, please rejoin the server using the following link:\n\nhttp://discord.thesenate.gg\n\nΞThe SenateΞ wishes you good fortune in your SWGOH adventures - may the Force be with you, always!',
-  },
   galacticLegends: galacticLegends,
   capitalShips: capitalShips,
   omicronModes: omicronModes,
@@ -61,10 +57,6 @@ const prodConfig = {
     greeter: '933051834115948615',
     recruitment: '518434369455783936',
     allianceRecruitmentTeam: '907820888244781076',
-  },
-  messages: {
-    purged:
-      'You have been automatically removed from ΞThe SenateΞ Alliance Discord Server, as you have not been granted a role within 14 days of joining the server.\n If you believe this to be in error, please rejoin the server using the following link:\n\nhttp://discord.thesenate.gg\n\nΞThe SenateΞ wishes you good fortune in your SWGOH adventures - may the Force be with you, always!',
   },
   galacticLegends: galacticLegends,
   capitalShips: capitalShips,

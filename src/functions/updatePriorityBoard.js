@@ -21,7 +21,6 @@ const priorityBoard = async () => {
       .find({ tier: tier.number })
       .sort({ last_recruit_time: 1, name: 1 })
       .toArray();
-
     let i = 1;
     for (const guild of guildsInTier) {
       if (guild.last_recruit_name) {
@@ -32,10 +31,8 @@ const priorityBoard = async () => {
       } else {
         tierEmbed.addField(`${i}. ${guild.name}`, '-----');
       }
-
       i++;
     }
-
     allTierEmbeds.push(tierEmbed);
   }
 

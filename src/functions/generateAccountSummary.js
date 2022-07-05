@@ -1,9 +1,9 @@
 const { config } = require('../config');
+const { db } = require('../database');
 const { client } = require('../client');
 const { newEmbed } = require('./newEmbed');
-const { fetchGG, fetchHelp, fetchOmega } = require('./gamedata/playerData');
+const { fetchGG, fetchHelp, fetchOmega } = require('./fetchPlayerData');
 const { MessageAttachment } = require('discord.js');
-const { cache } = require('../cache');
 
 const legends = Object.keys(config.galacticLegends);
 const capships = Object.keys(config.capitalShips);
@@ -20,7 +20,6 @@ exports.generateAccountSummary = async parsedAllyCode => {
       iconURL: process.env.SENATELOGO,
     });
     accountSummaryEmbed.setTimestamp(new Date(playerData.data.last_updated));
-
     accountSummaryEmbed.addField('Galactic Power:', `${playerData.data.galactic_power.toLocaleString()}`);
 
     if (playerData.data.level >= 85 && playerData.data.league_name)
@@ -46,14 +45,12 @@ exports.generateAccountSummary = async parsedAllyCode => {
       if (unit.data.omicron_abilities.length) {
         const learnedOmicrons = unit.data.ability_data.filter(ability => ability.has_omicron_learned);
         for (const omicron of learnedOmicrons) {
-          const cachedAbility = cache.abilities.find(element => element.base_id === omicron.id);
-          if (cachedAbility.omicron_mode === config.omicronModes.TB) {
-            const cachedUnit = cache.characters.find(element => element.base_id === cachedAbility.character_base_id);
-            if (cachedUnit) tbOmis.push(`${cachedUnit.name}: ${cachedAbility.name} ${omiEmoji}`);
+          const ability = await db.collection('abilities').find({ base_id: omicron.id });
+          if (ability.omicron_mode === config.omicronModes.TB) {
+            tbOmis.push(`${unit.data.name}: ${ability.name} ${omiEmoji}`);
           }
-          if (cachedAbility.omicron_mode === config.omicronModes.TW) {
-            const cachedUnit = cache.characters.find(element => element.base_id === cachedAbility.character_base_id);
-            if (cachedUnit) twOmis.push(`${cachedUnit.name}: ${cachedAbility.name} ${omiEmoji}`);
+          if (ability.omicron_mode === config.omicronModes.TW) {
+            twOmis.push(`${unit.data.name}: ${ability.name} ${omiEmoji}`);
           }
         }
       }
@@ -61,8 +58,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
       if (unit.data.is_galactic_legend) {
         const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
         const ult = unit.data.has_ultimate ? ` ${ultEmoji}` : '';
-
-        GLs.push(`${config.galacticLegends[unit.data.base_id].name} (${gearLevel})${ult}`);
+        GLs.push(`${unit.data.name} (${gearLevel})${ult}`);
       }
 
       if (capships.includes(unit.data.base_id)) {

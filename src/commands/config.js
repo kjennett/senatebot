@@ -3,9 +3,9 @@ const { db } = require('../database');
 const { config } = require('../config');
 const { writeFileSync, unlinkSync } = require('fs');
 const { MessageAttachment } = require('discord.js');
-const { fetchHelp } = require('../functions/gamedata/playerData');
-const { generateAccountSummary } = require('../functions/accountSummary');
-const { generateTierPriority } = require('../functions/recruitment/generateTierPriority');
+const { fetchHelp } = require('../functions/fetchPlayerData');
+const { generateAccountSummary } = require('../functions/generateAccountSummary');
+const { generateTierPriority } = require('../functions/generateTierPriority');
 
 async function findStartingTier(gp) {
   const result = await db.collection('tiers').findOne({
@@ -119,7 +119,9 @@ module.exports = {
             await purgedList.push(`User: ${m.displayName} | Joined: ${new Date(m.joinedTimestamp).toLocaleDateString()})`);
 
             try {
-              await m.send(config.messages.purged);
+              await m.send(
+                'You have been automatically removed from ΞTHE SENATEΞ Alliance Discord Server, as you have not been granted a role within 14 days of joining the server.\n If you believe this to be in error, please rejoin the server using the following link:\n\nhttp://discord.thesenate.gg\n\nΞThe SenateΞ wishes you good fortune in your SWGOH adventures - may the Force be with you, always!'
+              );
             } catch (e) {
               await failedList.push(`User: ${m.displayName} | Joined: ${new Date(m.joinedTimestamp).toLocaleDateString()})`);
             }
