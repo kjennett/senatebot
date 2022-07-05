@@ -118,14 +118,14 @@ module.exports = {
         const failedList = [];
         if (purgeableMembers.size) {
           purgeableMembers.forEach(async m => {
-            await purgedList.push(`User: ${m.displayName} | Joined: ${new Date(m.joinedTimestamp).toLocaleDateString()})`);
+            await purgedList.push(`User: ${m.displayName} | Joined: ${new Date(m.joinedTimestamp).toLocaleDateString()}`);
 
             try {
               await m.send(
                 'You have been automatically removed from ΞTHE SENATEΞ Alliance Discord Server, as you have not been granted a role within 14 days of joining the server.\n If you believe this to be in error, please rejoin the server using the following link:\n\nhttp://discord.thesenate.gg\n\nΞThe SenateΞ wishes you good fortune in your SWGOH adventures - may the Force be with you, always!'
               );
             } catch (e) {
-              await failedList.push(`User: ${m.displayName} | Joined: ${new Date(m.joinedTimestamp).toLocaleDateString()})`);
+              await failedList.push(`User: ${m.displayName} | Joined: ${new Date(m.joinedTimestamp).toLocaleDateString()}`);
             }
 
             await m.kick('Purged: 14 days without receiving a role.');
