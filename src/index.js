@@ -1,6 +1,7 @@
 const { connectToDatabase } = require('./database');
 const { cache } = require('./cache');
 const { client } = require('./client');
+const { updatePriorityBoard } = require('./functions/updatePriorityBoard');
 
 const validateEnvironment = () => {
   const reqVar = ['TOKEN', 'CLIENT', 'SERVER', 'DB', 'SENATELOGO'];
@@ -16,6 +17,7 @@ async function startup() {
   await cache.update();
   await cache.startUpdater();
   await client.start();
+  await updatePriorityBoard();
 }
 
 startup();
