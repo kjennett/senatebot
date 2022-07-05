@@ -23,10 +23,11 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    const unparsedAllyCode = await interaction.options.getString('allycode');
-    const parsedAllyCode = await parseAllyCode(unparsedAllyCode);
-    if (!parsedAllyCode) return interaction.editReply('Error parsing ally code. Please try again!');
-    await interaction.reply(`Fetching account summary for Ally Code ${parsedAllyCode}, please wait...`);
+    await interaction.deferReply();
+
+    const allycode = await interaction.options.getString('allycode');
+    const parsedAllyCode = await parseAllyCode(allycode);
+    if (parsedAllyCode instanceof Error) return interaction.editReply(parsedAllyCode.message);
 
     if (await !fetchHelp(parsedAllyCode))
       return interaction.editReply('Unable to fetch account information. Please verify ally code and try again!');
