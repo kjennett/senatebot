@@ -45,8 +45,6 @@ const priorityBoard = async () => {
   if (post) {
     const message = await channel.messages.fetch(post.id);
     await message.edit({ embeds: allTierEmbeds });
-    await message.unpin();
-    await message.pin();
   } else {
     const message = await channel.send({ embeds: allTierEmbeds });
     await message.pin();
