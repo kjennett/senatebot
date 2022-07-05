@@ -31,6 +31,9 @@ module.exports = {
         .setName('setrecruittime')
         .setDescription('Set a guilds recruit time in the database.')
         .addStringOption(option =>
+          option.setName('name').setDescription('The name of the recruit claim to add.').setRequired(true)
+        )
+        .addStringOption(option =>
           option.setName('guild').setDescription('The guild whos priority to set.').setAutocomplete(true).setRequired(true)
         )
     )
@@ -46,46 +49,43 @@ module.exports = {
 
   async execute(interaction) {
     if (interaction.member.id !== process.env.OWNER) return;
+    const sub = await interaction.options.getSubcommand();
 
-    if ((await interaction.options.getSubcommand()) === 'restart') {
-      await interaction.reply('Restarting...');
+    if (sub === 'restart') {
+      await interaction.reply({ content: 'Restarting...', ephemeral: true });
       process.exit(1);
     }
 
-    if ((await interaction.options.getSubcommand()) === 'updatecache') {
+    if (sub === 'updatecache') {
       await interaction.client.cache.update();
-      await interaction.reply('Static game data cache updated.');
+      await interaction.reply({ content: 'Static game data cache updated.', ephemeral: true });
     }
 
-    if ((await interaction.options.getSubcommand()) === 'testwelcome') {
+    if (sub === 'testwelcome') {
       await interaction.client.emit('guildMemberAdd', interaction.member);
-      await interaction.reply(':white_check_mark:');
     }
 
-    if ((await interaction.options.getSubcommand()) === 'testleave') {
+    if (sub === 'testleave') {
       await interaction.client.emit('guildMemberRemove', interaction.member);
-      await interaction.reply(':white_check_mark:');
     }
 
-    if ((await interaction.options.getSubcommand()) === 'setrecruittime') {
+    if (sub === 'setrecruittime') {
       const guild = await interaction.options.getString('guild');
-      await db
-        .collection('guilds')
-        .findOneAndUpdate(
-          { name: guild },
-          {
-            $set: {
-              last_recruit_name: 'Entered manually',
-              last_recruit_time: Date.now(),
-              last_recruit_ally_code: '000000000',
-            },
-          }
-        );
+      const name = await interaction.options.getString('name');
+      await db.collection('guilds').findOneAndUpdate(
+        { name: guild },
+        {
+          $set: {
+            last_recruit_name: name,
+            last_recruit_time: Date.now(),
+          },
+        }
+      );
       await interaction.reply({ content: `${guild}'s Last Recruit Time was updated.`, ephemeral: true });
     }
 
-    if ((await interaction.options.getSubcommand()) === 'order66') {
-      await interaction.deferReply();
+    if (sub === 'order66') {
+      await interaction.deferReply({ ephemeral: true });
 
       const allMembers = await interaction.guild.members.fetch();
       const hasPGM = await allMembers.filter(m => m.roles.cache.has(config.roles.potentialGuildMember));
@@ -149,7 +149,7 @@ module.exports = {
       }
     }
 
-    if ((await interaction.options.getSubcommand()) === 'testrecruit') {
+    if (sub === 'testrecruit') {
       await interaction.reply('Creating test recruitment thread, please wait...');
       const parsedAllyCode = '136663451';
 

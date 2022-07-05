@@ -41,9 +41,7 @@ class SenateBotClient extends Client {
   };
 
   constructor() {
-    super({
-      intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS],
-    });
+    super({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS] });
   }
 }
 

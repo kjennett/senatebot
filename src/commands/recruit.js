@@ -465,7 +465,6 @@ module.exports = {
           $set: {
             last_recruit_name: recruit.discord_name,
             last_recruit_time: Date.now(),
-            last_recruit_ally_code: recruit.ally_code,
           },
         }
       );
