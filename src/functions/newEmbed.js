@@ -5,6 +5,6 @@ exports.newEmbed = () =>
     color: 'RED',
     footer: {
       iconURL: process.env.SENATELOGO,
-      text: 'ΞSenateBotΞ - The Senate Alliance',
+      text: 'ΞTHE SENATEΞ Alliance',
     },
   });
