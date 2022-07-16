@@ -1,12 +1,50 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { db } = require('../database');
 const { config } = require('../config');
 const { writeFileSync, unlinkSync } = require('fs');
-const { MessageAttachment } = require('discord.js');
+const { MessageAttachment, MessageEmbed } = require('discord.js');
 const { fetchHelp } = require('../functions/fetchPlayerData');
 const { generateAccountSummary } = require('../functions/generateAccountSummary');
 const { generateTierPriority } = require('../functions/generateTierPriority');
 const { newEmbed } = require('../functions/newEmbed');
+
+const restartSubcommand = new SlashCommandSubcommandBuilder()
+  .setName('restart')
+  .setDescription('Exits the process to force-restart SenateBot.');
+
+const welcomeTestSubcommand = new SlashCommandSubcommandBuilder()
+  .setName('welcometest')
+  .setDescription('Simulates a new member entering the server.');
+
+const leaveTestSubcommand = new SlashCommandSubcommandBuilder()
+  .setName('leavetest')
+  .setDescription('Simulates a member leaving the server.');
+
+const updatePrioritySubcommand = new SlashCommandSubcommandBuilder()
+  .setName('updatepriority')
+  .setDescription("Updates a guild's recruitment time in the database.")
+  .addStringOption(option =>
+    option.setName('guild').setDescription('The guild who claimed the recruit.').setAutocomplete(true).setRequired(true)
+  )
+  .addStringOption(option =>
+    option.setName('name').setDescription('The name of the recruit that was claimed.').setRequired(true)
+  )
+  .addStringOption(option =>
+    option.setName('time').setDescription('The aproximate time the recruit was claimed, as a millisecond timestamp')
+  );
+
+const order66Subcommand = new SlashCommandSubcommandBuilder()
+  .setName('order66')
+  .setDescription('Show a list of server members that meet purge criteria.')
+  .addBooleanOption(option => option.setName('doit').setDescription('The time has come... Execute Order 66.'));
+
+const testRecruitSubcommand = new SlashCommandSubcommandBuilder()
+  .setName('testrecruit')
+  .setDescription('Creates a mock recruitment thread without notifying recruiters.');
+
+const twInfoSubcommand = new SlashCommandSubcommandBuilder()
+  .setName('twinfo')
+  .setDescription('Shows information about the current TW phase, if one is in progress.');
 
 async function findStartingTier(gp) {
   const result = await db.collection('tiers').findOne({
@@ -23,75 +61,51 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('config')
     .setDescription('Configuration and administration commands for SenateBot.')
-    .addSubcommand(sub => sub.setName('restart').setDescription('Force-restarts SenateBot.'))
-    .addSubcommand(sub => sub.setName('testwelcome').setDescription('Tests welcome memu functionality.'))
-    .addSubcommand(sub => sub.setName('testleave').setDescription('Tests member leave functionality.'))
-    .addSubcommand(sub =>
-      sub
-        .setName('updatepriority')
-        .setDescription("Updates a guild's recruitment time in the database.")
-        .addStringOption(option =>
-          option.setName('name').setDescription('The name of the recruit that was claimed.').setRequired(true)
-        )
-        .addStringOption(option =>
-          option
-            .setName('guild')
-            .setDescription('The guild who claimed the recruit.')
-            .setAutocomplete(true)
-            .setRequired(true)
-        )
-    )
-    .addSubcommand(sub =>
-      sub
-        .setName('order66')
-        .setDescription('Show a list of inactive members who only have the PGM role')
-        .addBooleanOption(option => option.setName('doit').setDescription('Execute order 66.'))
-    )
-    .addSubcommand(sub =>
-      sub.setName('testrecruit').setDescription('Tests recruitment thread generation without pinging anyone.')
-    )
-    .addSubcommand(sub =>
-      sub.setName('twinfo').setDescription('Shows information about the current TW phase, if one is in progress.')
-    ),
+    .addSubcommand(restartSubcommand)
+    .addSubcommand(welcomeTestSubcommand)
+    .addSubcommand(leaveTestSubcommand)
+    .addSubcommand(updatePrioritySubcommand)
+    .addSubcommand(order66Subcommand)
+    .addSubcommand(testRecruitSubcommand)
+    .addSubcommand(twInfoSubcommand),
 
   async execute(interaction) {
-    if (interaction.member.id !== process.env.OWNER) {
-      return interaction.reply('This command is enabled for the bot administrator only.');
-    }
+    if (interaction.member.id !== process.env.OWNER)
+      return interaction.reply('This command is usable by the bot administrator only.');
 
     const sub = await interaction.options.getSubcommand();
 
-    // ---------- CONFIG RESTART ---------- //
-
     if (sub === 'restart') {
-      await interaction.reply({ content: 'Restarting...', ephemeral: true });
+      const embed = new MessageEmbed({
+        title: 'Restarting...',
+        color: 'GREEN',
+      });
+
+      await interaction.reply({ embeds: [embed], ephemeral: true });
       process.exit(1);
     }
-
-    // ---------- CONFIG TESTWELCOME ---------- //
-    // ---------- CONFIG TESTLEAVE ---------- //
 
     if (sub === 'testwelcome') return interaction.client.emit('guildMemberAdd', interaction.member);
     if (sub === 'testleave') return interaction.client.emit('guildMemberRemove', interaction.member);
 
-    // ---------- CONFIG UPDATEPRIORITY ---------- //
-
     if (sub === 'updatepriority') {
+      await interaction.deferReply({ ephemeral: true });
+
       const guild = await interaction.options.getString('guild');
       const name = await interaction.options.getString('name');
-      await db.collection('guilds').findOneAndUpdate(
-        { name: guild },
-        {
-          $set: {
-            last_recruit_name: name,
-            last_recruit_time: Date.now(),
-          },
-        }
-      );
-      await interaction.reply({ content: `${guild}'s recruitment record was updated.`, ephemeral: true });
-    }
+      const time = (await interaction.options.getString('time')) ?? Date.now();
 
-    // ---------- CONFIG ORDER66 ---------- //
+      await db
+        .collection('guilds')
+        .findOneAndUpdate({ name: guild }, { $set: { last_recruit_name: name, last_recruit_time: time } });
+
+      const embed = new MessageEmbed({
+        title: 'Last Recruit Time Updated',
+        description: `Guild: ${guild}\nRecruit: ${name}\ntime: <t:${Math.floor(time / 1000)}:f>`,
+        color: 'GREEN',
+      });
+      await interaction.editReply({ embeds: [embed] });
+    }
 
     if (sub === 'order66') {
       await interaction.deferReply();
@@ -109,53 +123,60 @@ module.exports = {
         );
 
         if (purgeList.length) {
+          const embed = new MessageEmbed({
+            title: 'Purgeable Users',
+            description: `The following ${purgeList.length} members:\n - __Only__ have the Potential Guild Member role\n - Joined the server more than 14 days ago\n - Do not have an active recruitment thread\n\nTo remove these users from the server, run this command again with the DOIT option set to True.`,
+          });
           await writeFileSync('./purgelist.txt', purgeList.join('\n'));
           const fileAttachment = new MessageAttachment('./purgelist.txt');
           await interaction.editReply({
-            content: `The following *${purgeList.length} users*:\n\n1. __ONLY__ have the Potential Guild Member role,\n2. Joined the server more than 14 days ago, and\n3. Do not have an active recruitment thread.\n\nTo purge these users from the server, run the */config order66* command again with the *doit* option set to True.`,
+            embeds: [embed],
             files: [fileAttachment],
           });
           await unlinkSync('./purgelist.txt');
         } else {
-          await interaction.editReply(`No purgeable members were found.`);
+          const embed = new MessageEmbed({
+            title: 'No purge-eligible members were found.',
+            color: 'RED',
+          });
+          return interaction.editReply({ embeds: [embed] });
         }
       } else {
-        await interaction.editReply('Executing Order 66, please wait...');
         const purgedList = [];
-        const failedList = [];
         if (purgeableMembers.size) {
           purgeableMembers.forEach(async m => {
-            await purgedList.push(`User: ${m.displayName} | Joined: ${new Date(m.joinedTimestamp).toLocaleDateString()}`);
-
             try {
               await m.send(
-                'You have been automatically removed from ΞTHE SENATEΞ Alliance Discord Server, as you have not been granted a role within 14 days of joining the server.\n If you believe this to be in error, please rejoin the server using the following link:\n\nhttp://discord.thesenate.gg\n\nΞThe SenateΞ wishes you good fortune in your SWGOH adventures - may the Force be with you, always!'
+                'You have been automatically removed from ΞTHE SENATEΞ Alliance Discord Server, as you have not been granted a role within 14 days of joining the server.\nIf you believe this to be in error, please rejoin the server using the following link:\n\nhttp://discord.thesenate.gg\n\nΞThe SenateΞ wishes you good fortune in your SWGOH adventures - may the Force be with you, always!'
               );
+              await m.kick('Purged: 14 days without receiving a role.');
             } catch (e) {
-              await failedList.push(`User: ${m.displayName} | Joined: ${new Date(m.joinedTimestamp).toLocaleDateString()}`);
+              await m.kick('Purged: 14 days without receiving a role.');
             }
 
-            await m.kick('Purged: 14 days without receiving a role.');
+            await purgedList.push(`User: ${m.displayName} | Joined: ${new Date(m.joinedTimestamp).toLocaleDateString()}`);
           });
 
           await writeFileSync('./purgelist.txt', purgedList.join('\n'));
-          await writeFileSync('./failedlist.txt', failedList.join('\n'));
           const fileAttachment = new MessageAttachment('./purgelist.txt');
-          const fileAttachment2 = new MessageAttachment('./failedlist.txt');
+
+          const embed = new MessageEmbed({
+            title: `Success - the following ${purgedList.length} users have been removed:`,
+            color: 'GREEN',
+          });
           await interaction.editReply('https://tenor.com/view/palpatine-star-wars-emperor-do-it-go-for-it-gif-17446081');
           await interaction.followUp({
-            content: `Order 66 is now complete - ${purgedList.length} users have been purged.`,
+            embeds: [embed],
             files: [fileAttachment],
           });
-          if (failedList.length)
-            await interaction.followUp({
-              content: `Failed to notify the following ${failedList.length} users of their removal:`,
-              files: [fileAttachment2],
-            });
+
           await unlinkSync('./purgelist.txt');
-          await unlinkSync('./failedlist.txt');
         } else {
-          interaction.editReply('No purgeable members were found.');
+          const embed = new MessageEmbed({
+            title: `No purge-eligible members were found.`,
+            color: 'RED',
+          });
+          return interaction.editReply({ embeds: [embed] });
         }
       }
     }
