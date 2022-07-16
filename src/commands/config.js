@@ -6,6 +6,7 @@ const { MessageAttachment } = require('discord.js');
 const { fetchHelp } = require('../functions/fetchPlayerData');
 const { generateAccountSummary } = require('../functions/generateAccountSummary');
 const { generateTierPriority } = require('../functions/generateTierPriority');
+const { newEmbed } = require('../functions/newEmbed');
 
 async function findStartingTier(gp) {
   const result = await db.collection('tiers').findOne({
@@ -48,10 +49,16 @@ module.exports = {
     )
     .addSubcommand(sub =>
       sub.setName('testrecruit').setDescription('Tests recruitment thread generation without pinging anyone.')
+    )
+    .addSubcommand(sub =>
+      sub.setName('twinfo').setDescription('Shows information about the current TW phase, if one is in progress.')
     ),
 
   async execute(interaction) {
-    if (interaction.member.id !== process.env.OWNER) return;
+    if (interaction.member.id !== process.env.OWNER) {
+      return interaction.reply('This command is enabled for the bot administrator only.');
+    }
+
     const sub = await interaction.options.getSubcommand();
 
     // ---------- CONFIG RESTART ---------- //
@@ -198,6 +205,36 @@ module.exports = {
       await priorityMessage.pin();
 
       return interaction.editReply(`Test recruitment thread has been created.`);
+    }
+
+    // ---------- CONFIG TWINFO ---------- //
+
+    if (sub === 'twinfo') {
+      await interaction.deferReply({ ephemeral: true });
+      const currentPhase = await db
+        .collection('warphases')
+        .findOne({ start: { $lte: Date.now() }, end: { $gte: Date.now() } });
+      if (!currentPhase) return interaction.editReply('A current TW phase is not in progress.');
+
+      const embed = newEmbed()
+        .setTitle('Current TW Phase:')
+        .setDescription(currentPhase.event)
+        .addFields([
+          {
+            name: 'Phase:',
+            value: `${currentPhase.name}`,
+          },
+          {
+            name: 'Start:',
+            value: `<t:${Math.floor(currentPhase.start) / 1000}:f>`,
+          },
+          {
+            name: 'End:',
+            value: `<t:${Math.floor(currentPhase.end) / 1000}:f>`,
+          },
+        ]);
+
+      return interaction.editReply({ embeds: [embed] });
     }
   },
 };

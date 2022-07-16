@@ -5,7 +5,6 @@ const { newEmbed } = require('../functions/newEmbed');
 const Jimp = require('jimp');
 
 module.exports = {
-  on: true,
   name: 'guildMemberAdd',
 
   async execute(member) {

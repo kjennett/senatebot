@@ -4,7 +4,7 @@ const { tierAutocomplete } = require('../functions/autocomplete/tierAutocomplete
 
 module.exports = {
   name: 'interactionCreate',
-  on: true,
+
   async execute(interaction) {
     if (interaction.isAutocomplete()) {
       const focused = interaction.options.getFocused(true);

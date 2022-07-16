@@ -2,7 +2,6 @@ const { db } = require('../database');
 
 module.exports = {
   name: 'guildMemberRemove',
-  on: true,
 
   async execute(member) {
     const recruitResult = await db.collection('recruits').findOne({ discord_user_id: member.id });
