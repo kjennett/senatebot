@@ -3,7 +3,8 @@ const { MessageEmbed } = require('discord.js');
 exports.newEmbed = () =>
   new MessageEmbed({
     color: 'RED',
-    thumbnail: {
-      url: process.env.SENATELOGO,
+    footer: {
+      icon_url: process.env.SENATELOGO,
+      text: 'THE SENATE Alliance',
     },
   });
