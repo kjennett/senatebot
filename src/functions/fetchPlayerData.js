@@ -56,3 +56,18 @@ exports.fetchHelp = async allycode => {
     return null;
   }
 };
+
+exports.fetchComlink = async allycode => {
+  try {
+    const response = await axios.post(process.env.COMLINK, {
+      payload: {
+        allyCode: allycode,
+      },
+      enums: true,
+    });
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
