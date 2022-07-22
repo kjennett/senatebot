@@ -4,9 +4,6 @@ const { client } = require('../client');
 const { fetchGG, fetchHelp, fetchOmega } = require('./fetchPlayerData');
 const { MessageAttachment, MessageEmbed } = require('discord.js');
 
-const legends = Object.keys(config.galacticLegends);
-const capships = Object.keys(config.capitalShips);
-
 exports.generateAccountSummary = async parsedAllyCode => {
   let playerData = await fetchGG(parsedAllyCode);
   const accountSummaryEmbed = new MessageEmbed();
@@ -23,7 +20,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
     if (playerData.data.level >= 85 && playerData.data.league_name)
       accountSummaryEmbed.addField(
-        'GAC League (SR):',
+        'GAC League (Skill Rating):',
         `${playerData.data.league_name} ${
           playerData.data.division_number
         } (${playerData.data.skill_rating.toLocaleString()})`
@@ -37,54 +34,79 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
     const caps = [];
     const GLs = [];
+    const conChars = [];
+    const conShips = [];
     const twOmis = [];
     const tbOmis = [];
 
     for (const unit of playerData.units) {
-      if (unit.data.omicron_abilities.length) {
-        const learnedOmicrons = unit.data.ability_data.filter(ability => ability.has_omicron_learned);
-        for (const omicron of learnedOmicrons) {
-          const ability = await db.collection('abilities').find({ base_id: omicron.id });
-          if (ability.omicron_mode === config.omicronModes.TB) {
-            tbOmis.push(`${unit.data.name}: ${ability.name} ${omiEmoji}`);
-          }
-          if (ability.omicron_mode === config.omicronModes.TW) {
-            twOmis.push(`${unit.data.name}: ${ability.name} ${omiEmoji}`);
+      if (config.galacticLegends.includes(unit.data.base_id)) {
+        const gearLevel = unit.data.relic_level >= 2 ? `R${unit.data.relic_level - 2}` : `G${unit.data.gear_level}`;
+        const ult = unit.data.has_ultimate ? ` ${ultEmoji}` : '';
+        GLs.push(`${unit.data.name}: ${gearLevel}${ult}`);
+      }
+
+      if (config.capitalShips.includes(unit.data.base_id)) {
+        caps.push(`${unit.data.name}: ${unit.data.rarity}:star:`);
+      }
+
+      if (config.conquestCharacters.includes(unit.data.base_id)) {
+        const gearLevel = unit.data.relic_level >= 2 ? `R${unit.data.relic_level - 2}` : `G${unit.data.gear_level}`;
+        conChars.push(`${unit.data.name}: ${gearLevel}`);
+      }
+
+      if (config.conquestShips.includes(unit.data.base_id)) {
+        conShips.push(`${unit.data.name}: ${unit.data.rarity}:star:`);
+      }
+
+      if (unit.data.ability_data.some(a => a.has_omicron_learned)) {
+        const tbOmisLearned = [];
+        const twOmisLearned = [];
+        for (const ability of unit.data.ability_data) {
+          if (ability.has_omicron_learned) {
+            const omiResult = await db.collection('abilities').findOne({ base_id: ability.id });
+            if (omiResult.omicron_mode === 7) {
+              tbOmisLearned.push(` - ${ability.name} ${omiEmoji}`);
+            }
+            if (omiResult.omicron_mode === 8 || omiResult.omicron_mode === 14) {
+              twOmisLearned.push(` - ${ability.name} ${omiEmoji}`);
+            }
           }
         }
-      }
+        tbOmisLearned.sort();
+        twOmisLearned.sort();
 
-      if (unit.data.is_galactic_legend) {
-        const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
-        const ult = unit.data.has_ultimate ? ` ${ultEmoji}` : '';
-        GLs.push(`${unit.data.name} (${gearLevel})${ult}`);
-      }
-
-      if (capships.includes(unit.data.base_id)) {
-        caps.push(`${config.capitalShips[unit.data.base_id].name} ${unit.data.rarity}:star:`);
+        if (tbOmisLearned.length) tbOmis.push(`__${unit.data.name}__\n${tbOmisLearned.join('\n')}`);
+        if (twOmisLearned.length) twOmis.push(`__${unit.data.name}__\n${tbOmisLearned.join('\n')}`);
       }
     }
 
     caps.sort();
     GLs.sort();
+    conChars.sort();
+    conShips.sort();
     twOmis.sort();
     tbOmis.sort();
 
     const numberOfCaps = caps.length;
     const numberOfGLs = GLs.length;
-    const numberOfTWOmis = twOmis.length;
-    const numberOfTBOmis = tbOmis.length;
+    const numberOfConChars = conChars.length;
+    const numberOfConShips = conShips.length;
 
     if (caps.join() === '') caps.push('-----');
     if (GLs.join() === '') GLs.push('-----');
+    if (conChars.join() === '') conChars.push('-----');
+    if (conShips.join() === '') conShips.push('-----');
     if (twOmis.join() === '') twOmis.push('-----');
     if (tbOmis.join() === '') tbOmis.push('-----');
 
     accountSummaryEmbed
-      .addField(`Galactic Legends: ${numberOfGLs}`, GLs.join('\n'))
-      .addField(`Capital Ships: ${numberOfCaps}`, caps.join('\n'))
-      .addField(`TW Omicrons: ${numberOfTWOmis}`, twOmis.join('\n'))
-      .addField(`TB Omicrons: ${numberOfTBOmis}`, tbOmis.join('\n'))
+      .addField(`Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`, GLs.join('\n'))
+      .addField(`Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`, conChars.join('\n'))
+      .addField(`Capital Ships: ${numberOfCaps}/${config.capitalShips.length}`, caps.join('\n'))
+      .addField(`Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`, conShips.join('\n'))
+      .addField(`TW Omicrons:`, twOmis.join('\n'))
+      .addField(`TB Omicrons:`, tbOmis.join('\n'))
       .addField('SWGOH.gg Profile:', `https://swgoh.gg/p/${parsedAllyCode}`);
 
     const modSummaryEmbed = new MessageEmbed()
@@ -161,24 +183,52 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
     const caps = [];
     const GLs = [];
+    const conChars = [];
+    const conShips = [];
 
     for (const unit of playerData.roster) {
-      if (legends.includes(unit.defId)) {
-        if (unit.relic.currentTier > 2) {
-          GLs.push(`${config.galacticLegends[unit.defId].name} (R${unit.relic.currentTier - 2})`);
-        } else {
-          GLs.push(`${config.galacticLegends[unit.defId].name} (G${unit.gear})`);
-        }
+      if (config.galacticLegends.includes(unit.defId)) {
+        const glResult = await db.collection('characters').findOne({ base_id: unit.defId });
+        const gearLevel = unit.gear > 12 ? `R${unit.relic.currentTier - 2}` : `G${unit.gear}`;
+        GLs.push(`${glResult.name}: ${gearLevel}`);
       }
-      if (capships.includes(unit.defId)) {
-        caps.push(`${config.capitalShips[unit.defId].name} ${unit.rarity}:star:`);
+
+      if (config.conquestCharacters.includes(unit.defId)) {
+        const charResult = await db.collection('characters').findOne({ base_id: unit.defId });
+        const gearLevel = unit.gear > 12 ? `R${unit.relic.currentTier - 2}` : `G${unit.gear}`;
+        conChars.push(`${charResult.name}: ${gearLevel}`);
+      }
+
+      if (config.capitalShips.includes(unit.defId)) {
+        const capResult = await db.collection('ships').findOne({ base_id: unit.defId });
+        caps.push(`${capResult.name}: ${unit.rarity}:star:`);
+      }
+
+      if (config.conquestShips.includes(unit.defId)) {
+        const shipResult = await db.collection('ships').findOne({ base_id: unit.defId });
+        conShips.push(`${shipResult.name}: ${unit.rarity}:star:`);
       }
     }
+    caps.sort();
+    GLs.sort();
+    conChars.sort();
+    conShips.sort();
+
+    const numberOfCaps = caps.length;
+    const numberOfGLs = GLs.length;
+    const numberOfConChars = conChars.length;
+    const numberOfConShips = conShips.length;
 
     if (caps.join() === '') caps.push('-----');
     if (GLs.join() === '') GLs.push('-----');
+    if (conChars.join() === '') conChars.push('-----');
+    if (conShips.join() === '') conShips.push('-----');
 
-    accountSummaryEmbed.addField('Galactic Legends:', GLs.join('\n')).addField('Capital Ships:', caps.join('\n'));
+    accountSummaryEmbed
+      .addField(`Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`, GLs.join('\n'))
+      .addField(`Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`, conChars.join('\n'))
+      .addField(`Capital Ships: ${numberOfCaps}/${config.capitalShips.length}`, caps.join('\n'))
+      .addField(`Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`, conShips.join('\n'));
 
     return { embeds: [accountSummaryEmbed] };
   }

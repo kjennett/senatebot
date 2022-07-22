@@ -1,20 +1,27 @@
-const galacticLegends = {
-  SITHPALPATINE: { name: 'Sith Eternal Emperor', abbr: 'SEE' },
-  GLREY: { name: 'Rey', abbr: 'Rey' },
-  SUPREMELEADERKYLOREN: { name: 'Supreme Leader Kylo Ren', abbr: 'SLKR' },
-  GRANDMASTERLUKE: { name: 'Jedi Master Luke Skywalker', abbr: 'JML' },
-  JEDIMASTERKENOBI: { name: 'Jedi Master Kenobi', abbr: 'JMK' },
-  LORDVADER: { name: 'Lord Vader', abbr: 'LV' },
-};
+const galacticLegends = [
+  'SITHPALPATINE',
+  'GLREY',
+  'SUPREMELEADERKYLOREN',
+  'GRANDMASTERLUKE',
+  'JEDIMASTERKENOBI',
+  'LORDVADER',
+];
 
-const capitalShips = {
-  CAPITALEXECUTOR: { name: 'Executor', abbr: 'Exec' },
-  CAPITALNEGOTIATOR: { name: 'Negotiator', abbr: 'Nego' },
-  CAPITALMALEVOLENCE: { name: 'Malevolence', abbr: 'Mal' },
-  CAPITALCHIMAERA: { name: 'Chimaera', abbr: 'Chi' },
-  CAPITALRADDUS: { name: 'Raddus', abbr: 'Rad' },
-  CAPITALFINALIZER: { name: 'Finalizer', abbr: 'Fin' },
-};
+const capitalShips = [
+  'CAPITALSTARDESTROYER',
+  'CAPITALMONCALAMARICRUISER',
+  'CAPITALJEDICRUISER',
+  'CAPITALEXECUTOR',
+  'CAPITALNEGOTIATOR',
+  'CAPITALMALEVOLENCE',
+  'CAPITALCHIMAERA',
+  'CAPITALRADDUS',
+  'CAPITALFINALIZER',
+];
+
+const conquestCharacters = ['COMMANDERAHSOKA', 'MAULS7', 'BOBAFETTSCION', 'DARTHMALGUS'];
+
+const conquestShips = ['TIEINTERCEPTOR', 'RAZORCREST'];
 
 const omicronModes = {
   TB: 7,
@@ -40,6 +47,8 @@ const devConfig = {
   },
   galacticLegends: galacticLegends,
   capitalShips: capitalShips,
+  conquestCharacters: conquestCharacters,
+  conquestShips: conquestShips,
   omicronModes: omicronModes,
 };
 
@@ -60,6 +69,8 @@ const prodConfig = {
   },
   galacticLegends: galacticLegends,
   capitalShips: capitalShips,
+  conquestCharacters: conquestCharacters,
+  conquestShips: conquestShips,
   omicronModes: omicronModes,
 };
 
