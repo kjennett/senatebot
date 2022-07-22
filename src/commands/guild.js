@@ -64,7 +64,7 @@ module.exports = {
         },
         {
           name: `SWGOH.gg Guild Page`,
-          value: `${hyperlink(`${comlinkData.guildName}`, `https://swgoh.gg/g/$[comlinkData.guildId]`)}`,
+          value: hyperlink(`${comlinkData.guildName}`, `https://swgoh.gg/g/${comlinkData.guildId}`),
         },
       ],
     }).setTimestamp(guildData.data.last_sync);
