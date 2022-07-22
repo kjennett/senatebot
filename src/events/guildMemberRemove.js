@@ -1,4 +1,5 @@
 const { db } = require('../database');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
   name: 'guildMemberRemove',
@@ -7,11 +8,17 @@ module.exports = {
     const recruitResult = await db.collection('recruits').findOne({ discord_user_id: member.id });
     if (!recruitResult) return;
 
-    const thread = await member.client.channels.fetch(recruitResult.thread_id);
+    await member.client.channels.fetch();
+    const thread = await member.guild.channels.fetch(recruitResult.thread_id);
     if (!thread) return;
     if (thread.archived) return;
 
-    await thread.send('Recruit has left the server. Archiving recruitment thread...');
+    const embed = new MessageEmbed({
+      title: 'This recruit has left the server.',
+      description: 'Archiving recruitment thread...',
+    }).setTimestamp();
+    await thread.send({ embeds: [embed] });
+
     await thread.edit({
       name: `${recruitResult.discord_name} (T${recruitResult.tier}) - Left Server`,
     });

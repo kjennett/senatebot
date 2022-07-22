@@ -1,5 +1,5 @@
 const { log } = require('../log');
-const { newEmbed } = require('../functions/newEmbed');
+const { MessageEmbed } = require('discord.js');
 const { client } = require('../client');
 
 module.exports = {
@@ -8,10 +8,11 @@ module.exports = {
   async execute() {
     await client.guilds.fetch();
 
-    const embed = newEmbed()
-      .setTitle('Startup Complete')
-      .setDescription(`Servers: ${client.guilds.cache.size} | Commands: ${client.commands.size}`)
-      .setTimestamp();
+    const embed = new MessageEmbed({
+      title: 'Startup Complete!',
+      description: `Servers: ${client.guilds.cache.size}\nCommands: ${client.commands.size}`,
+      color: 'GREEN',
+    }).setTimestamp();
 
     const owner = await client.users.fetch(process.env.OWNER);
     await owner.send({ embeds: [embed] });

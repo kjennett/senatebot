@@ -12,7 +12,6 @@ module.exports = {
       if (focused.name === 'tier') return tierAutocomplete(interaction, focused);
     }
 
-    // All interactions that reach this point without being invoked are assumed to be slash commands
     if (!interaction.isCommand()) return;
     const command = interaction.client.commands.get(interaction.commandName);
     if (!command) return;
