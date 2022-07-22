@@ -25,5 +25,5 @@ exports.updateGameData = async () => {
 
   await db.collection('characters').insertMany(characters);
   await db.collection('ships').insertMany(ships);
-  await db.collection('abilties').insertMany(abilities);
+  await db.collection('abilities').insertMany(abilities);
 };

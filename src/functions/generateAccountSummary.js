@@ -41,7 +41,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
     for (const unit of playerData.units) {
       if (config.galacticLegends.includes(unit.data.base_id)) {
-        const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_level - 2}` : `G${unit.data.gear_level}`;
+        const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
         const ult = unit.data.has_ultimate ? ` ${ultEmoji}` : '';
         GLs.push(`${unit.data.name}: ${gearLevel}${ult}`);
       }
@@ -51,7 +51,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
       }
 
       if (config.conquestCharacters.includes(unit.data.base_id)) {
-        const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_level - 2}` : `G${unit.data.gear_level}`;
+        const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
         conChars.push(`${unit.data.name}: ${gearLevel}`);
       }
 
@@ -60,14 +60,12 @@ exports.generateAccountSummary = async parsedAllyCode => {
       }
 
       if (unit.data.ability_data.some(a => a.has_omicron_learned)) {
-        console.log(`Omicrons: ${unit.data.name}:`);
         const tbOmisLearned = [];
         const twOmisLearned = [];
+
         for (const ability of unit.data.ability_data) {
           if (ability.has_omicron_learned) {
-            console.log(ability.id);
             const omiResult = await db.collection('abilities').findOne({ base_id: ability.id });
-            if (!omiResult) continue;
             if (omiResult.omicron_mode === 7) {
               tbOmisLearned.push(` - ${ability.name} ${omiEmoji}`);
             }
