@@ -6,6 +6,7 @@ const { MessageAttachment, MessageEmbed } = require('discord.js');
 const { fetchHelp } = require('../functions/fetchPlayerData');
 const { generateAccountSummary } = require('../functions/generateAccountSummary');
 const { generateTierPriority } = require('../functions/generateTierPriority');
+const { log } = require('../log');
 
 const restartSubcommand = new SlashCommandSubcommandBuilder()
   .setName('restart')
@@ -151,44 +152,28 @@ module.exports = {
           return interaction.editReply({ embeds: [embed] });
         }
       } else {
-        const purgedList = [];
-        const failedList = [];
         if (eligible.size) {
+          const numberOfUsers = eligible.size;
           eligible.forEach(async m => {
             try {
               await m.send(
                 'You have been automatically removed from ΞTHE SENATEΞ Alliance Discord Server, as you have not been granted a role within 14 days of joining the server.\nIf you believe this to be in error, please rejoin the server using the following link:\n\nhttp://discord.thesenate.gg\n\nΞThe SenateΞ wishes you good fortune in your SWGOH adventures - may the Force be with you, always!'
               );
             } catch (e) {
-              await failedList.push(m.displayName);
+              log.info(`Failed to send purge message to: ${m.displayName}`);
             }
 
             await m.kick('Purged: 14 days without receiving a role.');
-            await purgedList.push(`User: ${m.displayName} | Joined: ${new Date(
-              m.joinedTimestamp
-            ).toLocaleDateString()} | Roles: ${m.roles.cache.size - 1}
-            `);
           });
-
-          await writeFileSync('./purgelist.txt', purgedList.join('\n'));
-          const fileAttachment = new MessageAttachment('./purgelist.txt');
 
           const embed = new MessageEmbed({
-            title: `Success - the following ${purgedList.length} users have been removed:`,
+            title: `Order 66 Complete - ${numberOfUsers} users have been removed.`,
             color: 'GREEN',
           });
-          await interaction.editReply('https://tenor.com/view/palpatine-star-wars-emperor-do-it-go-for-it-gif-17446081');
-          await interaction.followUp({
+          await interaction.editReply({
+            content: 'https://tenor.com/view/palpatine-star-wars-emperor-do-it-go-for-it-gif-17446081',
             embeds: [embed],
           });
-          await interaction.followUp({ files: [fileAttachment] });
-          const failedEmbed = new MessageEmbed({
-            title: `The following members were not able to be notified of their removal:`,
-            description: failedList.join(', '),
-          });
-          await interaction.followUp({ embeds: [failedEmbed] });
-
-          await unlinkSync('./purgelist.txt');
         } else {
           const embed = new MessageEmbed({
             title: `No purge-eligible members were found.`,
@@ -198,8 +183,6 @@ module.exports = {
         }
       }
     }
-
-    // ---------- CONFIG TESTRECRUIT ---------- //
 
     if (sub === 'testrecruit') {
       await interaction.reply('Creating test recruitment thread, please wait...');
@@ -245,8 +228,6 @@ module.exports = {
 
       return interaction.editReply(`Test recruitment thread has been created.`);
     }
-
-    // ---------- CONFIG TWINFO ---------- //
 
     if (sub === 'twinfo') {
       await interaction.deferReply({ ephemeral: true });
