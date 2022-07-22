@@ -30,8 +30,6 @@ module.exports = {
     const parsedAllyCode = await parseAllyCode(await interaction.options.getString('allycode'));
     if (parsedAllyCode instanceof Error) return interaction.editReply(parsedAllyCode.message);
 
-    const showActivity = await interaction.options.getBoolean('showactivity');
-
     const comlinkData = await fetchComlink(parsedAllyCode);
     if (!comlinkData) return interaction.editReply('Unable to fetch account/guild information.');
 
@@ -70,5 +68,47 @@ module.exports = {
     }).setTimestamp(guildData.data.last_sync);
 
     await interaction.editReply({ embeds: [guildInfoEmbed] });
+
+    if (await interaction.options.getBoolean('showactivity')) {
+      let i = 1;
+      const progressMessage = await interaction.followUp(
+        `Generating activity report. Please wait... Progress: ${i}/${guildData.data.member_count}`
+      );
+      const playerActivity = [];
+
+      for (const member of guildData.data.members) {
+        if (i % 5 === 0)
+          await progressMessage.edit(
+            `Generating activity report. Please wait... Progress: ${i}/${guildData.data.member_count}`
+          );
+
+        const memberData = await fetchComlink(`${member.ally_code}`);
+        if (!memberData) continue;
+
+        playerActivity.push({
+          name: memberData.name,
+          time: memberData.lastActivityTime,
+        });
+
+        i++;
+      }
+
+      playerActivity.sort(function (a, b) {
+        if (a.time < b.time) return -1;
+        if (a.time > b.time) return 1;
+        if (a.time === b.time) return 0;
+      });
+
+      const activityDisplay = [];
+      for (const data of playerActivity) {
+        activityDisplay.push(`${data.name}: <t:${Math.floor(data.time / 1000)}:R>`);
+      }
+
+      const activityEmbed = new MessageEmbed({
+        title: `Last Player Activity: ${guildData.data.name}`,
+        description: activityDisplay.join('\n'),
+      });
+      await progressMessage.edit({ content: 'Activity report generated.', embeds: [activityEmbed] });
+    }
   },
 };
