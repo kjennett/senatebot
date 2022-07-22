@@ -78,7 +78,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
         twOmisLearned.sort();
 
         if (tbOmisLearned.length) tbOmis.push(`__${unit.data.name}__\n${tbOmisLearned.join('\n')}`);
-        if (twOmisLearned.length) twOmis.push(`__${unit.data.name}__\n${tbOmisLearned.join('\n')}`);
+        if (twOmisLearned.length) twOmis.push(`__${unit.data.name}__\n${twOmisLearned.join('\n')}`);
       }
     }
 
