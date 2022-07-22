@@ -1,12 +1,12 @@
+const { MessageEmbed } = require('discord.js');
 const { client } = require('../client');
-const { newEmbed } = require('./newEmbed');
 const { config } = require('../config');
 const { db } = require('../database');
 
 const priorityBoard = async () => {
   const allTierEmbeds = [];
 
-  const titleEmbed = newEmbed()
+  const titleEmbed = new MessageEmbed()
     .setTitle('__Current Tier Priority__')
     .setDescription('Last Recruit Time > Alphabetical\nUpdated automatically every 5 minutes.')
     .setTimestamp();
@@ -14,7 +14,7 @@ const priorityBoard = async () => {
 
   const tiers = await db.collection('tiers').find().sort({ number: -1 }).toArray();
   for (const tier of tiers) {
-    const tierEmbed = newEmbed().setTitle(`__Tier ${tier.number}__`);
+    const tierEmbed = new MessageEmbed().setTitle(`__Tier ${tier.number}__`);
 
     const guildsInTier = await db
       .collection('guilds')

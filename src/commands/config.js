@@ -6,7 +6,6 @@ const { MessageAttachment, MessageEmbed } = require('discord.js');
 const { fetchHelp } = require('../functions/fetchPlayerData');
 const { generateAccountSummary } = require('../functions/generateAccountSummary');
 const { generateTierPriority } = require('../functions/generateTierPriority');
-const { newEmbed } = require('../functions/newEmbed');
 
 const restartSubcommand = new SlashCommandSubcommandBuilder()
   .setName('restart')
@@ -237,7 +236,7 @@ module.exports = {
         .findOne({ start: { $lte: Date.now() }, end: { $gte: Date.now() } });
       if (!currentPhase) return interaction.editReply('A current TW phase is not in progress.');
 
-      const embed = newEmbed()
+      const embed = new MessageEmbed()
         .setTitle('Current TW Phase:')
         .setDescription(currentPhase.event)
         .addFields([

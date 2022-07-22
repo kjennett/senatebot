@@ -1,7 +1,6 @@
 const { roleMention, userMention, hyperlink } = require('@discordjs/builders');
-const { MessageActionRow, MessageSelectMenu, MessageAttachment } = require('discord.js');
+const { MessageActionRow, MessageSelectMenu, MessageAttachment, MessageEmbed } = require('discord.js');
 const { config } = require('../config');
-const { newEmbed } = require('../functions/newEmbed');
 const Jimp = require('jimp');
 
 module.exports = {
@@ -41,8 +40,7 @@ module.exports = {
       components: [serverJoinMenu],
     });
 
-    const embed = newEmbed();
-    embed
+    const embed = new MessageEmbed()
       .setTitle(`New User: ${member.user.username}`)
       .addField('Landing Bay Link:', `${hyperlink(`Welcome Menu Post: ${member.user.username}`, welcomeMenu.url)}`);
 

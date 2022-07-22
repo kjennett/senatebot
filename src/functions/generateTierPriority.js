@@ -1,5 +1,5 @@
 const { db } = require('../database');
-const { newEmbed } = require('./newEmbed');
+const { MessageEmbed } = require('discord.js');
 
 exports.generateTierPriority = async parsedAllyCode => {
   const recruit = await db.collection('recruits').findOne({ ally_code: parsedAllyCode });
@@ -9,7 +9,7 @@ exports.generateTierPriority = async parsedAllyCode => {
     .sort({ last_recruit_time: 1, name: 1 })
     .toArray();
 
-  const embed = newEmbed().setTitle(`Tier ${recruit.tier} Priority:`).setTimestamp();
+  const embed = new MessageEmbed().setTitle(`Tier ${recruit.tier} Priority:`).setTimestamp();
 
   let i = 1;
   for (const guild of guildsInTier) {

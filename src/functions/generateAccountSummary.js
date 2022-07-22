@@ -1,16 +1,15 @@
 const { config } = require('../config');
 const { db } = require('../database');
 const { client } = require('../client');
-const { newEmbed } = require('./newEmbed');
 const { fetchGG, fetchHelp, fetchOmega } = require('./fetchPlayerData');
-const { MessageAttachment } = require('discord.js');
+const { MessageAttachment, MessageEmbed } = require('discord.js');
 
 const legends = Object.keys(config.galacticLegends);
 const capships = Object.keys(config.capitalShips);
 
 exports.generateAccountSummary = async parsedAllyCode => {
   let playerData = await fetchGG(parsedAllyCode);
-  const accountSummaryEmbed = await newEmbed();
+  const accountSummaryEmbed = new MessageEmbed();
   accountSummaryEmbed.setDescription(`Ally Code: ${parsedAllyCode}`);
 
   if (playerData) {
@@ -88,7 +87,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
       .addField(`TB Omicrons: ${numberOfTBOmis}`, tbOmis.join('\n'))
       .addField('SWGOH.gg Profile:', `https://swgoh.gg/p/${parsedAllyCode}`);
 
-    const modSummaryEmbed = await newEmbed()
+    const modSummaryEmbed = new MessageEmbed()
       .setTitle(`Mod Data: ${playerData.data.name}`)
       .setFooter({ text: '', iconURL: '' });
 

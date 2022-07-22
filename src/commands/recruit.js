@@ -1,11 +1,11 @@
 const { SlashCommandBuilder, roleMention, userMention } = require('@discordjs/builders');
-const { newEmbed } = require('../functions/newEmbed');
 const { parseAllyCode } = require('../functions/parseAllyCode');
 const { config } = require('../config');
 const { fetchHelp } = require('../functions/fetchPlayerData');
 const { generateAccountSummary } = require('../functions/generateAccountSummary');
 const { generateTierPriority } = require('../functions/generateTierPriority');
 const { db } = require('../database');
+const { MessageEmbed } = require('discord.js');
 
 async function findStartingTier(gp) {
   const result = await db.collection('tiers').findOne({
@@ -149,7 +149,7 @@ module.exports = {
       const summaryMessage = await thread.send(accountSummary);
 
       if (notes) {
-        const notesEmbed = await newEmbed()
+        const notesEmbed = new MessageEmbed()
           .setTitle('Recruitment Notes')
           .setDescription(notes)
           .setFooter({ text: '', iconURL: '' });
@@ -216,7 +216,7 @@ module.exports = {
       const summaryMessage = await thread.send(accountSummary);
 
       if (notes) {
-        const notesEmbed = await newEmbed()
+        const notesEmbed = new MessageEmbed()
           .setTitle('Recruitment Notes')
           .setDescription(notes)
           .setFooter({ text: '', iconURL: '' });
