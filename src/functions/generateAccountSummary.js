@@ -65,6 +65,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
         for (const ability of unit.data.ability_data) {
           if (ability.has_omicron_learned) {
             const omiResult = await db.collection('abilities').findOne({ base_id: ability.id });
+            if (!omiResult) continue;
             if (omiResult.omicron_mode === 7) {
               tbOmisLearned.push(` - ${ability.name} ${omiEmoji}`);
             }
