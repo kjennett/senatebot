@@ -146,15 +146,14 @@ module.exports = {
         autoArchiveDuration: 10080,
       });
       await thread.join();
-      const summaryMessage = await thread.send(accountSummary);
+      await thread.send(accountSummary);
 
       if (notes) {
         const notesEmbed = new MessageEmbed()
           .setTitle('Recruitment Notes')
           .setDescription(notes)
           .setFooter({ text: '', iconURL: '' });
-        const notesMessage = await thread.send({ embeds: [notesEmbed] });
-        await notesMessage.pin();
+        await thread.send({ embeds: [notesEmbed] });
       }
 
       const priorityMessage = await thread.send('Tier Priority:');
@@ -170,9 +169,6 @@ module.exports = {
 
       const priorityEmbed = await generateTierPriority(parsedAllyCode);
       await priorityMessage.edit(priorityEmbed);
-
-      await summaryMessage.pin();
-      await priorityMessage.pin();
 
       await thread.send(roleMention(tier.recruiter_role_id));
 
