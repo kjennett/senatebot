@@ -82,7 +82,7 @@ module.exports = {
         if (selected === 'merger') {
           embed.setDescription('is here to __discuss a merger__');
           await art.send({
-            content: `${roleMention(config.roles.allianceRecruitment)}`,
+            content: `${roleMention(config.roles.allianceRecruitmentTeam)}`,
             embeds: [embed],
           });
           await recruitment.send(

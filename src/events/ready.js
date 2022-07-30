@@ -1,4 +1,3 @@
-const { log } = require('../log');
 const { MessageEmbed } = require('discord.js');
 const { client } = require('../client');
 
@@ -17,6 +16,6 @@ module.exports = {
     const owner = await client.users.fetch(process.env.OWNER);
     await owner.send({ embeds: [embed] });
 
-    log.info('Startup complete!');
+    console.info('Startup complete!');
   },
 };

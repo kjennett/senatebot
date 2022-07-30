@@ -1,34 +1,4 @@
-const galacticLegends = [
-  'SITHPALPATINE',
-  'GLREY',
-  'SUPREMELEADERKYLOREN',
-  'GRANDMASTERLUKE',
-  'JEDIMASTERKENOBI',
-  'LORDVADER',
-];
-
-const capitalShips = [
-  'CAPITALSTARDESTROYER',
-  'CAPITALMONCALAMARICRUISER',
-  'CAPITALJEDICRUISER',
-  'CAPITALEXECUTOR',
-  'CAPITALNEGOTIATOR',
-  'CAPITALMALEVOLENCE',
-  'CAPITALCHIMAERA',
-  'CAPITALRADDUS',
-  'CAPITALFINALIZER',
-];
-
-const conquestCharacters = ['COMMANDERAHSOKA', 'MAULS7', 'BOBAFETTSCION', 'DARTHMALGUS'];
-
-const conquestShips = ['TIEINTERCEPTOR', 'RAZORCREST'];
-
-const omicronModes = {
-  TB: 7,
-  TW: 8,
-  GAC: 9,
-  GAC3v3: 14,
-};
+const { MessageEmbed } = require('discord.js');
 
 const devConfig = {
   channels: {
@@ -45,11 +15,6 @@ const devConfig = {
     recruitment: '954525945438564402',
     allianceRecruitmentTeam: '954525945438564402',
   },
-  galacticLegends: galacticLegends,
-  capitalShips: capitalShips,
-  conquestCharacters: conquestCharacters,
-  conquestShips: conquestShips,
-  omicronModes: omicronModes,
 };
 
 const prodConfig = {
@@ -67,11 +32,65 @@ const prodConfig = {
     recruitment: '518434369455783936',
     allianceRecruitmentTeam: '907820888244781076',
   },
-  galacticLegends: galacticLegends,
-  capitalShips: capitalShips,
-  conquestCharacters: conquestCharacters,
-  conquestShips: conquestShips,
-  omicronModes: omicronModes,
 };
 
-exports.config = process.env.NODE_ENV === 'production' ? prodConfig : devConfig;
+class SenateBotConfig {
+  owner = process.env.OWNER;
+  token = process.env.TOKEN;
+  server = process.env.SERVER;
+  client = process.env.CLIENT;
+  db = process.env.DB;
+  senateLogo = process.env.SENATELOGO;
+
+  galacticLegends = ['SITHPALPATINE', 'GLREY', 'SUPREMELEADERKYLOREN', 'GRANDMASTERLUKE', 'JEDIMASTERKENOBI', 'LORDVADER'];
+
+  capitalShips = [
+    'CAPITALSTARDESTROYER',
+    'CAPITALMONCALAMARICRUISER',
+    'CAPITALJEDICRUISER',
+    'CAPITALEXECUTOR',
+    'CAPITALNEGOTIATOR',
+    'CAPITALMALEVOLENCE',
+    'CAPITALCHIMAERA',
+    'CAPITALRADDUS',
+    'CAPITALFINALIZER',
+  ];
+
+  conquestCharacters = ['COMMANDERAHSOKA', 'MAULS7', 'BOBAFETTSCION', 'DARTHMALGUS'];
+
+  conquestShips = ['TIEINTERCEPTOR', 'RAZORCREST'];
+
+  omicronModes = {
+    TB: 7,
+    TW: 8,
+    GAC: 9,
+    GAC3v3: 14,
+  };
+
+  channels = process.env.NODE_ENV === 'production' ? prodConfig.channels : devConfig.channels;
+  roles = process.env.NODE_ENV === 'production' ? prodConfig.roles : devConfig.roles;
+
+  errorEmbeds = {
+    adminOnly: new MessageEmbed({
+      title: 'This command is usable by the bot administrator only.',
+      color: 'RED',
+    }),
+    allyCodeParseFailure: new MessageEmbed({
+      title: 'Unable to parse ally code from the provided input. Please try again.',
+      color: 'RED',
+    }),
+    recruitThreadAlreadyExists: new MessageEmbed({
+      title: 'A recruitment thread for this ally code already exists.',
+      color: 'RED',
+    }),
+  };
+
+  successEmbeds = {
+    restart: new MessageEmbed({
+      title: 'Restarting...',
+      color: 'GREEN',
+    }),
+  };
+}
+
+exports.config = new SenateBotConfig();
