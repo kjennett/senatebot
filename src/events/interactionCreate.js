@@ -14,31 +14,35 @@ module.exports = {
           value.name?.toLowerCase().includes(focused.value) ||
           value.abbr?.includes(focused.value) ||
           value.abbr?.toLowerCase().includes(focused.value)
-        )
+        ) {
           return true;
-        return false;
+        } else {
+          return false;
+        }
       }
 
-      if (focused.name === 'guildname') {
+      if (focused.name === 'guild') {
         const choices = await db.collection('guilds').find().sort({ name: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
-        await interaction.respond(
-          filtered.map(choice => ({
-            name: `${choice.name} (${choice.abbr})`,
-            value: choice.name,
-          }))
-        );
+        if (filtered.length < 25)
+          return interaction.respond(
+            filtered.map(choice => ({
+              name: `${choice.name} (${choice.abbr})`,
+              value: choice.name,
+            }))
+          );
       }
 
-      if (focused.name === 'tiernumber') {
+      if (focused.name === 'tier') {
         const choices = await db.collection('tiers').find().sort({ number: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
-        await interaction.respond(
-          filtered.map(choice => ({
-            name: `Tier ${choice.number}`,
-            value: choice.number,
-          }))
-        );
+        if (filtered.length < 25)
+          return interaction.respond(
+            filtered.map(choice => ({
+              name: `Tier ${choice.number}`,
+              value: choice.number,
+            }))
+          );
       }
 
       if (focused.name === 'abilityname') {
