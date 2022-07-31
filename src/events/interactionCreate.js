@@ -10,10 +10,10 @@ module.exports = {
       function isIncluded(value) {
         if (
           focused.value === '' ||
-          value.name.includes(focused.value) ||
-          value.name.toLowerCase().includes(focused.value) ||
-          value.abbr.includes(focused.value) ||
-          value.abbr.toLowerCase().includes(focused.value)
+          value.name?.includes(focused.value) ||
+          value.name?.toLowerCase().includes(focused.value) ||
+          value.abbr?.includes(focused.value) ||
+          value.abbr?.toLowerCase().includes(focused.value)
         )
           return true;
         return false;
@@ -39,6 +39,18 @@ module.exports = {
             value: choice.number,
           }))
         );
+      }
+
+      if (focused.name === 'abilityname') {
+        const choices = await db.collection('abilities').find().sort({ name: 1 }).toArray();
+        const filtered = await choices.filter(isIncluded);
+        if (filtered.length < 25)
+          return interaction.respond(
+            filtered.map(choice => ({
+              name: `${choice.name} (${choice.character_base_id ?? choice.ship_base_id})`,
+              value: choice.base_id,
+            }))
+          );
       }
     }
 

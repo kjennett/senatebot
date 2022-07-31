@@ -83,6 +83,10 @@ class SenateBotConfig {
       title: 'A recruitment thread for this ally code already exists.',
       color: 'RED',
     }),
+    noAbilityFound: new MessageEmbed({
+      title: 'An ability with that name was not found.',
+      color: 'RED',
+    }),
   };
 
   successEmbeds = {
