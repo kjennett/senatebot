@@ -53,10 +53,10 @@ module.exports = {
       const zeta = ability.is_zeta ? zetaEmoji : '';
       const omi = ability.is_omicron ? omiEmoji : '';
       let abilityType;
-      if (ability.base_id.startsWith('special')) abilityType = 'Special';
-      if (ability.base_id.startsWith('basic')) abilityType = 'Basic';
-      if (ability.base_id.startsWith('unique')) abilityType = 'Unique';
-      if (ability.base_id.startsWith('leader')) abilityType = 'Leader';
+      if (ability.base_id.includes('special')) abilityType = 'Special';
+      if (ability.base_id.includes('basic')) abilityType = 'Basic';
+      if (ability.base_id.includes('unique')) abilityType = 'Unique';
+      if (ability.base_id.includes('leader')) abilityType = 'Leader';
 
       const infoEmbed = new MessageEmbed()
         .setTitle(`Ability: ${ability.name} ${zeta} ${omi}`)
@@ -92,10 +92,10 @@ module.exports = {
         const zeta = ability.is_zeta ? zetaEmoji : '';
         const omi = ability.is_omicron ? omiEmoji : '';
         let abilityType;
-        if (ability.base_id.contains('special')) abilityType = 'Special';
-        if (ability.base_id.contains('basic')) abilityType = 'Basic';
-        if (ability.base_id.contains('unique')) abilityType = 'Unique';
-        if (ability.base_id.contains('leader')) abilityType = 'Leader';
+        if (ability.base_id.includes('special')) abilityType = 'Special';
+        if (ability.base_id.includes('basic')) abilityType = 'Basic';
+        if (ability.base_id.includes('unique')) abilityType = 'Unique';
+        if (ability.base_id.includes('leader')) abilityType = 'Leader';
 
         infoEmbed.addField(`${abilityType} Ability`, `${ability.name} ${zeta} ${omi}`);
       }
