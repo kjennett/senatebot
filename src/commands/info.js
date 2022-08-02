@@ -119,7 +119,7 @@ module.exports = {
 
     if (sub === 'ship') {
       const shipId = await interaction.options.getString('shipname');
-      const ship = await db.collection('characters').findOne({ base_id: shipId });
+      const ship = await db.collection('ships').findOne({ base_id: shipId });
       if (!shipId || !ship) return interaction.editReply({ embeds: [config.errorEmbeds.noShipFound] });
 
       const abilities = await db.collection('abilities').find({ ship_base_id: shipId }).sort({ base_id: 1 }).toArray();
