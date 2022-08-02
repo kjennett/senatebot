@@ -125,7 +125,7 @@ module.exports = {
       const abilities = await db.collection('abilities').find({ ship_base_id: shipId }).sort({ base_id: 1 }).toArray();
 
       const infoEmbed = new MessageEmbed()
-        .setTitle(`Character: ${ship.name}`)
+        .setTitle(`Ship: ${ship.name}`)
         .setURL(ship.url)
         .setDescription(ship.description)
         .setThumbnail(ship.image)
@@ -138,6 +138,7 @@ module.exports = {
         if (ability.base_id.includes('unique')) abilityType = 'Unique';
         if (ability.base_id.includes('leader')) abilityType = 'Leader';
         if (ability.base_id.includes('granted')) abilityType = 'Granted';
+        if (ability.base_id.includes('hardware')) abilityType = 'Hardware';
 
         infoEmbed.addField(`${abilityType} Ability`, `${ability.name}`, true);
       }
