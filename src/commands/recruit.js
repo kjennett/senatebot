@@ -17,7 +17,6 @@ async function findStartingTier(gp) {
 
 module.exports = {
   enabled: true,
-  hidden: false,
 
   data: new SlashCommandBuilder()
     .setName('recruit')

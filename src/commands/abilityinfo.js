@@ -5,7 +5,6 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
   enabled: true,
-  hidden: false,
 
   data: new SlashCommandBuilder()
     .setName('abilityinfo')
@@ -43,7 +42,7 @@ module.exports = {
     const infoEmbed = new MessageEmbed()
       .setTitle(`Ability: ${ability.name} ${zeta}${omi}`)
       .setThumbnail(ability.image)
-      .setDescription(`__${unit.name} ${abilityType} Ability__\n\n${ability.description}`);
+      .setDescription(`${unit.name} ${abilityType} Ability\n\n${ability.description.replace(/\[.{6}\]/gm, '')}`);
 
     return interaction.editReply({ embeds: [infoEmbed] });
   },

@@ -25,7 +25,7 @@ module.exports = {
         const choices = await db.collection('guilds').find().sort({ name: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
         if (filtered.length < 25)
-          return interaction.respond(
+          await interaction.respond(
             filtered.map(choice => ({
               name: `${choice.name} (${choice.abbr})`,
               value: choice.name,
@@ -37,7 +37,7 @@ module.exports = {
         const choices = await db.collection('tiers').find().sort({ number: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
         if (filtered.length < 25)
-          return interaction.respond(
+          await interaction.respond(
             filtered.map(choice => ({
               name: `Tier ${choice.number}`,
               value: choice.number,
@@ -49,7 +49,7 @@ module.exports = {
         const choices = await db.collection('abilities').find().sort({ name: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
         if (filtered.length < 25)
-          return interaction.respond(
+          await interaction.respond(
             filtered.map(choice => ({
               name: `${choice.name} (${choice.character_base_id ?? choice.ship_base_id})`,
               value: choice.base_id,

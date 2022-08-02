@@ -18,7 +18,6 @@ const reportSubcommand = new SlashCommandSubcommandBuilder()
 
 module.exports = {
   enabled: true,
-  hidden: false,
 
   data: new SlashCommandBuilder()
     .setName('guild')

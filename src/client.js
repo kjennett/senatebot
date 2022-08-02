@@ -4,13 +4,18 @@ const { Routes } = require('discord-api-types/v10');
 const { readdirSync } = require('fs');
 const { join } = require('path');
 
+const { TOKEN, SERVER, CLIENT } = process.env;
+
+const eventsDir = join(__dirname, './events');
+const commandsDir = join(__dirname, './commands');
+
 class SenateBotClient extends Client {
   commands = new Collection();
 
   registerEventHandlers = () => {
-    const eventFiles = readdirSync(join(__dirname, './events'));
+    const eventFiles = readdirSync(eventsDir);
     for (const file of eventFiles) {
-      const event = require(join(__dirname, `./events/${file}`));
+      const event = require(`${eventsDir}/${file}`);
       if (!event.name) {
         console.info(`Event handler ${file} is missing required property 'name'.`);
         continue;
@@ -20,28 +25,21 @@ class SenateBotClient extends Client {
   };
 
   deployApplicationCommands = () => {
-    this.commands.clear();
     const commandData = [];
-    const commandFiles = readdirSync(join(__dirname, './commands'));
+    const commandFiles = readdirSync(commandsDir);
     for (const file of commandFiles) {
-      const commandModule = require(join(__dirname, `./commands/${file}`));
+      const commandModule = require(`${commandsDir}/${file}`);
       if (commandModule.enabled) {
         commandData.push(commandModule.data.toJSON());
         this.commands.set(commandModule.data.name, commandModule);
       }
     }
-    const rest = new REST({ version: 10 }).setToken(process.env.TOKEN);
-    return rest.put(Routes.applicationGuildCommands(process.env.CLIENT, process.env.SERVER), { body: commandData });
-  };
-
-  start = async () => {
-    await this.registerEventHandlers();
-    await this.deployApplicationCommands();
-    await this.login(process.env.TOKEN);
+    const rest = new REST({ version: 10 }).setToken(TOKEN);
+    return rest.put(Routes.applicationGuildCommands(CLIENT, SERVER), { body: commandData });
   };
 
   constructor() {
-    super({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS] });
+    super({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS] });
   }
 }
 

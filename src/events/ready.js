@@ -15,7 +15,5 @@ module.exports = {
 
     const owner = await client.users.fetch(process.env.OWNER);
     await owner.send({ embeds: [embed] });
-
-    console.info('Startup complete!');
   },
 };

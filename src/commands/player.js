@@ -12,7 +12,6 @@ const reportSubcommand = new SlashCommandSubcommandBuilder()
 
 module.exports = {
   enabled: true,
-  hidden: false,
 
   // ---------- COMMAND DATA ---------- //
   data: new SlashCommandBuilder()

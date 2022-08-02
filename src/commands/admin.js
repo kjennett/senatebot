@@ -28,7 +28,6 @@ const order66Subcommand = new SlashCommandSubcommandBuilder()
 
 module.exports = {
   enabled: true,
-  hidden: false,
 
   data: new SlashCommandBuilder()
     .setName('admin')
