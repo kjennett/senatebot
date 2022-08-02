@@ -364,17 +364,10 @@ module.exports = {
       return await interaction.editReply('Decision entered.');
     }
 
-    // ---------- RECRUIT NEXTTIER ---------- //
-
     if (sub === 'nexttier') {
       const newTier = await interaction.options.getInteger('tier');
       if (recruit.tier === 1 && !newTier)
         return interaction.editReply('This recruit is already in Tier 1, the lowest available tier.');
-
-      const numberOfGuilds = await db.collection('guilds').countDocuments({ tier: recruit.tier });
-      const numberOfDecisions = await db.collection('decisions').countDocuments({ ally_code: recruit.ally_code });
-      if (numberOfGuilds !== numberOfDecisions)
-        return interaction.editReply('All guilds in this tier must enter a decision before the tier can be changed.');
 
       await db.collection('decisions').deleteMany({ ally_code: recruit.ally_code });
       await db
