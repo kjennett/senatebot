@@ -32,6 +32,18 @@ module.exports = {
             .setAutocomplete(true)
             .setRequired(true)
         )
+    )
+    .addSubcommand(sub3 =>
+      sub3
+        .setName('ship')
+        .setDescription('Information about an in-game ship.')
+        .addStringOption(option =>
+          option
+            .setName('shipname')
+            .setDescription('The name of the ship to fetch information about.')
+            .setAutocomplete(true)
+            .setRequired(true)
+        )
     ),
 
   async execute(interaction) {
@@ -99,7 +111,35 @@ module.exports = {
         if (ability.base_id.includes('leader')) abilityType = 'Leader';
         if (ability.base_id.includes('granted')) abilityType = 'Granted';
 
-        infoEmbed.addField(`${abilityType} Ability`, `${ability.name} ${zeta} ${omi}`);
+        infoEmbed.addField(`${abilityType} Ability`, `${ability.name} ${zeta} ${omi}`, true);
+      }
+
+      return interaction.editReply({ embeds: [infoEmbed] });
+    }
+
+    if (sub === 'ship') {
+      const shipId = await interaction.options.getString('shipname');
+      const ship = await db.collection('characters').findOne({ base_id: shipId });
+      if (!shipId || !ship) return interaction.editReply({ embeds: [config.errorEmbeds.noShipFound] });
+
+      const abilities = await db.collection('abilities').find({ ship_base_id: shipId }).sort({ base_id: 1 }).toArray();
+
+      const infoEmbed = new MessageEmbed()
+        .setTitle(`Character: ${ship.name}`)
+        .setURL(ship.url)
+        .setDescription(ship.description)
+        .setThumbnail(ship.image)
+        .addField('Tags', ship.categories.join(', '));
+
+      for (const ability of abilities) {
+        let abilityType;
+        if (ability.base_id.includes('special')) abilityType = 'Special';
+        if (ability.base_id.includes('basic')) abilityType = 'Basic';
+        if (ability.base_id.includes('unique')) abilityType = 'Unique';
+        if (ability.base_id.includes('leader')) abilityType = 'Leader';
+        if (ability.base_id.includes('granted')) abilityType = 'Granted';
+
+        infoEmbed.addField(`${abilityType} Ability`, `${ability.name}`, true);
       }
 
       return interaction.editReply({ embeds: [infoEmbed] });

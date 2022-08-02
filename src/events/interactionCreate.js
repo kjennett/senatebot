@@ -63,6 +63,13 @@ module.exports = {
         if (filtered.length < 25)
           await interaction.respond(filtered.map(choice => ({ name: choice.name, value: choice.base_id })));
       }
+
+      if (focused.name === 'shipname') {
+        const choices = await db.collection('ships').find().sort({ name: 1 }).toArray();
+        const filtered = await choices.filter(isIncluded);
+        if (filtered.length < 25)
+          await interaction.respond(filtered.map(choice => ({ name: choice.name, value: choice.base_id })));
+      }
     }
 
     if (!interaction.isCommand()) return;

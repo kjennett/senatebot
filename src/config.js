@@ -88,7 +88,11 @@ class SenateBotConfig {
       color: 'RED',
     }),
     noCharacterFound: new MessageEmbed({
-      title: 'An character with that name was not found in the database.',
+      title: 'A character with that name was not found in the database.',
+      color: 'RED',
+    }),
+    noShipFound: new MessageEmbed({
+      title: 'A ship with that name was not found in the database.',
       color: 'RED',
     }),
   };
