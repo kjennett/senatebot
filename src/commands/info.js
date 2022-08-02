@@ -50,7 +50,7 @@ module.exports = {
         .setThumbnail(ability.image)
         .setDescription(`${unit.name} ${abilityType} Ability\n\n${ability.description.replace(/\[.{6}\]/gm, '')}`)
         .setFooter({
-          text: `SWGOH.GG (${ability.base_id}`,
+          text: `SWGOH.GG (${ability.base_id})`,
           url: `https:${ability.url}`,
         });
 
