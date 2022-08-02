@@ -49,10 +49,7 @@ module.exports = {
         .setTitle(`Ability: ${ability.name} ${zeta}${omi}`)
         .setThumbnail(ability.image)
         .setDescription(`${unit.name} ${abilityType} Ability\n\n${ability.description.replace(/\[.{6}\]/gm, '')}`)
-        .setFooter({
-          text: `SWGOH.GG (${ability.base_id})`,
-          url: `https:${ability.url}`,
-        });
+        .setURL(`https:${ability.url}`);
 
       return interaction.editReply({ embeds: [infoEmbed] });
     }
