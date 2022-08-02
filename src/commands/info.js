@@ -57,6 +57,7 @@ module.exports = {
       if (ability.base_id.includes('basic')) abilityType = 'Basic';
       if (ability.base_id.includes('unique')) abilityType = 'Unique';
       if (ability.base_id.includes('leader')) abilityType = 'Leader';
+      if (ability.base_id.includes('granted')) abilityType = 'Granted';
 
       const infoEmbed = new MessageEmbed()
         .setTitle(`Ability: ${ability.name} ${zeta} ${omi}`)
@@ -96,6 +97,7 @@ module.exports = {
         if (ability.base_id.includes('basic')) abilityType = 'Basic';
         if (ability.base_id.includes('unique')) abilityType = 'Unique';
         if (ability.base_id.includes('leader')) abilityType = 'Leader';
+        if (ability.base_id.includes('granted')) abilityType = 'Granted';
 
         infoEmbed.addField(`${abilityType} Ability`, `${ability.name} ${zeta} ${omi}`);
       }
