@@ -56,6 +56,13 @@ module.exports = {
             }))
           );
       }
+
+      if (focused.name === 'charactername') {
+        const choices = await db.collection('characters').find().sort({ name: 1 }).toArray();
+        const filtered = await choices.filter(isIncluded);
+        if (filtered.length < 25)
+          await interaction.respond(filtered.map(choice => ({ name: choice.name, value: choice.base_id })));
+      }
     }
 
     if (!interaction.isCommand()) return;
