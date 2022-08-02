@@ -84,7 +84,11 @@ class SenateBotConfig {
       color: 'RED',
     }),
     noAbilityFound: new MessageEmbed({
-      title: 'An ability with that name was not found.',
+      title: 'An ability with that name was not found in the database.',
+      color: 'RED',
+    }),
+    noCharacterFound: new MessageEmbed({
+      title: 'An character with that name was not found in the database.',
       color: 'RED',
     }),
   };
