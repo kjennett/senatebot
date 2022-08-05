@@ -95,11 +95,29 @@ class SenateBotConfig {
       title: 'A ship with that name was not found in the database.',
       color: 'RED',
     }),
+    channelNotThread: new MessageEmbed({ title: 'Please use this command inside a thread.', color: 'RED' }),
+    noKeepAliveFound: new MessageEmbed({
+      title:
+        'This thread was not previously registered for keep-alive. To register, use this command again with the __enabled__ option set to True.',
+      color: 'RED',
+    }),
   };
 
   successEmbeds = {
     restart: new MessageEmbed({
       title: 'Restarting...',
+      color: 'GREEN',
+    }),
+    keepAliveAlreadyOn: new MessageEmbed({
+      title: 'This thread is already registered for keep-alive.',
+      color: 'GREEN',
+    }),
+    keepAliveRegistered: new MessageEmbed({
+      title: 'This thread has been __registered__ for keep-alive.',
+      color: 'GREEN',
+    }),
+    keepAliveUnregistered: new MessageEmbed({
+      title: 'This thread has been __un-registered__ from keep-alive.',
       color: 'GREEN',
     }),
   };

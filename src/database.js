@@ -13,3 +13,4 @@ exports.dbShips = db.collection('ships');
 exports.dbDecisions = db.collection('decisions');
 exports.dbRecruits = db.collection('recruits');
 exports.dbPosts = db.collection('posts');
+exports.dbThreads = db.collection('threads');
