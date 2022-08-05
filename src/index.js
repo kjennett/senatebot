@@ -2,7 +2,6 @@ const { connectToDatabase } = require('./database');
 const { client } = require('./client');
 const { updatePriorityBoard } = require('./functions/updatePriorityBoard');
 const { updateGameData } = require('./functions/updateGameData');
-const { updateGameEvents } = require('./functions/updateGameEvents');
 
 const { TOKEN } = process.env;
 
@@ -13,7 +12,7 @@ async function startup() {
   await updateGameData();
   await Promise.all([client.registerEventHandlers(), client.deployApplicationCommands()]);
   await client.login(TOKEN);
-  await Promise.all([updatePriorityBoard(), updateGameEvents()]);
+  await updatePriorityBoard();
   console.info('------ SENATEBOT ONLINE ------');
 }
 

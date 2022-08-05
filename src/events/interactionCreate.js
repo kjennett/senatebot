@@ -1,4 +1,4 @@
-const { db } = require('../database');
+const { dbGuilds, dbTiers, dbAbilities, dbCharacters, dbShips } = require('../database');
 
 module.exports = {
   name: 'interactionCreate',
@@ -22,7 +22,7 @@ module.exports = {
       }
 
       if (focused.name === 'guild') {
-        const choices = await db.collection('guilds').find().sort({ name: 1 }).toArray();
+        const choices = await dbGuilds.find().sort({ name: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
         if (filtered.length < 25)
           await interaction.respond(
@@ -34,7 +34,7 @@ module.exports = {
       }
 
       if (focused.name === 'tier') {
-        const choices = await db.collection('tiers').find().sort({ number: 1 }).toArray();
+        const choices = await dbTiers.find().sort({ number: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
         if (filtered.length < 25)
           await interaction.respond(
@@ -46,7 +46,7 @@ module.exports = {
       }
 
       if (focused.name === 'abilityname') {
-        const choices = await db.collection('abilities').find().sort({ name: 1 }).toArray();
+        const choices = await dbAbilities.find().sort({ name: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
         if (filtered.length < 25)
           await interaction.respond(
@@ -58,14 +58,14 @@ module.exports = {
       }
 
       if (focused.name === 'charactername') {
-        const choices = await db.collection('characters').find().sort({ name: 1 }).toArray();
+        const choices = await dbCharacters.find().sort({ name: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
         if (filtered.length < 25)
           await interaction.respond(filtered.map(choice => ({ name: choice.name, value: choice.base_id })));
       }
 
       if (focused.name === 'shipname') {
-        const choices = await db.collection('ships').find().sort({ name: 1 }).toArray();
+        const choices = await dbShips.find().sort({ name: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
         if (filtered.length < 25)
           await interaction.respond(filtered.map(choice => ({ name: choice.name, value: choice.base_id })));

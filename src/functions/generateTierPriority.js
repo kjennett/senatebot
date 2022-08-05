@@ -1,19 +1,15 @@
-const { db } = require('../database');
+const { dbDecisions, dbRecruits, dbGuilds } = require('../database');
 const { MessageEmbed } = require('discord.js');
 
 exports.generateTierPriority = async parsedAllyCode => {
-  const recruit = await db.collection('recruits').findOne({ ally_code: parsedAllyCode });
-  const guildsInTier = await db
-    .collection('guilds')
-    .find({ tier: recruit.tier })
-    .sort({ last_recruit_time: 1, name: 1 })
-    .toArray();
+  const recruit = await dbRecruits.findOne({ ally_code: parsedAllyCode });
+  const guildsInTier = await dbGuilds.find({ tier: recruit.tier }).sort({ last_recruit_time: 1, name: 1 }).toArray();
 
   const embed = new MessageEmbed().setTitle(`Tier ${recruit.tier} Priority:`).setTimestamp();
 
   let i = 1;
   for (const guild of guildsInTier) {
-    const decision = await db.collection('decisions').findOne({ ally_code: parsedAllyCode, guild: guild.name });
+    const decision = await dbDecisions.findOne({ ally_code: parsedAllyCode, guild: guild.name });
 
     let dec;
     if (!decision) dec = 'No Decision Entered :grey_question:';

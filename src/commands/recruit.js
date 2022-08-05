@@ -4,11 +4,11 @@ const { config } = require('../config');
 const { fetchHelp } = require('../functions/fetchPlayerData');
 const { generateAccountSummary } = require('../functions/generateAccountSummary');
 const { generateTierPriority } = require('../functions/generateTierPriority');
-const { db } = require('../database');
+const { dbTiers, dbRecruits, dbGuilds, dbDecisions } = require('../database');
 const { MessageEmbed } = require('discord.js');
 
 async function findStartingTier(gp) {
-  const result = await db.collection('tiers').findOne({
+  const result = await dbTiers.findOne({
     maximum_gp: { $gte: gp },
     minimum_gp: { $lte: gp },
   });
@@ -127,7 +127,7 @@ module.exports = {
       const parsedAllyCode = parseAllyCode(allycode);
       if (parsedAllyCode instanceof Error) return interaction.editReply(parsedAllyCode.message);
 
-      if (await db.collection('recruits').countDocuments({ ally_code: parsedAllyCode }))
+      if (await dbRecruits.countDocuments({ ally_code: parsedAllyCode }))
         return interaction.editReply(`This ally code is already registered for recruitment!`);
 
       const playerData = await fetchHelp(parsedAllyCode);
@@ -135,7 +135,7 @@ module.exports = {
         return interaction.editReply('Unable to fetch account information. Please verify ally code and try again!');
       const gp = playerData.stats[0].value;
       const startingTier = await findStartingTier(gp);
-      const tier = await db.collection('tiers').findOne({ number: startingTier });
+      const tier = await dbTiers.findOne({ number: startingTier });
 
       const accountSummary = await generateAccountSummary(parsedAllyCode);
 
@@ -157,7 +157,7 @@ module.exports = {
 
       const priorityMessage = await thread.send('Tier Priority:');
 
-      await db.collection('recruits').insertOne({
+      await dbRecruits.insertOne({
         ally_code: parsedAllyCode,
         discord_name: discorduser.username,
         discord_user_id: discorduser.id,
@@ -187,7 +187,7 @@ module.exports = {
       const parsedAllyCode = parseAllyCode(allycode);
       if (!parsedAllyCode) return interaction.editReply('Error parsing ally code. Please try again!');
 
-      if (await db.collection('recruits').countDocuments({ ally_code: parsedAllyCode }))
+      if (await dbRecruits.countDocuments({ ally_code: parsedAllyCode }))
         return interaction.editReply(`A recruit thread for ally code ${parsedAllyCode} already exists!`);
 
       await interaction.editReply(
@@ -199,7 +199,7 @@ module.exports = {
         return interaction.editReply('Unable to fetch account information. Please verify ally code and try again!');
       const gp = playerData.stats[0].value;
       const startingTier = await findStartingTier(gp);
-      const tier = await db.collection('tiers').findOne({ number: startingTier });
+      const tier = await dbTiers.findOne({ number: startingTier });
 
       const accountSummary = await generateAccountSummary(parsedAllyCode);
 
@@ -221,7 +221,7 @@ module.exports = {
 
       const priorityMessage = await thread.send('Tier Priority:');
 
-      await db.collection('recruits').insertOne({
+      await dbRecruits.insertOne({
         ally_code: parsedAllyCode,
         discord_name: discorduser.username,
         discord_user_id: discorduser.id,
@@ -242,14 +242,14 @@ module.exports = {
       );
     }
 
-    const recruit = await db.collection('recruits').findOne({ thread_id: interaction.channel.id });
+    const recruit = await dbRecruits.findOne({ thread_id: interaction.channel.id });
     if (!recruit) return interaction.editReply('Please use this command in an active recruit thread.');
 
     // ---------- RECRUIT INTERESTED ---------- //
 
     if (sub === 'interested') {
       const guild = await interaction.options.getString('guild');
-      const guildResult = await db.collection('guilds').findOne({ name: guild });
+      const guildResult = await dbGuilds.findOne({ name: guild });
       if (!guildResult)
         return interaction.editReply(
           'A guild with that name was not found. Please select a guild name from the auto-complete list and try again!'
@@ -259,9 +259,9 @@ module.exports = {
       if (!interaction.member.roles.cache.has(guildResult.recruiter_role_id))
         return interaction.editReply(`You must have the ${guild} Recruiter role to enter decisions for ${guild}.`);
 
-      const decisionResult = await db.collection('decisions').findOne({ ally_code: recruit.ally_code, guild: guild });
+      const decisionResult = await dbDecisions.findOne({ ally_code: recruit.ally_code, guild: guild });
       if (!decisionResult) {
-        await db.collection('decisions').insertOne({
+        await dbDecisions.insertOne({
           ally_code: recruit.ally_code,
           guild: guild,
           decision: 'Interested',
@@ -287,12 +287,10 @@ module.exports = {
         );
       }
 
-      await db
-        .collection('decisions')
-        .updateOne(
-          { ally_code: recruit.ally_code, guild: guild },
-          { $set: { decision: 'Interested', entered_by: interaction.member.id } }
-        );
+      await dbDecisions.updateOne(
+        { ally_code: recruit.ally_code, guild: guild },
+        { $set: { decision: 'Interested', entered_by: interaction.member.id } }
+      );
 
       const priorityMessage = await interaction.channel.messages.fetch(recruit.priority_message_id);
       const updatedTierPriority = await generateTierPriority(recruit.ally_code);
@@ -306,7 +304,7 @@ module.exports = {
     if (sub === 'pass') {
       const guild = await interaction.options.getString('guild');
       const comments = await interaction.options.getString('comments');
-      const guildResult = await db.collection('guilds').findOne({ name: guild });
+      const guildResult = await dbGuilds.findOne({ name: guild });
       if (!guildResult)
         return interaction.editReply(
           'A guild with that name was not found. Please select a guild name from the auto-complete list and try again!'
@@ -316,9 +314,9 @@ module.exports = {
       if (!interaction.member.roles.cache.has(guildResult.recruiter_role_id))
         return interaction.editReply(`You must have the ${guild} Recruiter role to enter decisions for ${guild}.`);
 
-      const decisionResult = await db.collection('decisions').findOne({ ally_code: recruit.ally_code, guild: guild });
+      const decisionResult = await dbDecisions.findOne({ ally_code: recruit.ally_code, guild: guild });
       if (!decisionResult) {
-        await db.collection('decisions').insertOne({
+        await dbDecisions.insertOne({
           ally_code: recruit.ally_code,
           guild: guild,
           decision: 'Pass',
@@ -348,12 +346,10 @@ module.exports = {
         );
       }
 
-      await db
-        .collection('decisions')
-        .updateOne(
-          { ally_code: recruit.ally_code, guild: guild },
-          { $set: { decision: 'Pass', entered_by: interaction.member.id } }
-        );
+      await dbDecisions.updateOne(
+        { ally_code: recruit.ally_code, guild: guild },
+        { $set: { decision: 'Pass', entered_by: interaction.member.id } }
+      );
 
       const priorityMessage = await interaction.channel.messages.fetch(recruit.priority_message_id);
       const updatedTierPriority = await generateTierPriority(recruit.ally_code);
@@ -369,17 +365,15 @@ module.exports = {
       if (recruit.tier === 1 && !newTier)
         return interaction.editReply('This recruit is already in Tier 1, the lowest available tier.');
 
-      await db.collection('decisions').deleteMany({ ally_code: recruit.ally_code });
-      await db
-        .collection('recruits')
-        .updateOne({ thread_id: interaction.channel.id }, { $set: { tier: newTier ?? recruit.tier - 1 } });
+      await dbDecisions.deleteMany({ ally_code: recruit.ally_code });
+      await dbRecruits.updateOne({ thread_id: interaction.channel.id }, { $set: { tier: newTier ?? recruit.tier - 1 } });
 
       const priorityMessage = await interaction.channel.messages.fetch(recruit.priority_message_id);
       const updatedTierPriority = await generateTierPriority(recruit.ally_code);
       await priorityMessage.edit(updatedTierPriority);
       await interaction.channel.edit({ name: `${recruit.discord_name} (T${newTier ?? recruit.tier - 1})` });
 
-      const tier = await db.collection('tiers').findOne({ number: newTier ?? recruit.tier - 1 });
+      const tier = await dbTiers.findOne({ number: newTier ?? recruit.tier - 1 });
       await interaction.channel.send(
         `This recruit has been moved to ${roleMention(tier.recruiter_role_id)} by ${interaction.member}`
       );
@@ -395,8 +389,8 @@ module.exports = {
 
       await interaction.channel.send(`Thread closed by ${interaction.member} for the following reason: "${reason}".`);
 
-      await db.collection('recruits').findOneAndDelete({ thread_id: interaction.channel.id });
-      await db.collection('decisions').deleteMany({ ally_code: recruit.ally_code });
+      await dbRecruits.findOneAndDelete({ thread_id: interaction.channel.id });
+      await dbDecisions.deleteMany({ ally_code: recruit.ally_code });
       await interaction.channel.setLocked(true);
       await interaction.channel.setArchived(true);
     }
@@ -406,7 +400,7 @@ module.exports = {
     if (sub === 'claim') {
       const guild = await interaction.options.getString('guild');
 
-      const guildResult = await db.collection('guilds').findOne({ name: guild });
+      const guildResult = await dbGuilds.findOne({ name: guild });
       if (!guildResult)
         return interaction.editReply(
           'A guild with that name was not found. Please select a guild name from the auto-complete list and try again!'
@@ -427,7 +421,7 @@ module.exports = {
         `${guild} has claimed this recruit! Archiving recruit thread... (Claimed by ${interaction.member})`
       );
       await interaction.channel.edit({ name: `${recruit.discord_name} T${recruit.tier} (Joined ${guild})` });
-      await db.collection('guilds').updateOne(
+      await dbGuilds.updateOne(
         { name: guild },
         {
           $set: {
@@ -437,8 +431,8 @@ module.exports = {
         }
       );
 
-      await db.collection('recruits').findOneAndDelete({ ally_code: recruit.ally_code });
-      await db.collection('decisions').deleteMany({ ally_code: recruit.ally_code });
+      await dbRecruits.findOneAndDelete({ ally_code: recruit.ally_code });
+      await dbDecisions.deleteMany({ ally_code: recruit.ally_code });
       await interaction.channel.setLocked(true);
       await interaction.channel.setArchived(true);
     }

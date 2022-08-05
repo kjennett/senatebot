@@ -1,5 +1,5 @@
 const { config } = require('../config');
-const { db } = require('../database');
+const { dbCharacters, dbAbilities, dbShips } = require('../database');
 const { client } = require('../client');
 const { fetchGG, fetchHelp, fetchOmega } = require('./fetchPlayerData');
 const { MessageAttachment, MessageEmbed } = require('discord.js');
@@ -65,7 +65,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
         for (const ability of unit.data.ability_data) {
           if (ability.has_omicron_learned) {
-            const omiResult = await db.collection('abilities').findOne({ base_id: ability.id });
+            const omiResult = await dbAbilities.findOne({ base_id: ability.id });
             if (omiResult.omicron_mode === 7) {
               tbOmisLearned.push(` - ${ability.name} ${omiEmoji}`);
             }
@@ -189,24 +189,24 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
     for (const unit of playerData.roster) {
       if (config.galacticLegends.includes(unit.defId)) {
-        const glResult = await db.collection('characters').findOne({ base_id: unit.defId });
+        const glResult = await dbCharacters.findOne({ base_id: unit.defId });
         const gearLevel = unit.gear > 12 ? `R${unit.relic.currentTier - 2}` : `G${unit.gear}`;
         GLs.push(`${glResult.name}: ${gearLevel}`);
       }
 
       if (config.conquestCharacters.includes(unit.defId)) {
-        const charResult = await db.collection('characters').findOne({ base_id: unit.defId });
+        const charResult = await dbCharacters.findOne({ base_id: unit.defId });
         const gearLevel = unit.gear > 12 ? `R${unit.relic.currentTier - 2}` : `G${unit.gear}`;
         conChars.push(`${charResult.name}: ${gearLevel}`);
       }
 
       if (config.capitalShips.includes(unit.defId)) {
-        const capResult = await db.collection('ships').findOne({ base_id: unit.defId });
+        const capResult = await dbShips.findOne({ base_id: unit.defId });
         caps.push(`${capResult.name}: ${unit.rarity}:star:`);
       }
 
       if (config.conquestShips.includes(unit.defId)) {
-        const shipResult = await db.collection('ships').findOne({ base_id: unit.defId });
+        const shipResult = await dbShips.findOne({ base_id: unit.defId });
         conShips.push(`${shipResult.name}: ${unit.rarity}:star:`);
       }
     }

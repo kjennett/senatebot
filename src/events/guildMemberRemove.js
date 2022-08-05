@@ -1,11 +1,11 @@
-const { db } = require('../database');
+const { dbRecruits } = require('../database');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = {
   name: 'guildMemberRemove',
 
   async execute(member) {
-    const recruitResult = await db.collection('recruits').findOne({ discord_user_id: member.id });
+    const recruitResult = await dbRecruits.findOne({ discord_user_id: member.id });
     if (!recruitResult) return;
 
     await member.client.channels.fetch();
@@ -25,6 +25,6 @@ module.exports = {
     await thread.setLocked(true);
     await thread.setArchived(true);
 
-    await db.collection('recruits').findOneAndDelete({ discord_user_id: member.id });
+    await dbRecruits.findOneAndDelete({ discord_user_id: member.id });
   },
 };

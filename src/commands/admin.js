@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { db } = require('../database');
+const { dbGuilds } = require('../database');
 const { config } = require('../config');
 const { writeFileSync, unlinkSync } = require('fs');
 const { MessageAttachment, MessageEmbed } = require('discord.js');
@@ -55,9 +55,7 @@ module.exports = {
       const name = await interaction.options.getString('name');
       const time = (await interaction.options.getString('time')) ?? Date.now();
 
-      await db
-        .collection('guilds')
-        .findOneAndUpdate({ name: guild }, { $set: { last_recruit_name: name, last_recruit_time: time } });
+      await dbGuilds.findOneAndUpdate({ name: guild }, { $set: { last_recruit_name: name, last_recruit_time: time } });
 
       const embed = new MessageEmbed({
         title: 'Last Recruit Time Updated',
