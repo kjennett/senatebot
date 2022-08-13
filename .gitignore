@@ -5,3 +5,5 @@ logs/*.log
 logs
 workshop
 workshop/*
+inactive
+inactive/*

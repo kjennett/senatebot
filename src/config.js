@@ -14,6 +14,7 @@ const devConfig = {
     greeter: '954525945438564402',
     recruitment: '954525945438564402',
     allianceRecruitmentTeam: '954525945438564402',
+    guildOfficer: '954525945438564402',
   },
 };
 
@@ -31,6 +32,7 @@ const prodConfig = {
     greeter: '933051834115948615',
     recruitment: '518434369455783936',
     allianceRecruitmentTeam: '907820888244781076',
+    guildOfficer: '515880606790582284',
   },
 };
 
@@ -42,7 +44,14 @@ class SenateBotConfig {
   db = process.env.DB;
   senateLogo = process.env.SENATELOGO;
 
-  galacticLegends = ['SITHPALPATINE', 'GLREY', 'SUPREMELEADERKYLOREN', 'GRANDMASTERLUKE', 'JEDIMASTERKENOBI', 'LORDVADER'];
+  galacticLegends = [
+    'SITHPALPATINE',
+    'GLREY',
+    'SUPREMELEADERKYLOREN',
+    'GRANDMASTERLUKE',
+    'JEDIMASTERKENOBI',
+    'LORDVADER',
+  ];
 
   capitalShips = [
     'CAPITALSTARDESTROYER',
@@ -95,10 +104,8 @@ class SenateBotConfig {
       title: 'A ship with that name was not found in the database.',
       color: 'RED',
     }),
-    channelNotThread: new MessageEmbed({ title: 'Please use this command inside a thread.', color: 'RED' }),
-    noKeepAliveFound: new MessageEmbed({
-      title:
-        'This thread was not previously registered for keep-alive. To register, use this command again with the __enabled__ option set to True.',
+    useCommandInThread: new MessageEmbed({
+      title: 'Please use this command inside a thread.',
       color: 'RED',
     }),
   };
@@ -106,18 +113,6 @@ class SenateBotConfig {
   successEmbeds = {
     restart: new MessageEmbed({
       title: 'Restarting...',
-      color: 'GREEN',
-    }),
-    keepAliveAlreadyOn: new MessageEmbed({
-      title: 'This thread is already registered for keep-alive.',
-      color: 'GREEN',
-    }),
-    keepAliveRegistered: new MessageEmbed({
-      title: 'This thread has been __registered__ for keep-alive.',
-      color: 'GREEN',
-    }),
-    keepAliveUnregistered: new MessageEmbed({
-      title: 'This thread has been __un-registered__ from keep-alive.',
       color: 'GREEN',
     }),
   };
