@@ -31,9 +31,10 @@ async function bumpThreads() {
 }
 
 exports.bumpInactiveThreads = async () => {
-  console.log('Checking recruitment threads for bumping...');
-  await bumpThreads();
-  setInterval(() => {
-    bumpThreads();
-  }, 300000);
+  return;
+  // console.log('Checking recruitment threads for bumping...');
+  // await bumpThreads();
+  // setInterval(() => {
+  //   bumpThreads();
+  // }, 300000);
 };
