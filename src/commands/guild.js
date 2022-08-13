@@ -153,10 +153,14 @@ module.exports = {
       if (sub === 'recruiter') {
         const role = await i.guild.roles.fetch(dbGuild.recruiter_role_id);
         const rRole = await i.guild.roles.fetch(config.roles.recruitment);
+        const dbTier = await dbTiers.findOne({ number: dbGuild.tier });
+        const tRole = await i.guild.roles.fetch(dbTier.recruiter_role_id);
+
         await member.roles.add(role);
         await member.roles.add(rRole);
+        await member.roles.add(tRole);
         await member.send(
-          `${i.member.displayName} has granted you the following roles in ΞTHE SENATEΞ Discord: ${guildName} Recruiter, Recruitment.`
+          `${i.member.displayName} has granted you the following roles in ΞTHE SENATEΞ Discord: ${guildName} Recruiter, Tier ${dbGuild.tier} Recruiter, Recruitment.`
         );
         return i.editReply(`Granted ${role} and ${rRole} roles to ${member.displayName}.`);
       }
