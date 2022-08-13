@@ -1,12 +1,12 @@
-const { MessageEmbed } = require('discord.js');
-
 const devConfig = {
+  // Channel IDs
   channels: {
     landingBay: '895825647027490816',
     recruitmentRoom: '852286378075095071',
     securityCouncil: '895825820747190353',
     allianceRecruitmentTeam: '895825820747190353',
   },
+  // Role IDs
   roles: {
     potentialGuildMember: '543791694726823997',
     senateGuest: '954525945438564402',
@@ -19,12 +19,14 @@ const devConfig = {
 };
 
 const prodConfig = {
+  // Channel IDs
   channels: {
     landingBay: '518436413344317450',
     recruitmentRoom: '518436714176577563',
     securityCouncil: '515882219525373955',
     allianceRecruitmentTeam: '907823084566892576',
   },
+  // Role IDs
   roles: {
     potentialGuildMember: '543791694726823997',
     senateGuest: '518433712203890718',
@@ -37,13 +39,21 @@ const prodConfig = {
 };
 
 class SenateBotConfig {
+  // Admin Discord ID
   owner = process.env.OWNER;
+
+  // Discord Bot Token, Server ID, Client ID
   token = process.env.TOKEN;
   server = process.env.SERVER;
   client = process.env.CLIENT;
+
+  // MongoDB Connection URI
   db = process.env.DB;
+
+  // Senate Logo Image URL
   senateLogo = process.env.SENATELOGO;
 
+  // Galactic Legend Base IDs
   galacticLegends = [
     'SITHPALPATINE',
     'GLREY',
@@ -53,6 +63,7 @@ class SenateBotConfig {
     'LORDVADER',
   ];
 
+  // Capital Ship Base IDs
   capitalShips = [
     'CAPITALSTARDESTROYER',
     'CAPITALMONCALAMARICRUISER',
@@ -65,10 +76,13 @@ class SenateBotConfig {
     'CAPITALFINALIZER',
   ];
 
+  // Conquest Character Base IDs
   conquestCharacters = ['COMMANDERAHSOKA', 'MAULS7', 'BOBAFETTSCION', 'DARTHMALGUS'];
 
+  // Conquest Ship Base IDs
   conquestShips = ['TIEINTERCEPTOR', 'RAZORCREST'];
 
+  // Omicron Mode Values
   omicronModes = {
     TB: 7,
     TW: 8,
@@ -76,46 +90,9 @@ class SenateBotConfig {
     GAC3v3: 14,
   };
 
+  // Set channel and role config values based on active environment
   channels = process.env.NODE_ENV === 'production' ? prodConfig.channels : devConfig.channels;
   roles = process.env.NODE_ENV === 'production' ? prodConfig.roles : devConfig.roles;
-
-  errorEmbeds = {
-    adminOnly: new MessageEmbed({
-      title: 'This command is usable by the bot administrator only.',
-      color: 'RED',
-    }),
-    allyCodeParseFailure: new MessageEmbed({
-      title: 'Unable to parse ally code from the provided input. Please try again.',
-      color: 'RED',
-    }),
-    recruitThreadAlreadyExists: new MessageEmbed({
-      title: 'A recruitment thread for this ally code already exists.',
-      color: 'RED',
-    }),
-    noAbilityFound: new MessageEmbed({
-      title: 'An ability with that name was not found in the database.',
-      color: 'RED',
-    }),
-    noCharacterFound: new MessageEmbed({
-      title: 'A character with that name was not found in the database.',
-      color: 'RED',
-    }),
-    noShipFound: new MessageEmbed({
-      title: 'A ship with that name was not found in the database.',
-      color: 'RED',
-    }),
-    useCommandInThread: new MessageEmbed({
-      title: 'Please use this command inside a thread.',
-      color: 'RED',
-    }),
-  };
-
-  successEmbeds = {
-    restart: new MessageEmbed({
-      title: 'Restarting...',
-      color: 'GREEN',
-    }),
-  };
 }
 
 exports.config = new SenateBotConfig();

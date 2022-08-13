@@ -8,8 +8,7 @@ module.exports = {
     const recruitResult = await dbRecruits.findOne({ discord_user_id: member.id });
     if (!recruitResult) return;
 
-    await member.client.channels.fetch();
-    const thread = await member.guild.channels.fetch(recruitResult.thread_id);
+    const thread = await member.client.channels.fetch(recruitResult.thread_id);
     if (!thread) return;
     if (thread.archived) return;
 

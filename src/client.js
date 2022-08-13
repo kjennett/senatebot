@@ -6,12 +6,15 @@ const { join } = require('path');
 
 const { TOKEN, SERVER, CLIENT } = process.env;
 
+// Computed absolute paths of events and commands directories
 const eventsDir = join(__dirname, './events');
 const commandsDir = join(__dirname, './commands');
 
 class SenateBotClient extends Client {
+  // Stored command data for execution
   commands = new Collection();
 
+  // Register Discord event handlers
   registerEventHandlers = () => {
     const eventFiles = readdirSync(eventsDir);
     for (const file of eventFiles) {
@@ -24,6 +27,7 @@ class SenateBotClient extends Client {
     }
   };
 
+  // Deploy application commands to Discord gateway
   deployApplicationCommands = () => {
     const commandData = [];
     const commandFiles = readdirSync(commandsDir);
