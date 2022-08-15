@@ -11,6 +11,7 @@ const eventsDir = join(__dirname, './events');
 const commandsDir = join(__dirname, './commands');
 
 class SenateBotClient extends Client {
+  //test
   // Stored command data for execution
   commands = new Collection();
 
