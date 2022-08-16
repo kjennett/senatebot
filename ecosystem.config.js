@@ -6,7 +6,7 @@ module.exports = {
       max_restarts: 20,
       restart_delay: 5000,
       autorestart: true,
-      env_production: {
+      env: {
         NODE_ENV: 'production',
       },
       node_args: '-r dotenv/config',
