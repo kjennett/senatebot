@@ -78,7 +78,6 @@ module.exports = {
             description: `Guild: ${guild}\nRecruit: ${name}\ntime: <t:${Math.floor(
               time / 1000
             )}:f>`,
-            color: 'GREEN',
           }),
         ],
       });
@@ -117,7 +116,6 @@ module.exports = {
           embeds: [
             new EmbedBuilder({
               title: `Order 66 Complete - ${numberOfUsers} users have been removed.`,
-              color: 'GREEN',
             }),
           ],
         });
