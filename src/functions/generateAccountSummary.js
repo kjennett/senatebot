@@ -11,10 +11,6 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
   if (playerData) {
     accountSummaryEmbed.setTitle(`Account Summary: ${playerData.data.name}`);
-    accountSummaryEmbed.setFooter({
-      text: 'Source: SWGOH.GG',
-      iconURL: process.env.SENATELOGO,
-    });
     accountSummaryEmbed.setTimestamp(new Date(playerData.data.last_updated));
     accountSummaryEmbed.addFields([
       {
@@ -146,9 +142,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
       },
     ]);
 
-    const modSummaryEmbed = new EmbedBuilder()
-      .setTitle(`Mod Data: ${playerData.data.name}`)
-      .setFooter({ text: '', iconURL: '' });
+    const modSummaryEmbed = new EmbedBuilder().setTitle(`Mod Data: ${playerData.data.name}`);
 
     const modData = await fetchOmega(parsedAllyCode);
 
