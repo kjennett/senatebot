@@ -1,8 +1,8 @@
-const { parseAllyCode } = require('../functions/parseAllyCode');
+const parseAllyCode = require('../functions/parseAllyCode');
 const { config } = require('../config');
 const { fetchHelp } = require('../functions/fetchPlayerData');
 const { generateAccountSummary } = require('../functions/generateAccountSummary');
-const { generateTierPriority } = require('../functions/generateTierPriority');
+const generateTierPriority = require('../functions/generateTierPriority');
 const { db } = require('../database');
 const { MessageEmbed, SlashCommandBuilder, roleMention, userMention } = require('discord.js');
 
@@ -25,21 +25,13 @@ module.exports = {
         .setName('add')
         .setDescription('Add a recruit to the database and create a recruitment thread.')
         .addUserOption(option =>
-          option
-            .setName('discorduser')
-            .setDescription('Tag the Discord user of the new recruit')
-            .setRequired(true)
+          option.setName('discorduser').setDescription('Tag the Discord user of the new recruit').setRequired(true)
         )
         .addStringOption(option =>
-          option
-            .setName('allycode')
-            .setDescription('Ally code OR swgoh.gg profile for the account.')
-            .setRequired(true)
+          option.setName('allycode').setDescription('Ally code OR swgoh.gg profile for the account.').setRequired(true)
         )
         .addStringOption(option =>
-          option
-            .setName('notes')
-            .setDescription('Any relevant information for recruiters to know (KAM, WAT, CPit, etc.')
+          option.setName('notes').setDescription('Any relevant information for recruiters to know (KAM, WAT, CPit, etc.')
         )
     )
     .addSubcommand(sub1 =>
@@ -47,21 +39,13 @@ module.exports = {
         .setName('linkthread')
         .setDescription('Link a current thread in the recruitment room to a recruit.')
         .addUserOption(option =>
-          option
-            .setName('discorduser')
-            .setDescription('Tag the Discord user of the new recruit')
-            .setRequired(true)
+          option.setName('discorduser').setDescription('Tag the Discord user of the new recruit').setRequired(true)
         )
         .addStringOption(option =>
-          option
-            .setName('allycode')
-            .setDescription('Ally code OR swgoh.gg profile for the account.')
-            .setRequired(true)
+          option.setName('allycode').setDescription('Ally code OR swgoh.gg profile for the account.').setRequired(true)
         )
         .addStringOption(option =>
-          option
-            .setName('notes')
-            .setDescription('Any relevant information for recruiters to know (KAM, WAT, CPit, etc.')
+          option.setName('notes').setDescription('Any relevant information for recruiters to know (KAM, WAT, CPit, etc.')
         )
     )
     .addSubcommand(sub2 =>
@@ -76,9 +60,7 @@ module.exports = {
             .setRequired(true)
         )
         .addBooleanOption(option =>
-          option
-            .setName('override')
-            .setDescription('Whether to override a previous decision for a guild.')
+          option.setName('override').setDescription('Whether to override a previous decision for a guild.')
         )
     )
     .addSubcommand(sub3 =>
@@ -93,27 +75,18 @@ module.exports = {
             .setRequired(true)
         )
         .addStringOption(option =>
-          option
-            .setName('comments')
-            .setDescription('Comments on why your guild is passing on a recruit.')
+          option.setName('comments').setDescription('Comments on why your guild is passing on a recruit.')
         )
         .addBooleanOption(option =>
-          option
-            .setName('override')
-            .setDescription('Whether to override a previous decision for a guild.')
+          option.setName('override').setDescription('Whether to override a previous decision for a guild.')
         )
     )
     .addSubcommand(sub4 =>
       sub4
         .setName('nexttier')
-        .setDescription(
-          'Moves a recruit to the next recruitment tier and pings the appropriate recruitment role.'
-        )
+        .setDescription('Moves a recruit to the next recruitment tier and pings the appropriate recruitment role.')
         .addIntegerOption(option =>
-          option
-            .setName('tier')
-            .setDescription('The tier to move the recruit to.')
-            .setAutocomplete(true)
+          option.setName('tier').setDescription('The tier to move the recruit to.').setAutocomplete(true)
         )
     )
     .addSubcommand(sub5 =>
@@ -121,18 +94,13 @@ module.exports = {
         .setName('close')
         .setDescription('Closes a recruitment thread for the specified reason.')
         .addStringOption(option =>
-          option
-            .setName('reason')
-            .setDescription('The reason the recruit thread is being closed.')
-            .setRequired(true)
+          option.setName('reason').setDescription('The reason the recruit thread is being closed.').setRequired(true)
         )
     )
     .addSubcommand(sub6 =>
       sub6
         .setName('claim')
-        .setDescription(
-          'Claim a recruit for the specified guild, grant them roles, and close the thread.'
-        )
+        .setDescription('Claim a recruit for the specified guild, grant them roles, and close the thread.')
         .addStringOption(option =>
           option
             .setName('guild')
@@ -163,24 +131,21 @@ module.exports = {
 
       const playerData = await fetchHelp(parsedAllyCode);
       if (!playerData)
-        return interaction.editReply(
-          'Unable to fetch account information. Please verify ally code and try again!'
-        );
+        return interaction.editReply('Unable to fetch account information. Please verify ally code and try again!');
       const gp = playerData.stats[0].value;
       const startingTier = await findStartingTier(gp);
       const tier = await db.collection('tiers').findOne({ number: startingTier });
 
       const accountSummary = await generateAccountSummary(parsedAllyCode);
 
-      const recruitmentChannel = await interaction.client.channels.fetch(
-        config.channels.recruitmentRoom
-      );
+      const recruitmentChannel = await interaction.client.channels.fetch(config.channels.recruitmentRoom);
       const thread = await recruitmentChannel.threads.create({
         name: `${discorduser.username} (T${startingTier})`,
         autoArchiveDuration: 10080,
       });
       await thread.join();
-      await thread.send(accountSummary);
+      await thread.send({ embeds: accountSummary.embeds });
+      if (accountSummary.image) await thread.send({ files: [accountSummary.image] });
 
       if (notes) {
         const notesEmbed = new MessageEmbed()
@@ -212,8 +177,7 @@ module.exports = {
     // ---------- RECRUIT LINKTHREAD ---------- //
 
     if (sub === 'linkthread') {
-      if (!interaction.channel.isThread())
-        return interaction.editReply('Please use this command in a recruit thread.');
+      if (!interaction.channel.isThread()) return interaction.editReply('Please use this command in a recruit thread.');
       const [discorduser, allycode, notes] = await Promise.all([
         interaction.options.getUser('discorduser'),
         interaction.options.getString('allycode'),
@@ -221,13 +185,10 @@ module.exports = {
       ]);
 
       const parsedAllyCode = parseAllyCode(allycode);
-      if (!parsedAllyCode)
-        return interaction.editReply('Error parsing ally code. Please try again!');
+      if (!parsedAllyCode) return interaction.editReply('Error parsing ally code. Please try again!');
 
       if (await db.collection('recruits').countDocuments({ ally_code: parsedAllyCode }))
-        return interaction.editReply(
-          `A recruit thread for ally code ${parsedAllyCode} already exists!`
-        );
+        return interaction.editReply(`A recruit thread for ally code ${parsedAllyCode} already exists!`);
 
       await interaction.editReply(
         `Linking this recruitment thread to Discord user ${discorduser.username} (Ally Code: ${parsedAllyCode}), please wait... `
@@ -235,9 +196,7 @@ module.exports = {
 
       const playerData = await fetchHelp(parsedAllyCode);
       if (!playerData)
-        return interaction.editReply(
-          'Unable to fetch account information. Please verify ally code and try again!'
-        );
+        return interaction.editReply('Unable to fetch account information. Please verify ally code and try again!');
       const gp = playerData.stats[0].value;
       const startingTier = await findStartingTier(gp);
       const tier = await db.collection('tiers').findOne({ number: startingTier });
@@ -249,7 +208,8 @@ module.exports = {
       await thread.edit({
         name: `${discorduser.username} (T${startingTier})`,
       });
-      const summaryMessage = await thread.send(accountSummary);
+      await thread.send({ embeds: accountSummary.embeds });
+      if (accountSummary.image) await thread.send({ files: [accountSummary.image] });
 
       if (notes) {
         const notesEmbed = new MessageEmbed()
@@ -273,8 +233,6 @@ module.exports = {
 
       const priorityEmbed = await generateTierPriority(parsedAllyCode);
       await priorityMessage.edit(priorityEmbed);
-      await summaryMessage.pin();
-      await priorityMessage.pin();
 
       await thread.send(roleMention(tier.recruiter_role_id));
 
@@ -284,8 +242,7 @@ module.exports = {
     }
 
     const recruit = await db.collection('recruits').findOne({ thread_id: interaction.channel.id });
-    if (!recruit)
-      return interaction.editReply('Please use this command in an active recruit thread.');
+    if (!recruit) return interaction.editReply('Please use this command in an active recruit thread.');
 
     // ---------- RECRUIT INTERESTED ---------- //
 
@@ -297,13 +254,9 @@ module.exports = {
           'A guild with that name was not found. Please select a guild name from the auto-complete list and try again!'
         );
       if (recruit.tier !== guildResult.tier)
-        return interaction.editReply(
-          `Decisions for this recruit are only open to guilds in Tier ${recruit.tier}.`
-        );
+        return interaction.editReply(`Decisions for this recruit are only open to guilds in Tier ${recruit.tier}.`);
       if (!interaction.member.roles.cache.has(guildResult.recruiter_role_id))
-        return interaction.editReply(
-          `You must have the ${guild} Recruiter role to enter decisions for ${guild}.`
-        );
+        return interaction.editReply(`You must have the ${guild} Recruiter role to enter decisions for ${guild}.`);
 
       const decisionResult = await db.collection('decisions').findOne({
         ally_code: recruit.ally_code,
@@ -316,14 +269,10 @@ module.exports = {
           decision: 'Interested',
           entered_by: interaction.member.id,
         });
-        const priorityMessage = await interaction.channel.messages.fetch(
-          recruit.priority_message_id
-        );
+        const priorityMessage = await interaction.channel.messages.fetch(recruit.priority_message_id);
         const updatedTierPriority = await generateTierPriority(recruit.ally_code);
         await priorityMessage.edit(updatedTierPriority);
-        await interaction.channel.send(
-          `${guild} is __INTERESTED__ in this recruit. (Entered by ${interaction.member})`
-        );
+        await interaction.channel.send(`${guild} is __INTERESTED__ in this recruit. (Entered by ${interaction.member})`);
         return await interaction.editReply('Decision entered.');
       }
 
@@ -332,10 +281,7 @@ module.exports = {
           `${guild} was already Interested in this recruit. Did you mean to change your guild's decision?`
         );
 
-      if (
-        decisionResult.decision === 'Pass' &&
-        (await !interaction.options.getBoolean('override'))
-      ) {
+      if (decisionResult.decision === 'Pass' && (await !interaction.options.getBoolean('override'))) {
         return interaction.editReply(
           `A decision of PASS was already entered for ${guild} by ${userMention(
             decisionResult.entered_by
@@ -368,13 +314,9 @@ module.exports = {
           'A guild with that name was not found. Please select a guild name from the auto-complete list and try again!'
         );
       if (recruit.tier !== guildResult.tier)
-        return interaction.editReply(
-          `Decisions for this recruit are only open to guilds in Tier ${recruit.tier}.`
-        );
+        return interaction.editReply(`Decisions for this recruit are only open to guilds in Tier ${recruit.tier}.`);
       if (!interaction.member.roles.cache.has(guildResult.recruiter_role_id))
-        return interaction.editReply(
-          `You must have the ${guild} Recruiter role to enter decisions for ${guild}.`
-        );
+        return interaction.editReply(`You must have the ${guild} Recruiter role to enter decisions for ${guild}.`);
 
       const decisionResult = await db.collection('decisions').findOne({
         ally_code: recruit.ally_code,
@@ -387,9 +329,7 @@ module.exports = {
           decision: 'Pass',
           entered_by: interaction.member.id,
         });
-        const priorityMessage = await interaction.channel.messages.fetch(
-          recruit.priority_message_id
-        );
+        const priorityMessage = await interaction.channel.messages.fetch(recruit.priority_message_id);
         const updatedTierPriority = await generateTierPriority(recruit.ally_code);
         await priorityMessage.edit(updatedTierPriority);
         await interaction.channel.send(
@@ -405,10 +345,7 @@ module.exports = {
           `${guild} already passed on this recruit. Did you mean to change your guild's decision?`
         );
 
-      if (
-        decisionResult.decision === 'Interested' &&
-        (await !interaction.options.getBoolean('override'))
-      ) {
+      if (decisionResult.decision === 'Interested' && (await !interaction.options.getBoolean('override'))) {
         return interaction.editReply(
           `A decision of INTERESTED was already entered for ${guild} by ${userMention(
             decisionResult.entered_by
@@ -435,17 +372,12 @@ module.exports = {
     if (sub === 'nexttier') {
       const newTier = await interaction.options.getInteger('tier');
       if (recruit.tier === 1 && !newTier)
-        return interaction.editReply(
-          'This recruit is already in Tier 1, the lowest available tier.'
-        );
+        return interaction.editReply('This recruit is already in Tier 1, the lowest available tier.');
 
       await db.collection('decisions').deleteMany({ ally_code: recruit.ally_code });
       await db
         .collection('recruits')
-        .updateOne(
-          { thread_id: interaction.channel.id },
-          { $set: { tier: newTier ?? recruit.tier - 1 } }
-        );
+        .updateOne({ thread_id: interaction.channel.id }, { $set: { tier: newTier ?? recruit.tier - 1 } });
 
       const priorityMessage = await interaction.channel.messages.fetch(recruit.priority_message_id);
       const updatedTierPriority = await generateTierPriority(recruit.ally_code);
@@ -456,9 +388,7 @@ module.exports = {
 
       const tier = await db.collection('tiers').findOne({ number: newTier ?? recruit.tier - 1 });
       await interaction.channel.send(
-        `This recruit has been moved to ${roleMention(tier.recruiter_role_id)} by ${
-          interaction.member
-        }`
+        `This recruit has been moved to ${roleMention(tier.recruiter_role_id)} by ${interaction.member}`
       );
 
       return await interaction.editReply('Tier changed.');
@@ -470,9 +400,7 @@ module.exports = {
       const reason = await interaction.options.getString('reason');
       await interaction.editReply('Closing thread.');
 
-      await interaction.channel.send(
-        `Thread closed by ${interaction.member} for the following reason: "${reason}".`
-      );
+      await interaction.channel.send(`Thread closed by ${interaction.member} for the following reason: "${reason}".`);
 
       await db.collection('recruits').findOneAndDelete({ thread_id: interaction.channel.id });
       await db.collection('decisions').deleteMany({ ally_code: recruit.ally_code });
@@ -491,22 +419,16 @@ module.exports = {
           'A guild with that name was not found. Please select a guild name from the auto-complete list and try again!'
         );
       if (recruit.tier !== guildResult.tier)
-        return interaction.editReply(
-          `Actions for this recruit are only open to guilds in Tier ${recruit.tier}.`
-        );
+        return interaction.editReply(`Actions for this recruit are only open to guilds in Tier ${recruit.tier}.`);
       if (!interaction.member.roles.cache.has(guildResult.recruiter_role_id))
-        return interaction.editReply(
-          `You must have the ${guild} Recruiter role to claim recruits for ${guild}.`
-        );
+        return interaction.editReply(`You must have the ${guild} Recruiter role to claim recruits for ${guild}.`);
 
       await interaction.editReply(`Claiming this recruit for ${guild}!`);
 
       const user = await interaction.guild.members.fetch(recruit.discord_user_id);
       await user.roles.add(await interaction.guild.roles.fetch(guildResult.member_role_id));
       await user.roles.add(await interaction.guild.roles.fetch(config.roles.senateCitizen));
-      await user.roles.remove(
-        await interaction.guild.roles.fetch(config.roles.potentialGuildMember)
-      );
+      await user.roles.remove(await interaction.guild.roles.fetch(config.roles.potentialGuildMember));
 
       await interaction.channel.send(
         `${guild} has claimed this recruit! Archiving recruit thread... (Claimed by ${interaction.member})`

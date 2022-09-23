@@ -8,39 +8,22 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('admin')
     .setDescription('Configuration and administration commands.')
-    .addSubcommand(s1 =>
-      s1.setName('restart').setDescription('Exits the process to force-restart SenateBot.')
-    )
+    .addSubcommand(s1 => s1.setName('restart').setDescription('Exits the process to force-restart SenateBot.'))
     .addSubcommand(s2 =>
       s2
         .setName('updatepriority')
         .setDescription("Updates a guild's recruitment time in the database.")
         .addStringOption(o =>
-          o
-            .setName('guild')
-            .setDescription('The guild who claimed the recruit.')
-            .setAutocomplete(true)
-            .setRequired(true)
+          o.setName('guild').setDescription('The guild who claimed the recruit.').setAutocomplete(true).setRequired(true)
         )
         .addStringOption(o =>
-          o
-            .setName('name')
-            .setDescription('The name of the recruit that was claimed.')
-            .setRequired(true)
+          o.setName('name').setDescription('The name of the recruit that was claimed.').setRequired(true)
         )
         .addStringOption(o =>
-          o
-            .setName('time')
-            .setDescription(
-              'The aproximate time the recruit was claimed, as a millisecond timestamp'
-            )
+          o.setName('time').setDescription('The aproximate time the recruit was claimed, as a millisecond timestamp')
         )
     )
-    .addSubcommand(s3 =>
-      s3
-        .setName('order66')
-        .setDescription('Show a list of server members that meet purge criteria.')
-    ),
+    .addSubcommand(s3 => s3.setName('order66').setDescription('Show a list of server members that meet purge criteria.')),
 
   async execute(i) {
     if (i.member.id !== config.owner) {
@@ -66,18 +49,13 @@ module.exports = {
 
       await db
         .collection('guilds')
-        .findOneAndUpdate(
-          { name: guild },
-          { $set: { last_recruit_name: name, last_recruit_time: time } }
-        );
+        .findOneAndUpdate({ name: guild }, { $set: { last_recruit_name: name, last_recruit_time: time } });
 
       return i.editReply({
         embeds: [
           new EmbedBuilder({
             title: 'Last Recruit Time Updated',
-            description: `Guild: ${guild}\nRecruit: ${name}\ntime: <t:${Math.floor(
-              time / 1000
-            )}:f>`,
+            description: `Guild: ${guild}\nRecruit: ${name}\ntime: <t:${Math.floor(time / 1000)}:f>`,
           }),
         ],
       });

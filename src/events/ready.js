@@ -7,6 +7,8 @@ module.exports = {
   async execute() {
     await client.guilds.fetch();
     const owner = await client.users.fetch(process.env.OWNER);
+
+    // Send owner a message showing online status, server count, command count
     await owner.send({
       embeds: [
         new EmbedBuilder({

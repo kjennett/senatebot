@@ -13,44 +13,37 @@ module.exports = {
         .setName('keepalive')
         .setDescription('Register a thread with SenateBot to keep it from auto-archiving.')
         .addBooleanOption(option =>
-          option
-            .setName('enabled')
-            .setDescription('Whether keepalive should be active for this thread.')
-            .setRequired(true)
+          option.setName('enabled').setDescription('Whether keepalive should be active for this thread.').setRequired(true)
         )
     ),
 
   async execute(interaction) {
     await interaction.deferReply({ ephemeral: true });
-    if (!interaction.channel.isThread())
-      return interaction.editReply({ embeds: [config.errorEmbeds.useCommandInThread] });
 
+    // Verify that the command is being used inside a thread
+    if (!interaction.channel.isThread()) return interaction.editReply({ embeds: [config.errorEmbeds.useCommandInThread] });
+
+    // Determine whether the thread should be enabled or disabled for keep-alive
     const enabled = await interaction.options.getBoolean('enabled');
     const dbThread = await db.collection('threads').findOne({ id: interaction.channel.id });
     await interaction.channel.join();
 
     if (enabled && dbThread)
       return interaction.editReply({
-        embeds: [
-          new EmbedBuilder({ title: 'This thread is __already registered__ for Keep-Alive.' }),
-        ],
+        embeds: [new EmbedBuilder({ title: 'This thread is __already registered__ for Keep-Alive.' })],
       });
 
     if (enabled && !dbThread) {
       await db.collection('threads').insertOne({ id: interaction.channel.id });
       return interaction.editReply({
-        embeds: [
-          new EmbedBuilder({ title: 'This thread has been __registered__ for Keep-Alive.' }),
-        ],
+        embeds: [new EmbedBuilder({ title: 'This thread has been __registered__ for Keep-Alive.' })],
       });
     }
 
     if (!enabled && dbThread) {
       await db.collection('threads').deleteOne({ id: interaction.channel.id });
       return interaction.editReply({
-        embeds: [
-          new EmbedBuilder({ title: 'This thread has been __un-registered__ from Keep-Alive.' }),
-        ],
+        embeds: [new EmbedBuilder({ title: 'This thread has been __un-registered__ from Keep-Alive.' })],
       });
     }
 

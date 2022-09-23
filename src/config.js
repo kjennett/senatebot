@@ -97,4 +97,4 @@ class SenateBotConfig {
   roles = process.env.NODE_ENV === 'production' ? prodConfig.roles : devConfig.roles;
 }
 
-exports.config = new SenateBotConfig();
+module.exports = new SenateBotConfig();

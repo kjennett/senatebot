@@ -1,16 +1,13 @@
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder } = require('discord.js');
 const { generateAccountSummary } = require('../functions/generateAccountSummary');
 const { fetchHelp } = require('../functions/fetchPlayerData');
-const { parseAllyCode } = require('../functions/parseAllyCode');
+const parseAllyCode = require('../functions/parseAllyCode');
 
 const reportSubcommand = new SlashCommandSubcommandBuilder()
   .setName('report')
   .setDescription('Display a summary of information about an account.')
   .addStringOption(option =>
-    option
-      .setName('allycode')
-      .setDescription('Ally code or non-vanity SWGOH.gg link for the account.')
-      .setRequired(true)
+    option.setName('allycode').setDescription('Ally code or non-vanity SWGOH.gg link for the account.').setRequired(true)
   );
 
 module.exports = {
@@ -30,12 +27,11 @@ module.exports = {
     if (parsedAllyCode instanceof Error) return interaction.editReply(parsedAllyCode.message);
 
     if (await !fetchHelp(parsedAllyCode))
-      return interaction.editReply(
-        'Unable to fetch account information. Please verify ally code and try again!'
-      );
+      return interaction.editReply('Unable to fetch account information. Please verify ally code and try again!');
 
     const accountSummary = await generateAccountSummary(parsedAllyCode);
 
-    await interaction.editReply(accountSummary);
+    await interaction.editReply({ embeds: accountSummary.embeds });
+    if (accountSummary.image) await interaction.followUp({ files: [accountSummary.image] });
   },
 };

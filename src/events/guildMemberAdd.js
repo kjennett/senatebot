@@ -14,23 +14,22 @@ module.exports = {
   name: 'guildMemberAdd',
 
   async execute(member) {
+    // Don't do anything when bots join the server
     if (member.user.bot) return;
 
+    // Add the PGM role to the user
     await member.roles.add(await member.guild.roles.fetch(config.roles.potentialGuildMember));
 
+    // Generate an attachment containing the welcome image for the user
     const [background, font] = await Promise.all([
       Jimp.read('src/img/welcometothesenate.png'),
       Jimp.loadFont('src/img/pathway.ttf.fnt'),
     ]);
-    const image = background.print(
-      font,
-      350 - Jimp.measureText(font, member.user.username) / 2,
-      150,
-      member.user.username
-    );
+    const image = background.print(font, 350 - Jimp.measureText(font, member.user.username) / 2, 150, member.user.username);
     const welcomeImage = await image.getBufferAsync(Jimp.MIME_PNG);
     const attachment = new AttachmentBuilder(welcomeImage, 'welcome.png');
 
+    // Build the server join menu
     const serverJoinMenu = new ActionRowBuilder().addComponents(
       new SelectMenuBuilder()
         .setCustomId('serverJoinMenu')
@@ -45,6 +44,7 @@ module.exports = {
         ])
     );
 
+    // Send the welcome image and server join menu in the landing bay
     const landingBay = await member.client.channels.fetch(config.channels.landingBay);
     await landingBay.send({ files: [attachment] });
     const welcomeMenu = await landingBay.send({
@@ -52,6 +52,7 @@ module.exports = {
       components: [serverJoinMenu],
     });
 
+    // Generate a new embed announcing the user in the recruitment room
     const embed = new EmbedBuilder().setTitle(`New User: ${member.user.username}`).addFields([
       {
         name: 'Landing Bay Link:',
@@ -59,11 +60,14 @@ module.exports = {
       },
     ]);
 
+    // Filter responses to the welcome menu to those from the new user
     const menuFilter = interaction => {
       interaction.deferUpdate();
       return interaction.user.id === member.id;
     };
 
+    // Await the user's response to the menu and modify the announcement embed based on their menu response. Then,
+    // send the announcement embed in the recruitment channel
     welcomeMenu
       .awaitMessageComponent({
         filter: menuFilter,
@@ -77,9 +81,7 @@ module.exports = {
 
         if (selected === 'kick') {
           await recruitment.send(
-            `${userMention(
-              '223492830297849856'
-            )}: a user clicked your button and was kicked from the server!`
+            `${userMention('223492830297849856')}: a user clicked your button and was kicked from the server!`
           );
           await member.kick('Selected the KICK ME menu option');
         }

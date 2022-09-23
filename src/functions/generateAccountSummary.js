@@ -4,14 +4,22 @@ const { client } = require('../client');
 const { fetchGG, fetchHelp, fetchOmega } = require('./fetchPlayerData');
 const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
 
-exports.generateAccountSummary = async parsedAllyCode => {
+/**
+ * Returns embeds and images containing a summary of account and
+ * mod data for a player account.
+ */
+module.exports = async parsedAllyCode => {
+  // Attempt to fetch player data from SWGOH.GG
   let playerData = await fetchGG(parsedAllyCode);
-  const accountSummaryEmbed = new EmbedBuilder();
-  accountSummaryEmbed.setDescription(`Ally Code: ${parsedAllyCode}`);
 
+  // Generate an embed to display the account summary
+  const accountSummaryEmbed = new EmbedBuilder().setDescription(`Ally Code: ${parsedAllyCode}`);
+
+  // If player has data in the SWGOH.GG database, generate account summary based on that data
   if (playerData) {
     accountSummaryEmbed.setTitle(`Account Summary: ${playerData.data.name}`);
-    accountSummaryEmbed.setTimestamp(new Date(playerData.data.last_updated));
+
+    // Account's galactic power
     accountSummaryEmbed.addFields([
       {
         name: 'Galactic Power:',
@@ -19,6 +27,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
       },
     ]);
 
+    // If player has GAC data, add it to the embed
     if (playerData.data.level >= 85 && playerData.data.league_name)
       accountSummaryEmbed.addFields([
         {
@@ -29,6 +38,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
         },
       ]);
 
+    // If player has fleet arena data, add it to the embed
     if (playerData.data.level >= 60 && playerData.data.fleet_arena)
       accountSummaryEmbed.addFields([
         {
@@ -37,9 +47,11 @@ exports.generateAccountSummary = async parsedAllyCode => {
         },
       ]);
 
+    // Fetch ultimate and omicron material emojis
     const ultEmoji = await client.emojis.cache.get('976604889260126248');
     const omiEmoji = await client.emojis.cache.get('984941574439972954');
 
+    // Build arrays of various categories of ships and characters
     const caps = [];
     const GLs = [];
     const conChars = [];
@@ -48,27 +60,30 @@ exports.generateAccountSummary = async parsedAllyCode => {
     const tbOmis = [];
 
     for (const unit of playerData.units) {
+      // If the unit is a galactic legend, display its gear / relic level and ult status
       if (config.galacticLegends.includes(unit.data.base_id)) {
-        const gearLevel =
-          unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+        const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
         const ult = unit.data.has_ultimate ? ` ${ultEmoji}` : '';
         GLs.push(`${unit.data.name}: ${gearLevel}${ult}`);
       }
 
+      // If the unit is a capital ship, display its star level
       if (config.capitalShips.includes(unit.data.base_id)) {
         caps.push(`${unit.data.name}: ${unit.data.rarity}:star:`);
       }
 
+      // If the unit is a conquest character, display its gear / relic level
       if (config.conquestCharacters.includes(unit.data.base_id)) {
-        const gearLevel =
-          unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+        const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
         conChars.push(`${unit.data.name}: ${gearLevel}`);
       }
 
+      // If the unit is a conquest ship, display its star level
       if (config.conquestShips.includes(unit.data.base_id)) {
         conShips.push(`${unit.data.name}: ${unit.data.rarity}:star:`);
       }
 
+      // If the unit has a TB or TW omicron ability unlocked, display each unlocked omicron
       if (unit.data.ability_data.some(a => a.has_omicron_learned)) {
         const tbOmisLearned = [];
         const twOmisLearned = [];
@@ -79,7 +94,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
             if (omiResult.omicron_mode === 7) {
               tbOmisLearned.push(` - ${ability.name} ${omiEmoji}`);
             }
-            if (omiResult.omicron_mode === 8 || omiResult.omicron_mode === 14) {
+            if (omiResult.omicron_mode === 8) {
               twOmisLearned.push(` - ${ability.name} ${omiEmoji}`);
             }
           }
@@ -92,6 +107,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
       }
     }
 
+    // Alphabetize the list of units and abilities in each category
     caps.sort();
     GLs.sort();
     conChars.sort();
@@ -99,11 +115,13 @@ exports.generateAccountSummary = async parsedAllyCode => {
     twOmis.sort();
     tbOmis.sort();
 
+    // Calculate the number of unlocked unts in each category
     const numberOfCaps = caps.length;
     const numberOfGLs = GLs.length;
     const numberOfConChars = conChars.length;
     const numberOfConShips = conShips.length;
 
+    // Add placeholders if the account has no units or abilities unlocked in each category
     if (caps.join() === '') caps.push('-----');
     if (GLs.join() === '') GLs.push('-----');
     if (conChars.join() === '') conChars.push('-----');
@@ -111,6 +129,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
     if (twOmis.join() === '') twOmis.push('-----');
     if (tbOmis.join() === '') tbOmis.push('-----');
 
+    // Display unit / ability counts and lists for each category
     accountSummaryEmbed.addFields([
       {
         name: `Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`,
@@ -136,16 +155,20 @@ exports.generateAccountSummary = async parsedAllyCode => {
         name: `TB Omicrons:`,
         value: tbOmis.join('\n'),
       },
+      // Display the link to the account's SWGOH.GG profile
       {
         name: 'SWGOH.gg Profile:',
         value: `https://swgoh.gg/p/${parsedAllyCode}`,
       },
     ]);
 
+    // Generate a new embed to display mod data from the Omega API
     const modSummaryEmbed = new EmbedBuilder().setTitle(`Mod Data: ${playerData.data.name}`);
 
+    // Fetch omega data - it is assumed that the user has mod data via Omega if they have SWGOH.GG account data
     const modData = await fetchOmega(parsedAllyCode);
 
+    // Add ModQ and Omega scores to the embed
     modSummaryEmbed.addFields([
       {
         name: 'ModQ Score:',
@@ -159,38 +182,39 @@ exports.generateAccountSummary = async parsedAllyCode => {
       },
     ]);
 
+    // If image data was obtained, return the embeds and the image
     if (modData.image) {
-      const image = new AttachmentBuilder(Buffer.from(modData.image, 'base64'), 'modgraph.png');
-      modSummaryEmbed.setImage('attachment://modgraph.png');
-      return { embeds: [accountSummaryEmbed, modSummaryEmbed], files: [image] };
+      const image = new AttachmentBuilder(Buffer.from(modData.image, 'base64'));
+      return { embeds: [accountSummaryEmbed, modSummaryEmbed], image: image };
     }
 
+    // If no image data was obtained, return embeds only
     return {
       embeds: [accountSummaryEmbed, modSummaryEmbed],
     };
+    // If the player does NOT have SWGOH.GG data, use SWGOH.Help for account summary generation
   } else {
+    // Fetch SWGOH.Help data
     playerData = await fetchHelp(parsedAllyCode);
+
+    // Verify that SWGOH.Help data exists (no data indicates invalid ally code)
     if (!playerData) return null;
 
-    accountSummaryEmbed
-      .setTitle(`Player information: ${playerData.name}`)
-      .setFooter({
-        text: 'Data source: SWGOH.Help',
-        iconURL: process.env.SENATELOGO,
-      })
-      .setTimestamp()
-      .addFields([
-        {
-          name: 'Galactic Power:',
-          value: `${playerData.stats[0].value.toLocaleString()}`,
-        },
-      ]);
+    // Add title with account name to the summary embed
+    accountSummaryEmbed.setTitle(`Player information: ${playerData.name}`).addFields([
+      {
+        name: 'Galactic Power:',
+        value: `${playerData.stats[0].value.toLocaleString()}`,
+      },
+    ]);
 
+    // If player has GAC data, add it to the embed
     if (playerData.grandArena.length > 0) {
       const lower = playerData.grandArena.at(-1).league.toLowerCase();
       const league = lower.charAt(0).toUpperCase() + lower.slice(1);
       let division;
 
+      // Calculate GAC division number
       switch (playerData.grandArena.at(-1).division) {
         case 5:
           division = '5';
@@ -225,7 +249,9 @@ exports.generateAccountSummary = async parsedAllyCode => {
         },
       ]);
     }
-    if (playerData.level >= 85)
+
+    // If the account has fleet arena data, add it to the embed
+    if (playerData.level >= 60)
       accountSummaryEmbed.addFields([
         {
           name: 'Fleet Rank (Real Time):',
@@ -233,49 +259,59 @@ exports.generateAccountSummary = async parsedAllyCode => {
         },
       ]);
 
+    // Build arrays of various categories of ships and characters
     const caps = [];
     const GLs = [];
     const conChars = [];
     const conShips = [];
 
     for (const unit of playerData.roster) {
+      // If the unit is a galactic legend, display its gear / relic level
       if (config.galacticLegends.includes(unit.defId)) {
         const glResult = await db.collection('characters').findOne({ base_id: unit.defId });
         const gearLevel = unit.gear > 12 ? `R${unit.relic.currentTier - 2}` : `G${unit.gear}`;
         GLs.push(`${glResult.name}: ${gearLevel}`);
       }
 
+      // If the unit is a conquest character, display its gear / relic level
       if (config.conquestCharacters.includes(unit.defId)) {
         const charResult = await db.collection('characters').findOne({ base_id: unit.defId });
         const gearLevel = unit.gear > 12 ? `R${unit.relic.currentTier - 2}` : `G${unit.gear}`;
         conChars.push(`${charResult.name}: ${gearLevel}`);
       }
 
+      // If the unit is a capital ship, display its star level
       if (config.capitalShips.includes(unit.defId)) {
         const capResult = await db.collection('ships').findOne({ base_id: unit.defId });
         caps.push(`${capResult.name}: ${unit.rarity}:star:`);
       }
 
+      // If the unit is a capital ship, display its star level
       if (config.conquestShips.includes(unit.defId)) {
         const shipResult = await db.collection('ships').findOne({ base_id: unit.defId });
         conShips.push(`${shipResult.name}: ${unit.rarity}:star:`);
       }
     }
+
+    // Alphabetize the list of units and abilities in each category
     caps.sort();
     GLs.sort();
     conChars.sort();
     conShips.sort();
 
+    // Calculate the number of unlocked unts in each category
     const numberOfCaps = caps.length;
     const numberOfGLs = GLs.length;
     const numberOfConChars = conChars.length;
     const numberOfConShips = conShips.length;
 
+    // Add placeholders if the account has no units or abilities unlocked in each category
     if (caps.join() === '') caps.push('-----');
     if (GLs.join() === '') GLs.push('-----');
     if (conChars.join() === '') conChars.push('-----');
     if (conShips.join() === '') conShips.push('-----');
 
+    // Display unit / ability counts and lists for each category
     accountSummaryEmbed.addFields([
       {
         name: `Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`,
