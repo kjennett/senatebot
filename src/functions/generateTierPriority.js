@@ -1,15 +1,21 @@
-const { dbDecisions, dbRecruits, dbGuilds } = require('../database');
-const { MessageEmbed } = require('discord.js');
+const { db } = require('../database');
+const { EmbedBuilder } = require('discord.js');
 
 exports.generateTierPriority = async parsedAllyCode => {
-  const recruit = await dbRecruits.findOne({ ally_code: parsedAllyCode });
-  const guildsInTier = await dbGuilds.find({ tier: recruit.tier }).sort({ last_recruit_time: 1, name: 1 }).toArray();
+  const recruit = await db.collection('recruits').findOne({ ally_code: parsedAllyCode });
+  const guildsInTier = await db
+    .collection('guilds')
+    .find({ tier: recruit.tier })
+    .sort({ last_recruit_time: 1, name: 1 })
+    .toArray();
 
-  const embed = new MessageEmbed().setTitle(`Tier ${recruit.tier} Priority:`).setTimestamp();
+  const embed = new EmbedBuilder().setTitle(`Tier ${recruit.tier} Priority:`).setTimestamp();
 
   let i = 1;
   for (const guild of guildsInTier) {
-    const decision = await dbDecisions.findOne({ ally_code: parsedAllyCode, guild: guild.name });
+    const decision = await db
+      .collection('decisions')
+      .findOne({ ally_code: parsedAllyCode, guild: guild.name });
 
     let dec;
     if (!decision) dec = 'No Decision Entered :grey_question:';
@@ -20,10 +26,17 @@ exports.generateTierPriority = async parsedAllyCode => {
     if (!guild.last_recruit_time) {
       lastRec = 'No last recruit data available';
     } else {
-      lastRec = `Last Recruit: ${guild.last_recruit_name} @ <t:${Math.floor(new Date(guild.last_recruit_time) / 1000)}:f>`;
+      lastRec = `Last Recruit: ${guild.last_recruit_name} @ <t:${Math.floor(
+        new Date(guild.last_recruit_time) / 1000
+      )}:f>`;
     }
 
-    await embed.addField(`${i}. ${guild.name}: ${dec}`, lastRec);
+    await embed.addFields([
+      {
+        name: `${i}. ${guild.name}: ${dec}`,
+        value: lastRec,
+      },
+    ]);
     i++;
   }
 

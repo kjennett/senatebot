@@ -1,7 +1,6 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { dbGuilds } = require('../database');
+const { db } = require('../database');
 const { config } = require('../config');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
   enabled: true,
@@ -65,14 +64,16 @@ module.exports = {
       const name = await i.options.getString('name');
       const time = (await i.options.getString('time')) ?? Date.now();
 
-      await dbGuilds.findOneAndUpdate(
-        { name: guild },
-        { $set: { last_recruit_name: name, last_recruit_time: time } }
-      );
+      await db
+        .collection('guilds')
+        .findOneAndUpdate(
+          { name: guild },
+          { $set: { last_recruit_name: name, last_recruit_time: time } }
+        );
 
       return i.editReply({
         embeds: [
-          new MessageEmbed({
+          new EmbedBuilder({
             title: 'Last Recruit Time Updated',
             description: `Guild: ${guild}\nRecruit: ${name}\ntime: <t:${Math.floor(
               time / 1000
@@ -114,7 +115,7 @@ module.exports = {
 
         await i.editReply({
           embeds: [
-            new MessageEmbed({
+            new EmbedBuilder({
               title: `Order 66 Complete - ${numberOfUsers} users have been removed.`,
               color: 'GREEN',
             }),
@@ -123,7 +124,7 @@ module.exports = {
       } else {
         return i.editReply({
           embeds: [
-            new MessageEmbed({
+            new EmbedBuilder({
               title: `No purge-eligible members were found.`,
               color: 'RED',
             }),

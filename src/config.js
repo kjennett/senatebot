@@ -61,6 +61,7 @@ class SenateBotConfig {
     'GRANDMASTERLUKE',
     'JEDIMASTERKENOBI',
     'LORDVADER',
+    'JABBATHEHUTT',
   ];
 
   // Capital Ship Base IDs
@@ -74,10 +75,11 @@ class SenateBotConfig {
     'CAPITALCHIMAERA',
     'CAPITALRADDUS',
     'CAPITALFINALIZER',
+    'CAPITALPROFUNDITY',
   ];
 
   // Conquest Character Base IDs
-  conquestCharacters = ['COMMANDERAHSOKA', 'MAULS7', 'BOBAFETTSCION', 'DARTHMALGUS'];
+  conquestCharacters = ['COMMANDERAHSOKA', 'MAULS7', 'BOBAFETTSCION', 'DARTHMALGUS', 'BENSOLO'];
 
   // Conquest Ship Base IDs
   conquestShips = ['TIEINTERCEPTOR', 'RAZORCREST'];

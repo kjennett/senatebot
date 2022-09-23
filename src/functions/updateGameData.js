@@ -1,4 +1,4 @@
-const { dbCharacters, dbShips, dbAbilities } = require('../database');
+const { db } = require('../database');
 const axios = require('axios').default;
 
 const fetchCharacters = async () => {
@@ -17,13 +17,17 @@ const fetchAbilities = async () => {
 };
 
 exports.updateGameData = async () => {
-  await dbCharacters.deleteMany();
-  await dbShips.deleteMany();
-  await dbAbilities.deleteMany();
+  await db.collection('characters').deleteMany();
+  await db.collection('ships').deleteMany();
+  await db.collection('abilities').deleteMany();
 
-  const [characters, ships, abilities] = await Promise.all([fetchCharacters(), fetchShips(), fetchAbilities()]);
+  const [characters, ships, abilities] = await Promise.all([
+    fetchCharacters(),
+    fetchShips(),
+    fetchAbilities(),
+  ]);
 
-  await dbCharacters.insertMany(characters);
-  await dbShips.insertMany(ships);
-  await dbAbilities.insertMany(abilities);
+  await db.collection('characters').insertMany(characters);
+  await db.collection('ships').insertMany(ships);
+  await db.collection('abilities').insertMany(abilities);
 };

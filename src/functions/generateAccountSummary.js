@@ -1,12 +1,12 @@
 const { config } = require('../config');
-const { dbCharacters, dbAbilities, dbShips } = require('../database');
+const { db } = require('../database');
 const { client } = require('../client');
 const { fetchGG, fetchHelp, fetchOmega } = require('./fetchPlayerData');
-const { MessageAttachment, MessageEmbed } = require('discord.js');
+const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
 
 exports.generateAccountSummary = async parsedAllyCode => {
   let playerData = await fetchGG(parsedAllyCode);
-  const accountSummaryEmbed = new MessageEmbed();
+  const accountSummaryEmbed = new EmbedBuilder();
   accountSummaryEmbed.setDescription(`Ally Code: ${parsedAllyCode}`);
 
   if (playerData) {
@@ -16,7 +16,10 @@ exports.generateAccountSummary = async parsedAllyCode => {
       iconURL: process.env.SENATELOGO,
     });
     accountSummaryEmbed.setTimestamp(new Date(playerData.data.last_updated));
-    accountSummaryEmbed.addField('Galactic Power:', `${playerData.data.galactic_power.toLocaleString()}`);
+    accountSummaryEmbed.addField(
+      'Galactic Power:',
+      `${playerData.data.galactic_power.toLocaleString()}`
+    );
 
     if (playerData.data.level >= 85 && playerData.data.league_name)
       accountSummaryEmbed.addField(
@@ -27,7 +30,10 @@ exports.generateAccountSummary = async parsedAllyCode => {
       );
 
     if (playerData.data.level >= 60 && playerData.data.fleet_arena)
-      accountSummaryEmbed.addField('Fleet Rank (Last Payout):', `${playerData.data.fleet_arena.rank ?? '-----'}`);
+      accountSummaryEmbed.addField(
+        'Fleet Rank (Last Payout):',
+        `${playerData.data.fleet_arena.rank ?? '-----'}`
+      );
 
     const ultEmoji = await client.emojis.cache.get('976604889260126248');
     const omiEmoji = await client.emojis.cache.get('984941574439972954');
@@ -41,7 +47,8 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
     for (const unit of playerData.units) {
       if (config.galacticLegends.includes(unit.data.base_id)) {
-        const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+        const gearLevel =
+          unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
         const ult = unit.data.has_ultimate ? ` ${ultEmoji}` : '';
         GLs.push(`${unit.data.name}: ${gearLevel}${ult}`);
       }
@@ -51,7 +58,8 @@ exports.generateAccountSummary = async parsedAllyCode => {
       }
 
       if (config.conquestCharacters.includes(unit.data.base_id)) {
-        const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+        const gearLevel =
+          unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
         conChars.push(`${unit.data.name}: ${gearLevel}`);
       }
 
@@ -65,7 +73,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
         for (const ability of unit.data.ability_data) {
           if (ability.has_omicron_learned) {
-            const omiResult = await dbAbilities.findOne({ base_id: ability.id });
+            const omiResult = await db.collection('abilities').findOne({ base_id: ability.id });
             if (omiResult.omicron_mode === 7) {
               tbOmisLearned.push(` - ${ability.name} ${omiEmoji}`);
             }
@@ -103,14 +111,20 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
     accountSummaryEmbed
       .addField(`Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`, GLs.join('\n'))
-      .addField(`Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`, conChars.join('\n'))
+      .addField(
+        `Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`,
+        conChars.join('\n')
+      )
       .addField(`Capital Ships: ${numberOfCaps}/${config.capitalShips.length}`, caps.join('\n'))
-      .addField(`Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`, conShips.join('\n'))
+      .addField(
+        `Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`,
+        conShips.join('\n')
+      )
       .addField(`TW Omicrons:`, twOmis.join('\n'))
       .addField(`TB Omicrons:`, tbOmis.join('\n'))
       .addField('SWGOH.gg Profile:', `https://swgoh.gg/p/${parsedAllyCode}`);
 
-    const modSummaryEmbed = new MessageEmbed()
+    const modSummaryEmbed = new EmbedBuilder()
       .setTitle(`Mod Data: ${playerData.data.name}`)
       .setFooter({ text: '', iconURL: '' });
 
@@ -130,7 +144,7 @@ exports.generateAccountSummary = async parsedAllyCode => {
     ]);
 
     if (modData.image) {
-      const image = new MessageAttachment(Buffer.from(modData.image, 'base64'), 'modgraph.png');
+      const image = new AttachmentBuilder(Buffer.from(modData.image, 'base64'), 'modgraph.png');
       modSummaryEmbed.setImage('attachment://modgraph.png');
       return { embeds: [accountSummaryEmbed, modSummaryEmbed], files: [image] };
     }
@@ -180,7 +194,8 @@ exports.generateAccountSummary = async parsedAllyCode => {
     } else {
       accountSummaryEmbed.addField('GAC League:', '-----');
     }
-    if (playerData.level >= 85) accountSummaryEmbed.addField('Fleet Rank (Real Time):', `${playerData.arena.ship.rank}`);
+    if (playerData.level >= 85)
+      accountSummaryEmbed.addField('Fleet Rank (Real Time):', `${playerData.arena.ship.rank}`);
 
     const caps = [];
     const GLs = [];
@@ -189,24 +204,24 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
     for (const unit of playerData.roster) {
       if (config.galacticLegends.includes(unit.defId)) {
-        const glResult = await dbCharacters.findOne({ base_id: unit.defId });
+        const glResult = await db.collection('characters').findOne({ base_id: unit.defId });
         const gearLevel = unit.gear > 12 ? `R${unit.relic.currentTier - 2}` : `G${unit.gear}`;
         GLs.push(`${glResult.name}: ${gearLevel}`);
       }
 
       if (config.conquestCharacters.includes(unit.defId)) {
-        const charResult = await dbCharacters.findOne({ base_id: unit.defId });
+        const charResult = await db.collection('characters').findOne({ base_id: unit.defId });
         const gearLevel = unit.gear > 12 ? `R${unit.relic.currentTier - 2}` : `G${unit.gear}`;
         conChars.push(`${charResult.name}: ${gearLevel}`);
       }
 
       if (config.capitalShips.includes(unit.defId)) {
-        const capResult = await dbShips.findOne({ base_id: unit.defId });
+        const capResult = await db.collection('ships').findOne({ base_id: unit.defId });
         caps.push(`${capResult.name}: ${unit.rarity}:star:`);
       }
 
       if (config.conquestShips.includes(unit.defId)) {
-        const shipResult = await dbShips.findOne({ base_id: unit.defId });
+        const shipResult = await db.collection('ships').findOne({ base_id: unit.defId });
         conShips.push(`${shipResult.name}: ${unit.rarity}:star:`);
       }
     }
@@ -227,9 +242,15 @@ exports.generateAccountSummary = async parsedAllyCode => {
 
     accountSummaryEmbed
       .addField(`Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`, GLs.join('\n'))
-      .addField(`Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`, conChars.join('\n'))
+      .addField(
+        `Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`,
+        conChars.join('\n')
+      )
       .addField(`Capital Ships: ${numberOfCaps}/${config.capitalShips.length}`, caps.join('\n'))
-      .addField(`Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`, conShips.join('\n'));
+      .addField(
+        `Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`,
+        conShips.join('\n')
+      );
 
     return { embeds: [accountSummaryEmbed] };
   }

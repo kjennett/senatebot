@@ -1,7 +1,6 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { dbGuilds, dbTiers } = require('../database');
+const { db } = require('../database');
 const { config } = require('../config');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
   enabled: true,
@@ -118,7 +117,7 @@ module.exports = {
 
     if (group === 'add') {
       const guildName = await i.options.getString('guild');
-      const dbGuild = await dbGuilds.findOne({ name: guildName });
+      const dbGuild = await db.collection('guilds').findOne({ name: guildName });
       if (!dbGuild) return i.editReply(`Guild ${guildName} was not found in the database.`);
 
       if (!i.member.roles.cache.has(dbGuild.officer_role_id) && i.member.id !== process.env.OWNER) {
@@ -153,7 +152,7 @@ module.exports = {
       if (sub === 'recruiter') {
         const role = await i.guild.roles.fetch(dbGuild.recruiter_role_id);
         const rRole = await i.guild.roles.fetch(config.roles.recruitment);
-        const dbTier = await dbTiers.findOne({ number: dbGuild.tier });
+        const dbTier = await db.collection('tiers').findOne({ number: dbGuild.tier });
         const tRole = await i.guild.roles.fetch(dbTier.recruiter_role_id);
 
         await member.roles.add(role);
@@ -178,11 +177,11 @@ module.exports = {
     if (group === 'change') {
       if (sub === 'tier') {
         const guildName = await i.options.getString('guild');
-        const dbGuild = await dbGuilds.findOne({ name: guildName });
+        const dbGuild = await db.collection('guilds').findOne({ name: guildName });
         if (!dbGuild) return i.editReply(`Guild ${guildName} was not found in the database.`);
 
         const tierNumber = await i.options.getInteger('tier');
-        const dbTier = await dbTiers.findOne({ number: tierNumber });
+        const dbTier = await db.collection('tiers').findOne({ number: tierNumber });
         if (!dbTier) return i.editReply(`Tier ${tierNumber} was not found in the database.`);
 
         if (
@@ -209,7 +208,7 @@ module.exports = {
             );
           });
 
-          await dbGuilds.findOneAndUpdate(
+          await db.collection('guilds').findOneAndUpdate(
             { name: guildName },
             {
               $set: {
@@ -232,7 +231,7 @@ module.exports = {
         const recruitment = await i.client.channels.fetch(config.channels.recruitmentRoom);
         await recruitment.send({
           embeds: [
-            new MessageEmbed({
+            new EmbedBuilder({
               title: `NOTICE: ${guildName} has been moved to Tier ${tierNumber}!`,
             }),
           ],

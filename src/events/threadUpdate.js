@@ -1,4 +1,4 @@
-const { dbThreads } = require('../database');
+const { db } = require('../database');
 
 module.exports = {
   name: 'threadUpdate',
@@ -6,7 +6,7 @@ module.exports = {
   async execute(oldThread, newThread) {
     // If the thread has been newly archived for any reason, check for keep-alive registration (/thread keepalive)
     if (!oldThread.archived && newThread.archived) {
-      const dbThread = await dbThreads.findOne({ id: oldThread.id });
+      const dbThread = await db.collection('threads').findOne({ id: oldThread.id });
       if (!dbThread) return;
 
       if (!newThread.joined && newThread.joinable) await newThread.join();

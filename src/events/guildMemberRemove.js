@@ -1,18 +1,18 @@
-const { dbRecruits } = require('../database');
-const { MessageEmbed } = require('discord.js');
+const { db } = require('../database');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
   name: 'guildMemberRemove',
 
   async execute(member) {
-    const recruitResult = await dbRecruits.findOne({ discord_user_id: member.id });
+    const recruitResult = await db.collection('recruits').findOne({ discord_user_id: member.id });
     if (!recruitResult) return;
 
     const thread = await member.client.channels.fetch(recruitResult.thread_id);
     if (!thread) return;
     if (thread.archived) return;
 
-    const embed = new MessageEmbed({
+    const embed = new EmbedBuilder({
       title: 'This recruit has left the server.',
       description: 'Archiving recruitment thread...',
     }).setTimestamp();
@@ -24,6 +24,6 @@ module.exports = {
     await thread.setLocked(true);
     await thread.setArchived(true);
 
-    await dbRecruits.findOneAndDelete({ discord_user_id: member.id });
+    await db.collection('recruits').findOneAndDelete({ discord_user_id: member.id });
   },
 };

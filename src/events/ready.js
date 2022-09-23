@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { client } = require('../client');
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
     const owner = await client.users.fetch(process.env.OWNER);
     await owner.send({
       embeds: [
-        new MessageEmbed({
+        new EmbedBuilder({
           title: 'Startup Complete!',
           description: `Servers: ${client.guilds.cache.size}\nCommands: ${client.commands.size}`,
           color: 'GREEN',

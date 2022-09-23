@@ -1,5 +1,12 @@
-const { roleMention, userMention, hyperlink } = require('@discordjs/builders');
-const { MessageActionRow, MessageSelectMenu, MessageAttachment, MessageEmbed } = require('discord.js');
+const {
+  ActionRowBuilder,
+  SelectMenuBuilder,
+  AttachmentBuilder,
+  EmbedBuilder,
+  roleMention,
+  userMention,
+  hyperlink,
+} = require('discord.js');
 const { config } = require('../config');
 const Jimp = require('jimp');
 
@@ -15,12 +22,17 @@ module.exports = {
       Jimp.read('src/img/welcometothesenate.png'),
       Jimp.loadFont('src/img/pathway.ttf.fnt'),
     ]);
-    const image = background.print(font, 350 - Jimp.measureText(font, member.user.username) / 2, 150, member.user.username);
+    const image = background.print(
+      font,
+      350 - Jimp.measureText(font, member.user.username) / 2,
+      150,
+      member.user.username
+    );
     const welcomeImage = await image.getBufferAsync(Jimp.MIME_PNG);
-    const attachment = new MessageAttachment(welcomeImage, 'welcome.png');
+    const attachment = new AttachmentBuilder(welcomeImage, 'welcome.png');
 
-    const serverJoinMenu = new MessageActionRow().addComponents(
-      new MessageSelectMenu()
+    const serverJoinMenu = new ActionRowBuilder().addComponents(
+      new SelectMenuBuilder()
         .setCustomId('serverJoinMenu')
         .setPlaceholder("I'm here to...")
         .addOptions([
@@ -40,9 +52,12 @@ module.exports = {
       components: [serverJoinMenu],
     });
 
-    const embed = new MessageEmbed()
-      .setTitle(`New User: ${member.user.username}`)
-      .addField('Landing Bay Link:', `${hyperlink(`Welcome Menu Post: ${member.user.username}`, welcomeMenu.url)}`);
+    const embed = new EmbedBuilder().setTitle(`New User: ${member.user.username}`).addFields([
+      {
+        name: 'Landing Bay Link:',
+        value: `${hyperlink(`Welcome Menu Post: ${member.user.username}`, welcomeMenu.url)}`,
+      },
+    ]);
 
     const menuFilter = interaction => {
       interaction.deferUpdate();
@@ -62,7 +77,9 @@ module.exports = {
 
         if (selected === 'kick') {
           await recruitment.send(
-            `${userMention('223492830297849856')}: a user clicked your button and was kicked from the server!`
+            `${userMention(
+              '223492830297849856'
+            )}: a user clicked your button and was kicked from the server!`
           );
           await member.kick('Selected the KICK ME menu option');
         }

@@ -1,7 +1,6 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { dbAbilities, dbCharacters, dbShips } = require('../database');
+const { db } = require('../database');
 const { config } = require('../config');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
   enabled: true,
@@ -52,12 +51,13 @@ module.exports = {
 
     if (sub === 'ability') {
       const abilityId = await interaction.options.getString('abilityname');
-      const ability = await dbAbilities.findOne({ base_id: abilityId });
-      if (!abilityId || !ability) return interaction.editReply({ embeds: [config.errorEmbeds.noAbilityFound] });
+      const ability = await db.collection('abilities').findOne({ base_id: abilityId });
+      if (!abilityId || !ability)
+        return interaction.editReply({ embeds: [config.errorEmbeds.noAbilityFound] });
 
       const unit = ability.character_base_id
-        ? await dbCharacters.findOne({ base_id: ability.character_base_id })
-        : await dbShips.findOne({ base_id: ability.ship_base_id });
+        ? await db.collection('characters').findOne({ base_id: ability.character_base_id })
+        : await db.collection('ships').findOne({ base_id: ability.ship_base_id });
 
       const zetaEmoji = await interaction.client.emojis.cache.get('984941532845056100');
       const omiEmoji = await interaction.client.emojis.cache.get('984941574439972954');
@@ -74,7 +74,9 @@ module.exports = {
       const infoEmbed = new MessageEmbed()
         .setTitle(`Ability: ${ability.name} ${zeta} ${omi}`)
         .setThumbnail(ability.image)
-        .setDescription(`${unit.name} ${abilityType} Ability\n\n${ability.description.replace(/\[.{6}\]/gm, '')}`)
+        .setDescription(
+          `${unit.name} ${abilityType} Ability\n\n${ability.description.replace(/\[.{6}\]/gm, '')}`
+        )
         .setURL(`https:${ability.url}`);
 
       return interaction.editReply({ embeds: [infoEmbed] });
@@ -82,13 +84,18 @@ module.exports = {
 
     if (sub === 'character') {
       const characterId = await interaction.options.getString('charactername');
-      const character = await dbCharacters.findOne({ base_id: characterId });
-      if (!characterId || !character) return interaction.editReply({ embeds: [config.errorEmbeds.noCharacterFound] });
+      const character = await db.collection('characters').findOne({ base_id: characterId });
+      if (!characterId || !character)
+        return interaction.editReply({ embeds: [config.errorEmbeds.noCharacterFound] });
 
       const zetaEmoji = await interaction.client.emojis.cache.get('984941532845056100');
       const omiEmoji = await interaction.client.emojis.cache.get('984941574439972954');
 
-      const abilities = await dbAbilities.find({ character_base_id: characterId }).sort({ base_id: 1 }).toArray();
+      const abilities = await db
+        .collection('abilities')
+        .find({ character_base_id: characterId })
+        .sort({ base_id: 1 })
+        .toArray();
 
       const infoEmbed = new MessageEmbed()
         .setTitle(`Character: ${character.name}`)
@@ -115,10 +122,15 @@ module.exports = {
 
     if (sub === 'ship') {
       const shipId = await interaction.options.getString('shipname');
-      const ship = await dbShips.findOne({ base_id: shipId });
-      if (!shipId || !ship) return interaction.editReply({ embeds: [config.errorEmbeds.noShipFound] });
+      const ship = await db.collection('ships').findOne({ base_id: shipId });
+      if (!shipId || !ship)
+        return interaction.editReply({ embeds: [config.errorEmbeds.noShipFound] });
 
-      const abilities = await dbShips.find({ ship_base_id: shipId }).sort({ base_id: 1 }).toArray();
+      const abilities = await db
+        .collection('ships')
+        .find({ ship_base_id: shipId })
+        .sort({ base_id: 1 })
+        .toArray();
 
       const infoEmbed = new MessageEmbed()
         .setTitle(`Ship: ${ship.name}`)
