@@ -124,7 +124,6 @@ module.exports = {
           embeds: [
             new EmbedBuilder({
               title: `No purge-eligible members were found.`,
-              color: 'RED',
             }),
           ],
         });
