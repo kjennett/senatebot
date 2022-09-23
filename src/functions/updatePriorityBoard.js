@@ -24,14 +24,21 @@ const priorityBoard = async () => {
     let i = 1;
     for (const guild of guildsInTier) {
       if (guild.last_recruit_name) {
-        tierEmbed.addField(
-          `${i}. ${guild.name}`,
-          `${guild.last_recruit_name} - <t:${Math.floor(
-            new Date(guild.last_recruit_time) / 1000
-          )}:d>`
-        );
+        tierEmbed.addFields([
+          {
+            name: `${i}. ${guild.name}`,
+            value: `${guild.last_recruit_name} - <t:${Math.floor(
+              new Date(guild.last_recruit_time) / 1000
+            )}:d>`,
+          },
+        ]);
       } else {
-        tierEmbed.addField(`${i}. ${guild.name}`, '-----');
+        tierEmbed.addFields([
+          {
+            name: `${i}. ${guild.name}`,
+            value: '-----',
+          },
+        ]);
       }
       i++;
     }
