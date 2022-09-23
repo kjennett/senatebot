@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { client } = require('../client');
+const client = require('../client');
 
 module.exports = {
   name: 'ready',

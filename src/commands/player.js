@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder } = require('discord.js');
-const { generateAccountSummary } = require('../functions/generateAccountSummary');
+const generateAccountSummary = require('../functions/generateAccountSummary');
 const { fetchHelp } = require('../functions/fetchPlayerData');
 const parseAllyCode = require('../functions/parseAllyCode');
 

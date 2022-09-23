@@ -1,7 +1,7 @@
 const parseAllyCode = require('../functions/parseAllyCode');
-const { config } = require('../config');
+const config = require('../config');
 const { fetchHelp } = require('../functions/fetchPlayerData');
-const { generateAccountSummary } = require('../functions/generateAccountSummary');
+const generateAccountSummary = require('../functions/generateAccountSummary');
 const generateTierPriority = require('../functions/generateTierPriority');
 const { db } = require('../database');
 const { MessageEmbed, SlashCommandBuilder, roleMention, userMention } = require('discord.js');

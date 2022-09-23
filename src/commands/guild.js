@@ -1,5 +1,5 @@
 const { db } = require('../database');
-const { config } = require('../config');
+const config = require('../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
@@ -17,18 +17,9 @@ module.exports = {
             .setName('member')
             .setDescription('Add Guild Member and Senate Citizen roles to a user account.')
             .addStringOption(o =>
-              o
-                .setName('guild')
-                .setDescription('The guild to add Member roles for.')
-                .setAutocomplete(true)
-                .setRequired(true)
+              o.setName('guild').setDescription('The guild to add Member roles for.').setAutocomplete(true).setRequired(true)
             )
-            .addUserOption(o =>
-              o
-                .setName('user')
-                .setDescription('The Discord user to add the roles to.')
-                .setRequired(true)
-            )
+            .addUserOption(o => o.setName('user').setDescription('The Discord user to add the roles to.').setRequired(true))
         )
         .addSubcommand(s2 =>
           s2
@@ -41,12 +32,7 @@ module.exports = {
                 .setAutocomplete(true)
                 .setRequired(true)
             )
-            .addUserOption(o =>
-              o
-                .setName('user')
-                .setDescription('The Discord user to add the roles to.')
-                .setRequired(true)
-            )
+            .addUserOption(o => o.setName('user').setDescription('The Discord user to add the roles to.').setRequired(true))
         )
         .addSubcommand(s3 =>
           s3
@@ -59,30 +45,16 @@ module.exports = {
                 .setAutocomplete(true)
                 .setRequired(true)
             )
-            .addUserOption(o =>
-              o
-                .setName('user')
-                .setDescription('The Discord user to add the roles to.')
-                .setRequired(true)
-            )
+            .addUserOption(o => o.setName('user').setDescription('The Discord user to add the roles to.').setRequired(true))
         )
         .addSubcommand(s4 =>
           s4
             .setName('guest')
             .setDescription('Add Guild Guest roles to a user account.')
             .addStringOption(o =>
-              o
-                .setName('guild')
-                .setDescription('The guild to add Guest roles for.')
-                .setAutocomplete(true)
-                .setRequired(true)
+              o.setName('guild').setDescription('The guild to add Guest roles for.').setAutocomplete(true).setRequired(true)
             )
-            .addUserOption(o =>
-              o
-                .setName('user')
-                .setDescription('The Discord user to add the roles to.')
-                .setRequired(true)
-            )
+            .addUserOption(o => o.setName('user').setDescription('The Discord user to add the roles to.').setRequired(true))
         )
     )
     .addSubcommandGroup(sG2 =>
@@ -101,11 +73,7 @@ module.exports = {
                 .setRequired(true)
             )
             .addIntegerOption(option =>
-              option
-                .setName('tier')
-                .setDescription('The tier to move the guild to.')
-                .setAutocomplete(true)
-                .setRequired(true)
+              option.setName('tier').setDescription('The tier to move the guild to.').setAutocomplete(true).setRequired(true)
             )
         )
     ),
@@ -184,17 +152,11 @@ module.exports = {
         const dbTier = await db.collection('tiers').findOne({ number: tierNumber });
         if (!dbTier) return i.editReply(`Tier ${tierNumber} was not found in the database.`);
 
-        if (
-          !i.member.roles.cache.has(dbGuild.officer_role_id) &&
-          i.member.id !== process.env.OWNER
-        ) {
-          return i.editReply(
-            `Only ${guildName} Officers are allowed to change the recruitment tier of their guild.`
-          );
+        if (!i.member.roles.cache.has(dbGuild.officer_role_id) && i.member.id !== process.env.OWNER) {
+          return i.editReply(`Only ${guildName} Officers are allowed to change the recruitment tier of their guild.`);
         }
 
-        if (tierNumber === dbGuild.tier)
-          return i.editReply(`${guildName} is already in Tier ${tierNumber}!`);
+        if (tierNumber === dbGuild.tier) return i.editReply(`${guildName} is already in Tier ${tierNumber}!`);
 
         const allMembers = await i.guild.members.fetch();
         const recruiters = allMembers.filter(m => m.roles.cache.has(dbGuild.recruiter_role_id));

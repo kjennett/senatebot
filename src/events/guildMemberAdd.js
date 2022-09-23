@@ -7,7 +7,7 @@ const {
   userMention,
   hyperlink,
 } = require('discord.js');
-const { config } = require('../config');
+const config = require('../config');
 const Jimp = require('jimp');
 
 module.exports = {
