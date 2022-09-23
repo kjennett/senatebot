@@ -12,7 +12,6 @@ module.exports = {
         new EmbedBuilder({
           title: 'Startup Complete!',
           description: `Servers: ${client.guilds.cache.size}\nCommands: ${client.commands.size}`,
-          color: 'GREEN',
         }).setTimestamp(),
       ],
     });
