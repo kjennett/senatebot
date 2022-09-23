@@ -1,6 +1,6 @@
-const { config } = require('../config');
+const config = require('../config');
 const { db } = require('../database');
-const { client } = require('../client');
+const client = require('../client');
 const { fetchGG, fetchHelp, fetchOmega } = require('./fetchPlayerData');
 const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
 
