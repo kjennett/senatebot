@@ -1,6 +1,6 @@
 const { db } = require('../database');
 const { config } = require('../config');
-const { MessageEmbed, SlashCommandBuilder } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
   enabled: true,
@@ -71,7 +71,7 @@ module.exports = {
       if (ability.base_id.includes('leader')) abilityType = 'Leader';
       if (ability.base_id.includes('granted')) abilityType = 'Granted';
 
-      const infoEmbed = new MessageEmbed()
+      const infoEmbed = new EmbedBuilder()
         .setTitle(`Ability: ${ability.name} ${zeta} ${omi}`)
         .setThumbnail(ability.image)
         .setDescription(
@@ -97,12 +97,17 @@ module.exports = {
         .sort({ base_id: 1 })
         .toArray();
 
-      const infoEmbed = new MessageEmbed()
+      const infoEmbed = new EmbedBuilder()
         .setTitle(`Character: ${character.name}`)
         .setURL(character.url)
         .setDescription(character.description)
         .setThumbnail(character.image)
-        .addField('Tags', character.categories.join(', '));
+        .addFields([
+          {
+            name: 'Tags',
+            value: character.categories.join(', '),
+          },
+        ]);
 
       for (const ability of abilities) {
         const zeta = ability.is_zeta ? zetaEmoji : '';
@@ -114,7 +119,12 @@ module.exports = {
         if (ability.base_id.includes('leader')) abilityType = 'Leader';
         if (ability.base_id.includes('granted')) abilityType = 'Granted';
 
-        infoEmbed.addField(`${abilityType} Ability`, `${ability.name} ${zeta} ${omi}`, true);
+        infoEmbed.addFields([
+          {
+            name: `${abilityType} Ability`,
+            value: `${ability.name} ${zeta} ${omi}`,
+          },
+        ]);
       }
 
       return interaction.editReply({ embeds: [infoEmbed] });
@@ -132,12 +142,17 @@ module.exports = {
         .sort({ base_id: 1 })
         .toArray();
 
-      const infoEmbed = new MessageEmbed()
+      const infoEmbed = new EmbedBuilder()
         .setTitle(`Ship: ${ship.name}`)
         .setURL(ship.url)
         .setDescription(ship.description)
         .setThumbnail(ship.image)
-        .addField('Tags', ship.categories.join(', '));
+        .addFields([
+          {
+            name: 'Tags',
+            value: ship.categories.join(', '),
+          },
+        ]);
 
       for (const ability of abilities) {
         let abilityType;
@@ -148,7 +163,12 @@ module.exports = {
         if (ability.base_id.includes('granted')) abilityType = 'Granted';
         if (ability.base_id.includes('hardware')) abilityType = 'Hardware';
 
-        infoEmbed.addField(`${abilityType} Ability`, `${ability.name}`, true);
+        infoEmbed.addFields([
+          {
+            name: `${abilityType} Ability`,
+            value: `${ability.name}`,
+          },
+        ]);
       }
 
       return interaction.editReply({ embeds: [infoEmbed] });

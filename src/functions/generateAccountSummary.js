@@ -16,24 +16,30 @@ exports.generateAccountSummary = async parsedAllyCode => {
       iconURL: process.env.SENATELOGO,
     });
     accountSummaryEmbed.setTimestamp(new Date(playerData.data.last_updated));
-    accountSummaryEmbed.addField(
-      'Galactic Power:',
-      `${playerData.data.galactic_power.toLocaleString()}`
-    );
+    accountSummaryEmbed.addFields([
+      {
+        name: 'Galactic Power:',
+        value: `${playerData.data.galactic_power.toLocaleString()}`,
+      },
+    ]);
 
     if (playerData.data.level >= 85 && playerData.data.league_name)
-      accountSummaryEmbed.addField(
-        'GAC League (Skill Rating):',
-        `${playerData.data.league_name} ${
-          playerData.data.division_number
-        } (${playerData.data.skill_rating.toLocaleString()})`
-      );
+      accountSummaryEmbed.addFields([
+        {
+          name: 'GAC League (Skill Rating):',
+          value: `${playerData.data.league_name} ${
+            playerData.data.division_number
+          } (${playerData.data.skill_rating.toLocaleString()})`,
+        },
+      ]);
 
     if (playerData.data.level >= 60 && playerData.data.fleet_arena)
-      accountSummaryEmbed.addField(
-        'Fleet Rank (Last Payout):',
-        `${playerData.data.fleet_arena.rank ?? '-----'}`
-      );
+      accountSummaryEmbed.addFields([
+        {
+          name: 'Fleet Rank (Last Payout):',
+          value: `${playerData.data.fleet_arena.rank ?? '-----'}`,
+        },
+      ]);
 
     const ultEmoji = await client.emojis.cache.get('976604889260126248');
     const omiEmoji = await client.emojis.cache.get('984941574439972954');
@@ -109,20 +115,36 @@ exports.generateAccountSummary = async parsedAllyCode => {
     if (twOmis.join() === '') twOmis.push('-----');
     if (tbOmis.join() === '') tbOmis.push('-----');
 
-    accountSummaryEmbed
-      .addField(`Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`, GLs.join('\n'))
-      .addField(
-        `Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`,
-        conChars.join('\n')
-      )
-      .addField(`Capital Ships: ${numberOfCaps}/${config.capitalShips.length}`, caps.join('\n'))
-      .addField(
-        `Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`,
-        conShips.join('\n')
-      )
-      .addField(`TW Omicrons:`, twOmis.join('\n'))
-      .addField(`TB Omicrons:`, tbOmis.join('\n'))
-      .addField('SWGOH.gg Profile:', `https://swgoh.gg/p/${parsedAllyCode}`);
+    accountSummaryEmbed.addFields([
+      {
+        name: `Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`,
+        value: GLs.join('\n'),
+      },
+      {
+        name: `Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`,
+        value: conChars.join('\n'),
+      },
+      {
+        name: `Capital Ships: ${numberOfCaps}/${config.capitalShips.length}`,
+        value: caps.join('\n'),
+      },
+      {
+        name: `Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`,
+        value: conShips.join('\n'),
+      },
+      {
+        name: `TW Omicrons:`,
+        value: twOmis.join('\n'),
+      },
+      {
+        name: `TB Omicrons:`,
+        value: tbOmis.join('\n'),
+      },
+      {
+        name: 'SWGOH.gg Profile:',
+        value: `https://swgoh.gg/p/${parsedAllyCode}`,
+      },
+    ]);
 
     const modSummaryEmbed = new EmbedBuilder()
       .setTitle(`Mod Data: ${playerData.data.name}`)
@@ -163,7 +185,12 @@ exports.generateAccountSummary = async parsedAllyCode => {
         iconURL: process.env.SENATELOGO,
       })
       .setTimestamp()
-      .addField('Galactic Power:', `${playerData.stats[0].value.toLocaleString()}`);
+      .addFields([
+        {
+          name: 'Galactic Power:',
+          value: `${playerData.stats[0].value.toLocaleString()}`,
+        },
+      ]);
 
     if (playerData.grandArena.length > 0) {
       const lower = playerData.grandArena.at(-1).league.toLowerCase();
@@ -190,12 +217,27 @@ exports.generateAccountSummary = async parsedAllyCode => {
           division = '';
       }
 
-      accountSummaryEmbed.addField('GAC League:', `${league} ${division}`);
+      accountSummaryEmbed.addFields([
+        {
+          name: 'GAC League:',
+          value: `${league} ${division}`,
+        },
+      ]);
     } else {
-      accountSummaryEmbed.addField('GAC League:', '-----');
+      accountSummaryEmbed.addFields([
+        {
+          name: 'GAC League:',
+          value: '-----',
+        },
+      ]);
     }
     if (playerData.level >= 85)
-      accountSummaryEmbed.addField('Fleet Rank (Real Time):', `${playerData.arena.ship.rank}`);
+      accountSummaryEmbed.addFields([
+        {
+          name: 'Fleet Rank (Real Time):',
+          value: `${playerData.arena.ship.rank}`,
+        },
+      ]);
 
     const caps = [];
     const GLs = [];
@@ -240,17 +282,24 @@ exports.generateAccountSummary = async parsedAllyCode => {
     if (conChars.join() === '') conChars.push('-----');
     if (conShips.join() === '') conShips.push('-----');
 
-    accountSummaryEmbed
-      .addField(`Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`, GLs.join('\n'))
-      .addField(
-        `Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`,
-        conChars.join('\n')
-      )
-      .addField(`Capital Ships: ${numberOfCaps}/${config.capitalShips.length}`, caps.join('\n'))
-      .addField(
-        `Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`,
-        conShips.join('\n')
-      );
+    accountSummaryEmbed.addFields([
+      {
+        name: `Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`,
+        value: GLs.join('\n'),
+      },
+      {
+        name: `Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`,
+        value: conChars.join('\n'),
+      },
+      {
+        name: `Capital Ships: ${numberOfCaps}/${config.capitalShips.length}`,
+        value: caps.join('\n'),
+      },
+      {
+        name: `Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`,
+        value: conShips.join('\n'),
+      },
+    ]);
 
     return { embeds: [accountSummaryEmbed] };
   }
