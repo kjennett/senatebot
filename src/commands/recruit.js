@@ -4,7 +4,7 @@ const { fetchHelp } = require('../functions/fetchPlayerData');
 const generateAccountSummary = require('../functions/generateAccountSummary');
 const generateTierPriority = require('../functions/generateTierPriority');
 const { db } = require('../database');
-const { MessageEmbed, SlashCommandBuilder, roleMention, userMention } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder, roleMention, userMention } = require('discord.js');
 
 async function findStartingTier(gp) {
   const result = await db.collection('tiers').findOne({
@@ -148,10 +148,7 @@ module.exports = {
       if (accountSummary.image) await thread.send({ files: [accountSummary.image] });
 
       if (notes) {
-        const notesEmbed = new MessageEmbed()
-          .setTitle('Recruitment Notes')
-          .setDescription(notes)
-          .setFooter({ text: '', iconURL: '' });
+        const notesEmbed = new EmbedBuilder().setTitle('Recruitment Notes').setDescription(notes);
         await thread.send({ embeds: [notesEmbed] });
       }
 
@@ -212,10 +209,7 @@ module.exports = {
       if (accountSummary.image) await thread.send({ files: [accountSummary.image] });
 
       if (notes) {
-        const notesEmbed = new MessageEmbed()
-          .setTitle('Recruitment Notes')
-          .setDescription(notes)
-          .setFooter({ text: '', iconURL: '' });
+        const notesEmbed = new EmbedBuilder().setTitle('Recruitment Notes').setDescription(notes);
         const notesMessage = await thread.send({ embeds: [notesEmbed] });
         await notesMessage.pin();
       }
