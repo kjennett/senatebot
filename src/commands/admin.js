@@ -23,7 +23,7 @@ module.exports = {
           o.setName('time').setDescription('The aproximate time the recruit was claimed, as a millisecond timestamp')
         )
     )
-    .addSubcommand(s3 => s3.setName('order66').setDescription('Show a list of server members that meet purge criteria.')),
+    .addSubcommand(s3 => s3.setName('order66').setDescription('Remove all users from the server that meet purge criteria.')),
 
   async execute(i) {
     if (i.member.id !== config.owner) {
