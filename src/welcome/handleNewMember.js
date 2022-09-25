@@ -5,7 +5,7 @@ const welcomeMenu = require('./welcomeMenu');
 
 module.exports = async m => {
   if (m.user.bot) return;
-  await m.roles.add(await m.guild.roles.fetch(config.roles.potentialGuildm));
+  await m.roles.add(await m.guild.roles.fetch(config.roles.potentialGuildMember));
 
   const welcomeImage = await createWelcomeImage(m.user.username);
 
