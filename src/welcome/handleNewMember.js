@@ -1,4 +1,4 @@
-const { EmbedBuilder, roleMention, userMention, hyperlink } = require('discord.js');
+const { EmbedBuilder, roleMention, userMention, hyperlink, ComponentType } = require('discord.js');
 const config = require('../config');
 const createWelcomeImage = require('./createWelcomeImage');
 const welcomeMenu = require('./welcomeMenu');
@@ -25,7 +25,7 @@ module.exports = async m => {
   menuMessage
     .awaitMessageComponent({
       filter: menuFilter,
-      componentType: 'SELECT_MENU',
+      componentType: ComponentType.SelectMenu,
     })
     .then(async i => {
       const embed = new EmbedBuilder().setTitle(`New User: ${m.user.username}`).addFields([
