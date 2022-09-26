@@ -52,7 +52,7 @@ module.exports = async m => {
           content: `${roleMention(config.roles.greeter)}`,
           embeds: [embed],
         });
-        return welcomeMenu.edit({
+        return menuMessage.edit({
           content: `Thank you ${m.user}! Appropriate staff have been notified and will respond shortly.\nIn the meantime, *please share a SWGOH.gg link or ally code for our recruiters to review.*`,
           components: [],
         });
@@ -67,7 +67,7 @@ module.exports = async m => {
         await recruitment.send(
           `${m.user.username} is here to discuss a merger. The Alliance Recruitment Team has been notified!`
         );
-        return welcomeMenu.edit({
+        return menuMessage.edit({
           content: `Thank you ${m.user}! Appropriate staff have been notified and will respond shortly.`,
           components: [],
         });
@@ -79,7 +79,7 @@ module.exports = async m => {
           content: `${roleMention(config.roles.greeter)}`,
           embeds: [embed],
         });
-        return welcomeMenu.edit({
+        return menuMessage.edit({
           content:
             'Thank you for your interest! For more information on OmegaBot, please visit the OmegaBot Discord server: http://omegabot.thesenate.gg',
           components: [],
@@ -92,7 +92,7 @@ module.exports = async m => {
           content: `${roleMention(config.roles.greeter)}`,
           embeds: [embed],
         });
-        return welcomeMenu.edit({
+        return menuMessage.edit({
           content: `Thank you ${m.user}! Appropriate staff have been notified and will respond shortly.`,
           components: [],
         });
@@ -104,7 +104,7 @@ module.exports = async m => {
           content: `${roleMention(config.roles.greeter)}`,
           embeds: [embed],
         });
-        return welcomeMenu.edit({
+        return menuMessage.edit({
           content: `Thank you ${m.user}! Appropriate staff have been notified and will respond shortly.`,
           components: [],
         });
