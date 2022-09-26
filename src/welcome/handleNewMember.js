@@ -31,7 +31,7 @@ module.exports = async m => {
       const embed = new EmbedBuilder().setTitle(`New User: ${m.user.username}`).addFields([
         {
           name: 'Landing Bay Link:',
-          value: `${hyperlink(`Welcome Menu Post: ${m.user.username}`, welcomeMenu.url)}`,
+          value: `${hyperlink(`Welcome Menu Post: ${m.user.username}`, menuMessage.url)}`,
         },
       ]);
       const selected = i.values.join();
