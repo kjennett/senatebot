@@ -100,6 +100,10 @@ module.exports = {
         .setThumbnail(character.image)
         .addFields([
           {
+            name: 'Alignment',
+            value: character.alignment,
+          },
+          {
             name: 'Tags',
             value: character.categories.join(', '),
           },

@@ -4,15 +4,14 @@ const { join } = require('path');
 
 const { TOKEN, SERVER, CLIENT } = process.env;
 
-// Computed absolute paths of the events and commands directory
 const eventsDir = join(__dirname, './events');
 const commandsDir = join(__dirname, './commands');
 
 class SenateBotClient extends Client {
-  // Store command names and data for execution later
+  // ---------- Command Data Storage ---------- //
   commands = new Collection();
 
-  // Read all event handler files in the events directory, register the events to the Discord client
+  // ---------- Event Handler Registration ---------- //
   registerEventHandlers = () => {
     const eventFiles = readdirSync(eventsDir);
     for (const file of eventFiles) {
@@ -25,8 +24,7 @@ class SenateBotClient extends Client {
     }
   };
 
-  // Read all command handler files in the commands directory, store the command data
-  // for retrieval and execution, and deploy command data to Discord gateway
+  // ---------- Application Command Deployment ---------- //
   deployApplicationCommands = () => {
     const commandData = [];
     const commandFiles = readdirSync(commandsDir);
@@ -41,7 +39,7 @@ class SenateBotClient extends Client {
     return rest.put(Routes.applicationGuildCommands(CLIENT, SERVER), { body: commandData });
   };
 
-  // Create Discord client with appropriate intents
+  // ---------- Client Constructor ---------- //
   constructor() {
     super({
       intents: new IntentsBitField().add(IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers),

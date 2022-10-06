@@ -1,5 +1,8 @@
 const { MongoClient } = require('mongodb');
 
+// ---------- MongoDB Client ---------- //
 const mongo = new MongoClient(process.env.DB);
-exports.db = mongo.db();
 exports.mongo = mongo;
+
+// ---------- Default DB Accessor ---------- //
+exports.db = mongo.db();

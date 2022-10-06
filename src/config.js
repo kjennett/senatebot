@@ -1,33 +1,28 @@
-const devConfig = {
-  // Channel IDs
-  channels: {
-    landingBay: '895825647027490816',
-    recruitmentRoom: '852286378075095071',
-    securityCouncil: '895825820747190353',
-    allianceRecruitmentTeam: '895825820747190353',
-  },
-  // Role IDs
-  roles: {
-    potentialGuildMember: '543791694726823997',
-    senateGuest: '954525945438564402',
-    senateCitizen: '954525945438564402',
-    greeter: '954525945438564402',
-    recruitment: '954525945438564402',
-    allianceRecruitmentTeam: '954525945438564402',
-    guildOfficer: '954525945438564402',
-  },
-};
+class SenateBotConfig {
+  // ---------- Bot Admin ID ---------- //
+  owner = process.env.OWNER;
 
-const prodConfig = {
-  // Channel IDs
-  channels: {
+  // ---------- Bot Configuration ---------- //
+  token = process.env.TOKEN;
+  server = process.env.SERVER;
+  client = process.env.CLIENT;
+
+  // ---------- MongoDB Connection URI ---------- //
+  db = process.env.DB;
+
+  // ---------- Bot Logo ---------- //
+  senateLogo = process.env.SENATELOGO;
+
+  // ---------- Discord Channel IDs ---------- //
+  channels = {
     landingBay: '518436413344317450',
     recruitmentRoom: '518436714176577563',
     securityCouncil: '515882219525373955',
     allianceRecruitmentTeam: '907823084566892576',
-  },
-  // Role IDs
-  roles: {
+  };
+
+  // ---------- Discord Role IDs ---------- //
+  roles = {
     potentialGuildMember: '543791694726823997',
     senateGuest: '518433712203890718',
     senateCitizen: '515880547415883797',
@@ -35,25 +30,9 @@ const prodConfig = {
     recruitment: '518434369455783936',
     allianceRecruitmentTeam: '907820888244781076',
     guildOfficer: '515880606790582284',
-  },
-};
+  };
 
-class SenateBotConfig {
-  // Admin Discord ID
-  owner = process.env.OWNER;
-
-  // Discord Bot Token, Server ID, Client ID
-  token = process.env.TOKEN;
-  server = process.env.SERVER;
-  client = process.env.CLIENT;
-
-  // MongoDB Connection URI
-  db = process.env.DB;
-
-  // Senate Logo Image URL
-  senateLogo = process.env.SENATELOGO;
-
-  // Galactic Legend Base IDs
+  // ---------- Galactic Legend Base IDs ---------- //
   galacticLegends = [
     'SITHPALPATINE',
     'GLREY',
@@ -64,7 +43,10 @@ class SenateBotConfig {
     'JABBATHEHUTT',
   ];
 
-  // Capital Ship Base IDs
+  // ---------- Conquest Character Base IDs ---------- //
+  conquestCharacters = ['COMMANDERAHSOKA', 'MAULS7', 'BOBAFETTSCION', 'DARTHMALGUS', 'BENSOLO'];
+
+  // ---------- Capital Ship Base IDs ---------- //
   capitalShips = [
     'CAPITALSTARDESTROYER',
     'CAPITALMONCALAMARICRUISER',
@@ -78,23 +60,16 @@ class SenateBotConfig {
     'CAPITALPROFUNDITY',
   ];
 
-  // Conquest Character Base IDs
-  conquestCharacters = ['COMMANDERAHSOKA', 'MAULS7', 'BOBAFETTSCION', 'DARTHMALGUS', 'BENSOLO'];
-
-  // Conquest Ship Base IDs
+  // ---------- Conquest Ship Base IDs ---------- //
   conquestShips = ['TIEINTERCEPTOR', 'RAZORCREST'];
 
-  // Omicron Mode Values
+  // ---------- Omicron Modes ---------- //
   omicronModes = {
     TB: 7,
     TW: 8,
     GAC: 9,
     GAC3v3: 14,
   };
-
-  // Set channel and role config values based on active environment
-  channels = process.env.NODE_ENV === 'production' ? prodConfig.channels : devConfig.channels;
-  roles = process.env.NODE_ENV === 'production' ? prodConfig.roles : devConfig.roles;
 }
 
 module.exports = new SenateBotConfig();
