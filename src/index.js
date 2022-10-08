@@ -1,7 +1,7 @@
 const { mongo } = require('./database');
 const client = require('./client');
-const startPriorityBoard = require('./functions/priorityBoard');
-const updateGameInfo = require('./functions/updateGameInfo');
+const startPriorityBoard = require('./recruitment/priorityBoard');
+const updateGameInfo = require('./api/updateGameInfo');
 
 const { TOKEN } = process.env;
 
