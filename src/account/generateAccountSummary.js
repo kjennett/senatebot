@@ -125,13 +125,8 @@ module.exports = async ggData => {
       inline: true,
     },
     {
-      name: '\u200b',
-      value: '\u200b',
-    },
-    {
       name: `Capital Ships: ${numberOfCaps}/${config.capitalShips.length}`,
       value: caps.join('\n'),
-      inline: true,
     },
     {
       name: `Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`,
@@ -139,13 +134,8 @@ module.exports = async ggData => {
       inline: true,
     },
     {
-      name: '\u200b',
-      value: '\u200b',
-    },
-    {
       name: `TW Omicrons:`,
       value: twOmis.join('\n'),
-      inline: true,
     },
     {
       name: `TB Omicrons:`,
