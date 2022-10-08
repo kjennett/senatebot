@@ -11,7 +11,7 @@ module.exports = async ggData => {
     .setTitle(`${ggData.data.name}`)
     .setThumbnail(ggData.data.portrait_image)
     .setTimestamp(new Date(ggData.data.last_updated))
-    .setFooter({ text: 'Source: SWGOH.GG', url: `https://swgoh.gg${ggData.data.url}` });
+    .setFooter({ text: 'SWGOH.GG | Last Synced' });
 
   accountSummaryEmbed.addFields([
     {
@@ -148,7 +148,7 @@ module.exports = async ggData => {
   const modData = await fetchOmegaAccountData(ggData.data.ally_code);
   if (!modData) return { embeds: [accountSummaryEmbed] };
 
-  const modSummaryEmbed = new EmbedBuilder().setTitle(`Mod Data: ${ggData.data.name}`);
+  const modSummaryEmbed = new EmbedBuilder().setTitle(`Mod Scores`);
 
   modSummaryEmbed.addFields([
     {
