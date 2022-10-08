@@ -8,7 +8,7 @@ module.exports = async ggData => {
   const accountSummaryEmbed = new EmbedBuilder().setDescription(`Ally Code: ${ggData.data.ally_code}`);
 
   accountSummaryEmbed
-    .setTitle(`Account Summary: ${ggData.data.name}`)
+    .setTitle(`${ggData.data.name}`)
     .setThumbnail(ggData.data.portrait_image)
     .setTimestamp(new Date(ggData.data.last_updated))
     .setFooter({ text: 'Source: SWGOH.GG', url: `https://swgoh.gg${ggData.data.url}` });
@@ -117,12 +117,10 @@ module.exports = async ggData => {
     {
       name: `Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`,
       value: GLs.join('\n'),
-      inline: true,
     },
     {
       name: `Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`,
       value: conChars.join('\n'),
-      inline: true,
     },
     {
       name: `Capital Ships: ${numberOfCaps}/${config.capitalShips.length}`,
@@ -131,7 +129,6 @@ module.exports = async ggData => {
     {
       name: `Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`,
       value: conShips.join('\n'),
-      inline: true,
     },
     {
       name: `TW Omicrons:`,
@@ -140,7 +137,6 @@ module.exports = async ggData => {
     {
       name: `TB Omicrons:`,
       value: tbOmis.join('\n'),
-      inline: true,
     },
     // Display the link to the account's SWGOH.GG profile
     {
