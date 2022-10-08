@@ -7,7 +7,7 @@ module.exports = {
   enabled: true,
 
   data: new SlashCommandBuilder()
-    .setName('player')
+    .setName('account')
     .setDescription('Fetch game data for a specific player')
     .addSubcommand(s1 =>
       s1
