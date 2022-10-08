@@ -26,7 +26,7 @@ module.exports = {
 
     // ---------- Determine Ally Code ---------- //
     const parsedAllyCode = await parseAllyCode(i.options.getString('allycode'));
-    if (parsedAllyCode)
+    if (!parsedAllyCode)
       return i.editReply(`Unable to determine ally code using the provided input: (${i.options.getString('allycode')})`);
 
     // ---------- Fetch Account Data ---------- //

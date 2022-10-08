@@ -124,7 +124,7 @@ module.exports = {
 
       // ---------- Determine Ally Code ---------- //
       const parsedAllyCode = await parseAllyCode(allycode);
-      if (parsedAllyCode)
+      if (!parsedAllyCode)
         return i.editReply(`Unable to determine ally code using the provided input: (${i.options.getString('allycode')})`);
 
       // ---------- Check Recruit Thread Database ---------- //
@@ -190,7 +190,7 @@ module.exports = {
 
       // ---------- Determine Ally Code ---------- //
       const parsedAllyCode = await parseAllyCode(allycode);
-      if (parsedAllyCode)
+      if (!parsedAllyCode)
         return i.editReply(`Unable to determine ally code using the provided input: (${i.options.getString('allycode')})`);
 
       // ---------- Check Recruit Thread Database ---------- //
