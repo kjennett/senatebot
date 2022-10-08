@@ -2,6 +2,7 @@ const { mongo } = require('./database');
 const client = require('./client');
 const startPriorityBoard = require('./recruitment/priorityBoard');
 const updateGameInfo = require('./api/updateGameInfo');
+const updateEvents = require('./api/updateEvents');
 
 const { TOKEN } = process.env;
 
@@ -21,8 +22,9 @@ async function startup() {
   // ---------- Connect Discord Client ---------- //
   await client.login(TOKEN);
 
-  // ---------- Start Recruitment Priority Updater ---------- //
+  // ---------- Start Recruitment Priority and Events Updaters ---------- //
   await startPriorityBoard();
+  await updateEvents();
 }
 
 startup();
