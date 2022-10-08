@@ -5,7 +5,7 @@ const fetchOmegaAccountData = require('../api/fetchOmegaAccountData');
 const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = async ggData => {
-  const accountSummaryEmbed = new EmbedBuilder().setDescription(`Ally Code: ${ggData.data.ally_code}`);
+  const accountSummaryEmbed = new EmbedBuilder().setDescription(`${ggData.data.ally_code}`);
 
   accountSummaryEmbed
     .setTitle(`${ggData.data.name}`)
