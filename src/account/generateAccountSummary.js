@@ -146,13 +146,8 @@ module.exports = async ggData => {
   if (modData) {
     accountSummaryEmbed.addFields([
       {
-        name: 'ModQ Score:',
-        value: `${modData.scores.ModQ.toFixed(2)}`,
-        inline: true,
-      },
-      {
-        name: 'Omega Score:',
-        value: `${modData.scores.Omega.toFixed(2)}`,
+        name: 'ModQ / Omega',
+        value: `${modData.scores.ModQ.toFixed(2)} / ${modData.scores.Omega.toFixed(2)}`,
         inline: true,
       },
     ]);
