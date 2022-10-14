@@ -10,8 +10,8 @@ module.exports = async ggData => {
   accountSummaryEmbed
     .setTitle(`${ggData.data.name}`)
     .setThumbnail(ggData.data.portrait_image)
-    .setTimestamp(new Date(ggData.data.last_updated))
-    .setFooter({ text: 'SWGOH.GG | Last Synced' });
+    .setTimestamp(Date.parse(ggData.data.last_updated))
+    .setFooter({ text: 'Source: SWGOH.GG // Data Last Synced' });
 
   accountSummaryEmbed.addFields([
     {
