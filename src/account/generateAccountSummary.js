@@ -2,7 +2,7 @@ const config = require('../config');
 const { db } = require('../database');
 const client = require('../client');
 const fetchOmegaAccountData = require('../api/fetchOmegaAccountData');
-const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
+const { AttachmentBuilder, EmbedBuilder, hyperlink } = require('discord.js');
 
 module.exports = async ggData => {
   const accountSummaryEmbed = new EmbedBuilder().setDescription(`${ggData.data.ally_code}`);
@@ -47,6 +47,7 @@ module.exports = async ggData => {
   const conShips = [];
   const twOmis = [];
   const tbOmis = [];
+  const r9crons = [];
 
   for (const unit of ggData.units) {
     if (config.galacticLegends.includes(unit.data.base_id)) {
@@ -91,6 +92,12 @@ module.exports = async ggData => {
     }
   }
 
+  for (const cron of ggData.datacrons) {
+    if (cron.tier === 9) {
+      r9crons.push(hyperlink(`${cron.tiers.at(-1).scope_target_name}`, `https://swgoh.gg/${cron.url}`));
+    }
+  }
+
   // Alphabetize the list of units and abilities in each category
   caps.sort();
   GLs.sort();
@@ -98,12 +105,14 @@ module.exports = async ggData => {
   conShips.sort();
   twOmis.sort();
   tbOmis.sort();
+  r9crons.sort();
 
   // Calculate the number of unlocked unts in each category
   const numberOfCaps = caps.length;
   const numberOfGLs = GLs.length;
   const numberOfConChars = conChars.length;
   const numberOfConShips = conShips.length;
+  const numberOfR9Crons = r9crons.length;
 
   // Add placeholders if the account has no units or abilities unlocked in each category
   if (caps.join() === '') caps.push('-----');
@@ -112,6 +121,7 @@ module.exports = async ggData => {
   if (conShips.join() === '') conShips.push('-----');
   if (twOmis.join() === '') twOmis.push('-----');
   if (tbOmis.join() === '') tbOmis.push('-----');
+  if (r9crons.join() === '') r9crons.push('-----');
 
   // Display unit / ability counts and lists for each category
   accountSummaryEmbed.addFields([
@@ -138,6 +148,10 @@ module.exports = async ggData => {
     {
       name: `TB Omicrons:`,
       value: tbOmis.join('\n'),
+    },
+    {
+      name: `Tier 9 Datacrons: ${numberOfR9Crons}`,
+      value: r9crons.join('\n'),
     },
   ]);
 
