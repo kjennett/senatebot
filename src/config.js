@@ -70,6 +70,13 @@ class SenateBotConfig {
     GAC: 9,
     GAC3v3: 14,
   };
+
+  datacronSets = {
+    1: 'Treatise Inquisitorius',
+    2: 'Enduring Codex',
+    3: 'Ardent Ideologies',
+    4: 'Security Primer',
+  };
 }
 
 module.exports = new SenateBotConfig();
