@@ -11,7 +11,8 @@ module.exports = async ggData => {
     .setTitle(`${ggData.data.name}`)
     .setThumbnail(ggData.data.portrait_image)
     .setTimestamp(Date.parse(ggData.data.last_updated))
-    .setFooter({ text: 'Source: SWGOH.GG // Data Last Synced' });
+    .setFooter({ text: 'Source: SWGOH.GG' })
+    .setURL(`https://swgoh.gg${ggData.data.url}`);
 
   accountSummaryEmbed.addFields([
     {
@@ -137,11 +138,6 @@ module.exports = async ggData => {
     {
       name: `TB Omicrons:`,
       value: tbOmis.join('\n'),
-    },
-    // Display the link to the account's SWGOH.GG profile
-    {
-      name: 'SWGOH.gg Profile:',
-      value: `https://swgoh.gg${ggData.data.url}`,
     },
   ]);
 
