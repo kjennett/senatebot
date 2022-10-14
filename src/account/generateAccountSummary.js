@@ -11,7 +11,7 @@ module.exports = async ggData => {
     .setTitle(`${ggData.data.name}`)
     .setThumbnail(ggData.data.portrait_image)
     .setTimestamp(Date.parse(ggData.data.last_updated))
-    .setFooter({ text: 'Source: SWGOH.GG // Last Sync Time ---->' })
+    .setFooter({ text: 'Source: SWGOH.GG // Last Sync Time' })
     .setURL(`https://swgoh.gg${ggData.data.url}`);
 
   accountSummaryEmbed.addFields([
