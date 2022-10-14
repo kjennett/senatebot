@@ -142,7 +142,6 @@ module.exports = async ggData => {
   ]);
 
   const modData = await fetchOmegaAccountData(ggData.data.ally_code);
-  let image;
   if (modData) {
     accountSummaryEmbed.addFields([
       {
@@ -157,15 +156,9 @@ module.exports = async ggData => {
       },
     ]);
 
-    image = new AttachmentBuilder(Buffer.from(modData.image, 'base64'), { name: 'modImage.png' });
+    new AttachmentBuilder(Buffer.from(modData.image, 'base64'), { name: 'modImage.png' });
     accountSummaryEmbed.setImage('attachment://modData.png');
   }
-
-  if (modData)
-    return {
-      embeds: [accountSummaryEmbed],
-      files: [image],
-    };
 
   return {
     embeds: [accountSummaryEmbed],
