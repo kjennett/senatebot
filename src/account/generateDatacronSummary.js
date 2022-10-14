@@ -14,13 +14,17 @@ module.exports = async ggData => {
 
   const crons = ggData.datacrons.filter(cron => cron.tier >= 6);
   for (const cron of crons) {
-    const title = hyperlink(`${config.datacronSets[cron.set_id]} (Tier ${cron.tier})`, `https://swgoh.gg/${cron.url}`);
+    const title = `${config.datacronSets[cron.set_id]} (Tier ${cron.tier})`;
     const stats = [];
 
     let i = 1;
     for (const tier of cron.tiers) {
       if (tier.ability_description) {
-        stats.push(`Tier ${i}: ${tier.ability_description}`);
+        stats.push(
+          `Tier ${i}: ${tier.ability_description
+            .replace(`<span class=\"locale-text--color\" style=\"color: #ffff33;\">`, '')
+            .replace('</span>', '')}`
+        );
       } else {
         const stat = (tier.stat_value * 100).toFixed(2);
         stats.push(`Tier ${i}: ${stat}% ${tier.scope_target_name}`);
