@@ -36,6 +36,6 @@ module.exports = {
 
     const accountSummary = await generateAccountSummary(ggData);
     await i.editReply({ embeds: accountSummary.embeds });
-    if (accountSummary.image) await i.followUp({ files: [accountSummary.image] });
+    if (accountSummary.image) await i.channel.send({ files: [accountSummary.image] });
   },
 };

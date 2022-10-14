@@ -142,29 +142,26 @@ module.exports = async ggData => {
   ]);
 
   const modData = await fetchOmegaAccountData(ggData.data.ally_code);
-  if (!modData) return { embeds: [accountSummaryEmbed] };
-
-  const modSummaryEmbed = new EmbedBuilder().setTitle(`Mod Scores`);
-
-  modSummaryEmbed.addFields([
-    {
-      name: 'ModQ Score:',
-      value: `${modData.scores.ModQ.toFixed(2)}`,
-      inline: true,
-    },
-    {
-      name: 'Omega Score:',
-      value: `${modData.scores.Omega.toFixed(2)}`,
-      inline: true,
-    },
-  ]);
+  if (modData) {
+    accountSummaryEmbed.addFields([
+      {
+        name: 'ModQ Score:',
+        value: `${modData.scores.ModQ.toFixed(2)}`,
+        inline: true,
+      },
+      {
+        name: 'Omega Score:',
+        value: `${modData.scores.Omega.toFixed(2)}`,
+        inline: true,
+      },
+    ]);
+  }
 
   if (modData.image) {
     const image = new AttachmentBuilder(Buffer.from(modData.image, 'base64'));
-    return { embeds: [accountSummaryEmbed, modSummaryEmbed], image: image };
+    return { embeds: [accountSummaryEmbed], image: image };
   }
-
   return {
-    embeds: [accountSummaryEmbed, modSummaryEmbed],
+    embeds: [accountSummaryEmbed],
   };
 };
