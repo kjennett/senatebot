@@ -158,7 +158,7 @@ module.exports = async ggData => {
     ]);
 
     image = new AttachmentBuilder(Buffer.from(modData.image, 'base64'), { name: 'modImage.png' });
-    accountSummaryEmbed.setImage('attachment://modData.png');
+    accountSummaryEmbed.setImage('attachment://modImage.png');
   }
 
   if (modData)
