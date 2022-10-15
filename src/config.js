@@ -1,19 +1,14 @@
 class SenateBotConfig {
-  // ---------- Bot Admin ID ---------- //
   owner = process.env.OWNER;
 
-  // ---------- Bot Configuration ---------- //
   token = process.env.TOKEN;
   server = process.env.SERVER;
   client = process.env.CLIENT;
 
-  // ---------- MongoDB Connection URI ---------- //
   db = process.env.DB;
 
-  // ---------- Bot Logo ---------- //
   senateLogo = process.env.SENATELOGO;
 
-  // ---------- Discord Channel IDs ---------- //
   channels = {
     landingBay: '518436413344317450',
     recruitmentRoom: '518436714176577563',
@@ -21,7 +16,6 @@ class SenateBotConfig {
     allianceRecruitmentTeam: '907823084566892576',
   };
 
-  // ---------- Discord Role IDs ---------- //
   roles = {
     potentialGuildMember: '543791694726823997',
     senateGuest: '518433712203890718',
@@ -32,7 +26,6 @@ class SenateBotConfig {
     guildOfficer: '515880606790582284',
   };
 
-  // ---------- Galactic Legend Base IDs ---------- //
   galacticLegends = [
     'SITHPALPATINE',
     'GLREY',
@@ -43,10 +36,8 @@ class SenateBotConfig {
     'JABBATHEHUTT',
   ];
 
-  // ---------- Conquest Character Base IDs ---------- //
   conquestCharacters = ['COMMANDERAHSOKA', 'MAULS7', 'BOBAFETTSCION', 'DARTHMALGUS', 'BENSOLO'];
 
-  // ---------- Capital Ship Base IDs ---------- //
   capitalShips = [
     'CAPITALSTARDESTROYER',
     'CAPITALMONCALAMARICRUISER',
@@ -60,10 +51,8 @@ class SenateBotConfig {
     'CAPITALPROFUNDITY',
   ];
 
-  // ---------- Conquest Ship Base IDs ---------- //
   conquestShips = ['TIEINTERCEPTOR', 'RAZORCREST'];
 
-  // ---------- Omicron Modes ---------- //
   omicronModes = {
     TB: 7,
     TW: 8,

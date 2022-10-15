@@ -2,6 +2,7 @@ const config = require('../config');
 const { db } = require('../database');
 const client = require('../client');
 const fetchOmegaAccountData = require('../api/fetchOmegaAccountData');
+const fetchGgGuildData = require('../api/fetchGgGuildData');
 const { AttachmentBuilder, EmbedBuilder, hyperlink } = require('discord.js');
 
 module.exports = async ggData => {
@@ -154,6 +155,27 @@ module.exports = async ggData => {
       value: r9crons.join('\n'),
     },
   ]);
+
+  if (ggData.data.guild_id) {
+    const ggGuildData = await fetchGgGuildData(ggData.data.guild_id);
+    const gp = ggGuildData.data.galactic_power / 1000000;
+    accountSummaryEmbed.addFields([
+      {
+        name: 'Current Guild',
+        value: hyperlink(
+          `${ggGuildData.data.name} - ${gp.toFixed(2)}M GP`,
+          `https://swgoh.gg/g/${ggGuildData.data.guild_id}`
+        ),
+      },
+    ]);
+  } else {
+    accountSummaryEmbed.addFields([
+      {
+        name: 'Current Guild',
+        value: '-----',
+      },
+    ]);
+  }
 
   const modData = await fetchOmegaAccountData(ggData.data.ally_code);
   let image;
