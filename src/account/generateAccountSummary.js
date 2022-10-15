@@ -163,7 +163,7 @@ module.exports = async ggData => {
       {
         name: 'Current Guild',
         value: hyperlink(
-          `${ggGuildData.data.name} - ${gp.toFixed(2)}M GP`,
+          `${ggGuildData.data.name} - ${gp.toFixed(0)}M GP`,
           `https://swgoh.gg/g/${ggGuildData.data.guild_id}`
         ),
       },
