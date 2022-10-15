@@ -152,8 +152,7 @@ module.exports = {
         autoArchiveDuration: 10080,
       });
       await thread.join();
-      await thread.send({ embeds: accountSummary.embeds });
-      if (accountSummary.image) await thread.send({ files: [accountSummary.image] });
+      await thread.send(accountSummary);
       if (notes) {
         const notesEmbed = new EmbedBuilder().setTitle('Recruitment Notes').setDescription(notes);
         await thread.send({ embeds: [notesEmbed] });
