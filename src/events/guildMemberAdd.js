@@ -19,7 +19,6 @@ module.exports = {
       components: [welcomeMenu],
     });
 
-    // welcomeMenu should only accept responses from the new user
     const menuFilter = i => {
       i.deferUpdate();
       return i.user.id === m.id;

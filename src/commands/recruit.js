@@ -83,7 +83,7 @@ module.exports = {
     )
     .addSubcommand(sub4 =>
       sub4
-        .setName('nexttier')
+        .setName('changetier')
         .setDescription('Moves a recruit to the next recruitment tier and pings the appropriate recruitment role.')
         .addIntegerOption(option =>
           option.setName('tier').setDescription('The tier to move the recruit to.').setAutocomplete(true)
@@ -115,37 +115,30 @@ module.exports = {
     const sub = await i.options.getSubcommand();
 
     if (sub === 'add') {
-      // ---------- Fetch User Inputs ---------- //
       const [discorduser, allycode, notes] = await Promise.all([
         i.options.getUser('discorduser'),
         i.options.getString('allycode'),
         i.options.getString('notes'),
       ]);
 
-      // ---------- Determine Ally Code ---------- //
       const parsedAllyCode = await parseAllyCode(allycode);
       if (!parsedAllyCode)
         return i.editReply(`Unable to determine ally code using the provided input: (${i.options.getString('allycode')})`);
 
-      // ---------- Check Recruit Thread Database ---------- //
       if (await db.collection('recruits').countDocuments({ ally_code: parsedAllyCode }))
         return i.editReply(`A recruitment thread already exists for this ally code.`);
 
-      // ---------- Fetch Account Data ---------- //
       const ggData = await fetchGgAccountData(parsedAllyCode);
       if (!ggData)
         return i.editReply(
           `Unable to find SWGOH.GG data for ally code ${parsedAllyCode}. Please scan this ally code to add the account to SWGOH.GG: https://swgoh.gg/scan-player/`
         );
 
-      // ---------- Find Starting Recruitment Tier ---------- //
       const startingTier = await findStartingTier(ggData.data.galactic_power);
       const tier = await db.collection('tiers').findOne({ number: startingTier });
 
-      // ---------- Generate Account Summary ---------- //
       const accountSummary = await generateAccountSummary(ggData);
 
-      // ---------- Start Recruitment Thread ---------- //
       const recruitmentChannel = await i.client.channels.fetch(config.channels.recruitmentRoom);
       const thread = await recruitmentChannel.threads.create({
         name: `${discorduser.username} (T${startingTier})`,
@@ -159,7 +152,6 @@ module.exports = {
       }
       const priorityMessage = await thread.send('Tier Priority:');
 
-      // ---------- Add Recruit Thread to Database ---------- //
       await db.collection('recruits').insertOne({
         ally_code: parsedAllyCode,
         discord_name: discorduser.username,
@@ -169,7 +161,6 @@ module.exports = {
         priority_message_id: priorityMessage.id,
       });
 
-      // ---------- Display Tier Priority ---------- //
       const priorityEmbed = await generateTierPriority(parsedAllyCode);
       await priorityMessage.edit(priorityEmbed);
 
@@ -180,37 +171,30 @@ module.exports = {
     if (sub === 'linkthread') {
       if (!i.channel.isThread()) return i.editReply('Please use this command in a recruit thread.');
 
-      // ---------- Fetch User Inputs ---------- //
       const [discorduser, allycode, notes] = await Promise.all([
         i.options.getUser('discorduser'),
         i.options.getString('allycode'),
         i.options.getString('notes'),
       ]);
 
-      // ---------- Determine Ally Code ---------- //
       const parsedAllyCode = await parseAllyCode(allycode);
       if (!parsedAllyCode)
         return i.editReply(`Unable to determine ally code using the provided input: (${i.options.getString('allycode')})`);
 
-      // ---------- Check Recruit Thread Database ---------- //
       if (await db.collection('recruits').countDocuments({ ally_code: parsedAllyCode }))
         return i.editReply(`A recruitment thread already exists for this ally code.`);
 
-      // ---------- Fetch Account Data ---------- //
       const ggData = await fetchGgAccountData(parsedAllyCode);
       if (!ggData)
         return i.editReply(
           `Unable to find SWGOH.GG data for ally code ${parsedAllyCode}. Please scan this ally code to add the account to SWGOH.GG: https://swgoh.gg/scan-player/`
         );
 
-      // ---------- Find Starting Recruitment Tier ---------- //
       const startingTier = await findStartingTier(ggData.data.galactic_power);
       const tier = await db.collection('tiers').findOne({ number: startingTier });
 
-      // ---------- Generate Account Summary ---------- //
       const accountSummary = await generateAccountSummary(ggData);
 
-      // ---------- Join Recruitment Thread ---------- //
       const thread = i.channel;
       await thread.join();
       await thread.edit({
@@ -223,7 +207,6 @@ module.exports = {
       }
       const priorityMessage = await thread.send('Tier Priority:');
 
-      // ---------- Add Recruitment Thread to Database ---------- //
       await db.collection('recruits').insertOne({
         ally_code: parsedAllyCode,
         discord_name: discorduser.username,
@@ -233,7 +216,6 @@ module.exports = {
         priority_message_id: priorityMessage.id,
       });
 
-      // ---------- Display Tier Priority ---------- //
       const priorityEmbed = await generateTierPriority(parsedAllyCode);
       await priorityMessage.edit(priorityEmbed);
 
@@ -241,8 +223,6 @@ module.exports = {
       return i.editReply(`Recruit thread successfully linked. Recruit commands may now be used in this thread!`);
     }
 
-    // TODO: Look at all the commands below this and optimize
-    // ---------- Thread Check ---------- //
     const recruit = await db.collection('recruits').findOne({ thread_id: i.channel.id });
     if (!recruit) return i.editReply('Please use this command in an active recruit thread.');
 
@@ -301,8 +281,6 @@ module.exports = {
       return await i.editReply('Decision entered.');
     }
 
-    // ---------- RECRUIT PASS ---------- //
-
     if (sub === 'pass') {
       const guild = await i.options.getString('guild');
       const comments = await i.options.getString('comments');
@@ -358,7 +336,7 @@ module.exports = {
       return await i.editReply('Decision entered.');
     }
 
-    if (sub === 'nexttier') {
+    if (sub === 'changetier') {
       const newTier = await i.options.getInteger('tier');
       if (recruit.tier === 1 && !newTier)
         return i.editReply('This recruit is already in Tier 1, the lowest available tier.');
@@ -381,8 +359,6 @@ module.exports = {
       return await i.editReply('Tier changed.');
     }
 
-    // --------- RECRUIT CLOSE ---------- //
-
     if (sub === 'close') {
       const reason = await i.options.getString('reason');
       await i.editReply('Closing thread.');
@@ -394,8 +370,6 @@ module.exports = {
       await i.channel.setLocked(true);
       await i.channel.setArchived(true);
     }
-
-    // ---------- RECRUIT CLAIM ---------- //
 
     if (sub === 'claim') {
       const guild = await i.options.getString('guild');

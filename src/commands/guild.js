@@ -1,6 +1,8 @@
 const { db } = require('../database');
 const config = require('../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const fetchGgGuildData = require('../api/fetchGgGuildData');
+const generateGuildOmiSummary = require('../guild/generateGuildOmiSummary');
 
 module.exports = {
   enabled: true,
@@ -8,55 +10,6 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('guild')
     .setDescription('Commands for managing guild status and member roles.')
-    .addSubcommandGroup(sG1 =>
-      sG1
-        .setName('add')
-        .setDescription('Add guild-specific Discord roles to a user account.')
-        .addSubcommand(s1 =>
-          s1
-            .setName('member')
-            .setDescription('Add Guild Member and Senate Citizen roles to a user account.')
-            .addStringOption(o =>
-              o.setName('guild').setDescription('The guild to add Member roles for.').setAutocomplete(true).setRequired(true)
-            )
-            .addUserOption(o => o.setName('user').setDescription('The Discord user to add the roles to.').setRequired(true))
-        )
-        .addSubcommand(s2 =>
-          s2
-            .setName('officer')
-            .setDescription('Add Guild Officer roles to a user account.')
-            .addStringOption(o =>
-              o
-                .setName('guild')
-                .setDescription('The guild to add Officer roles for.')
-                .setAutocomplete(true)
-                .setRequired(true)
-            )
-            .addUserOption(o => o.setName('user').setDescription('The Discord user to add the roles to.').setRequired(true))
-        )
-        .addSubcommand(s3 =>
-          s3
-            .setName('recruiter')
-            .setDescription('Add Guild Recruiter and Recruitment roles to a user account.')
-            .addStringOption(o =>
-              o
-                .setName('guild')
-                .setDescription('The guild to add Recruiter roles for.')
-                .setAutocomplete(true)
-                .setRequired(true)
-            )
-            .addUserOption(o => o.setName('user').setDescription('The Discord user to add the roles to.').setRequired(true))
-        )
-        .addSubcommand(s4 =>
-          s4
-            .setName('guest')
-            .setDescription('Add Guild Guest roles to a user account.')
-            .addStringOption(o =>
-              o.setName('guild').setDescription('The guild to add Guest roles for.').setAutocomplete(true).setRequired(true)
-            )
-            .addUserOption(o => o.setName('user').setDescription('The Discord user to add the roles to.').setRequired(true))
-        )
-    )
     .addSubcommandGroup(sG2 =>
       sG2
         .setName('change')
@@ -76,71 +29,29 @@ module.exports = {
               option.setName('tier').setDescription('The tier to move the guild to.').setAutocomplete(true).setRequired(true)
             )
         )
+    )
+    .addSubcommandGroup(sG3 =>
+      sG3
+        .setName('report')
+        .setDescription('Generate reports about your guild.')
+        .addSubcommand(s1 =>
+          s1
+            .setName('omiomicrons')
+            .setDescription('Generate a report about all the omicrons your guild has.')
+            .addStringOption(o =>
+              o
+                .setName('guild')
+                .setDescription('The guild to pull omicron information about.')
+                .setAutocomplete(true)
+                .setRequired(true)
+            )
+        )
     ),
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
     const group = await i.options.getSubcommandGroup();
     const sub = await i.options.getSubcommand();
-
-    if (group === 'add') {
-      const guildName = await i.options.getString('guild');
-      const dbGuild = await db.collection('guilds').findOne({ name: guildName });
-      if (!dbGuild) return i.editReply(`Guild ${guildName} was not found in the database.`);
-
-      if (!i.member.roles.cache.has(dbGuild.officer_role_id) && i.member.id !== process.env.OWNER) {
-        return i.editReply(`Only ${guildName} Officers are allowed to add roles for their guild.`);
-      }
-
-      const user = await i.options.getUser('user');
-      const member = await i.guild.members.fetch(user.id);
-
-      if (sub === 'member') {
-        const role = await i.guild.roles.fetch(dbGuild.member_role_id);
-        const citizenRole = await i.guild.roles.fetch(config.roles.senateCitizen);
-        await member.roles.add(role);
-        await member.roles.add(citizenRole);
-        await member.send(
-          `${i.member.displayName} has granted you the following roles in ΞTHE SENATEΞ Discord: ${guildName} Member, Senate Citizen.`
-        );
-        return i.editReply(`Granted ${role} and ${citizenRole} roles to ${member.displayName}.`);
-      }
-
-      if (sub === 'officer') {
-        const role = await i.guild.roles.fetch(dbGuild.officer_role_id);
-        const oRole = await i.guild.roles.fetch(config.roles.guildOfficer);
-        await member.roles.add(role);
-        await member.roles.add(oRole);
-        await member.send(
-          `${i.member.displayName} has granted you the following roles in ΞTHE SENATEΞ Discord: ${guildName} Officer, Guild Officer.`
-        );
-        return i.editReply(`Granted ${role} and ${oRole} roles to ${member.displayName}.`);
-      }
-
-      if (sub === 'recruiter') {
-        const role = await i.guild.roles.fetch(dbGuild.recruiter_role_id);
-        const rRole = await i.guild.roles.fetch(config.roles.recruitment);
-        const dbTier = await db.collection('tiers').findOne({ number: dbGuild.tier });
-        const tRole = await i.guild.roles.fetch(dbTier.recruiter_role_id);
-
-        await member.roles.add(role);
-        await member.roles.add(rRole);
-        await member.roles.add(tRole);
-        await member.send(
-          `${i.member.displayName} has granted you the following roles in ΞTHE SENATEΞ Discord: ${guildName} Recruiter, Tier ${dbGuild.tier} Recruiter, Recruitment.`
-        );
-        return i.editReply(`Granted ${role} and ${rRole} roles to ${member.displayName}.`);
-      }
-
-      if (sub === 'guest') {
-        const role = await i.guild.roles.fetch(dbGuild.guest_role_id);
-        await member.roles.add(role);
-        await member.send(
-          `${i.member.displayName} has granted you the following roles in ΞTHE SENATEΞ Discord: ${guildName} Guest.`
-        );
-        return i.editReply(`Granted ${role} role to ${member.displayName}.`);
-      }
-    }
 
     if (group === 'change') {
       if (sub === 'tier') {
@@ -198,6 +109,19 @@ module.exports = {
             }),
           ],
         });
+      }
+    }
+
+    if (group === 'report') {
+      if (sub === 'omis') {
+        const guildName = i.options.getString('guild');
+        const dbGuild = await db.collection('guilds').findOne({ name: guildName });
+        if (!dbGuild) return i.editReply(`Guild ${guildName} was not found in the database.`);
+        if (!dbGuild.gg) return i.editReply(`Unable to find a SWGOH.GG guild ID for ${guildName}.`);
+
+        const ggGuildData = await fetchGgGuildData(dbGuild.gg);
+        const omiSummary = await generateGuildOmiSummary(ggGuildData);
+        await i.editReply(omiSummary);
       }
     }
   },

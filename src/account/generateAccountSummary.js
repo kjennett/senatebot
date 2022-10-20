@@ -41,7 +41,6 @@ module.exports = async ggData => {
   const ultEmoji = await client.emojis.cache.get('976604889260126248');
   const omiEmoji = await client.emojis.cache.get('984941574439972954');
 
-  // Build arrays of various categories of ships and characters
   const caps = [];
   const GLs = [];
   const conChars = [];
@@ -99,7 +98,6 @@ module.exports = async ggData => {
     }
   }
 
-  // Alphabetize the list of units and abilities in each category
   caps.sort();
   GLs.sort();
   conChars.sort();
@@ -108,14 +106,12 @@ module.exports = async ggData => {
   tbOmis.sort();
   r9crons.sort();
 
-  // Calculate the number of unlocked unts in each category
   const numberOfCaps = caps.length;
   const numberOfGLs = GLs.length;
   const numberOfConChars = conChars.length;
   const numberOfConShips = conShips.length;
   const numberOfR9Crons = r9crons.length;
 
-  // Add placeholders if the account has no units or abilities unlocked in each category
   if (caps.join() === '') caps.push('-----');
   if (GLs.join() === '') GLs.push('-----');
   if (conChars.join() === '') conChars.push('-----');
@@ -124,7 +120,6 @@ module.exports = async ggData => {
   if (tbOmis.join() === '') tbOmis.push('-----');
   if (r9crons.join() === '') r9crons.push('-----');
 
-  // Display unit / ability counts and lists for each category
   accountSummaryEmbed.addFields([
     {
       name: `Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`,
