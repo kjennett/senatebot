@@ -73,7 +73,8 @@ module.exports = async ggGuildData => {
   for (const omi of omiCounts) {
     allCounts.push(`${omi.name.padEnd(30)} - ${omi.count}`);
   }
-  const file = new AttachmentBuilder(Buffer.from(allCounts.join('\n')));
+
+  const file = new AttachmentBuilder(Buffer.from(allCounts.join('\n')), 'omiSummary.txt');
 
   const guildOmiSummary = new EmbedBuilder()
     .setTitle(`Omicron Report: ${ggGuildData.data.name}`)
