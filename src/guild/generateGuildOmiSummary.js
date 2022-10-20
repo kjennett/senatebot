@@ -77,7 +77,6 @@ module.exports = async ggGuildData => {
 
   fs.writeFileSync('./omiSummary.txt', allCounts.join('\n'));
   const file = new AttachmentBuilder('./omiSummary.txt');
-  fs.unlinkSync('./omiSummary.txt');
 
   const guildOmiSummary = new EmbedBuilder()
     .setTitle(`Omicron Report: ${ggGuildData.data.name}`)
