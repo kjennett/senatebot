@@ -28,7 +28,7 @@ module.exports = async ggGuildData => {
     }
 
     // Filter characters that have at least one omicron ability
-    const omiCharacters = accountData.data.units.filter(unit => unit.omicron_abilities.length > 0);
+    const omiCharacters = accountData.units.filter(unit => unit.omicron_abilities.length > 0);
     for (const character of omiCharacters) {
       // Add each character's number of omicrons to the total count for the guild
       totalGuildOmis += character.omicron_abilities.length;
