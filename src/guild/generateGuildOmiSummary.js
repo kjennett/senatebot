@@ -1,6 +1,7 @@
 const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const { db } = require('../database');
 const fetchGgAccountData = require('../api/fetchGgAccountData');
+const fs = require('fs');
 
 module.exports = async ggGuildData => {
   let totalGuildOmis = 0;
@@ -74,7 +75,9 @@ module.exports = async ggGuildData => {
     allCounts.push(`${omi.name.padEnd(30)} - ${omi.count}`);
   }
 
-  const file = new AttachmentBuilder(Buffer.from(allCounts.join('\n')), 'omiSummary.txt');
+  fs.writeFileSync('./omiSummary.txt', allCounts.join('\n'));
+  const file = new AttachmentBuilder('./omiSummary.txt');
+  fs.unlinkSync('./omiSummary.txt');
 
   const guildOmiSummary = new EmbedBuilder()
     .setTitle(`Omicron Report: ${ggGuildData.data.name}`)
