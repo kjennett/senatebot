@@ -37,7 +37,7 @@ module.exports = async ggGuildData => {
         const index = omiCounts.findIndex(abi => abi.id === ability.id);
         if (index === -1) {
           omiCounts.push({
-            name: `${ability.name} (${character.name})`,
+            name: `${ability.name} (${character.data.name})`,
             id: ability.id,
             count: 1,
           });
@@ -70,7 +70,7 @@ module.exports = async ggGuildData => {
 
   const guildOmiSummary = new EmbedBuilder()
     .setTitle(`Omicron Report: ${ggGuildData.data.name}`)
-    .setURL(`https://swgoh.gg/g/${ggGuildData.data.guild_id}`)
+    .setURL(`https://swgoh.gg/g/${ggGuildData.data.guild_id}/omicrons`)
     .setDescription(`Members: ${ggGuildData.data.member_count}/50 | GP: ${ggGuildData.data.galactic_power.toLocaleString()}`)
     .addFields([
       {
@@ -85,12 +85,8 @@ module.exports = async ggGuildData => {
       },
       {
         name: `GP per Omicron`,
-        value: `${(ggGuildData.data.galactic_power / totalGuildOmis).toFixed(0)}`,
+        value: `${(ggGuildData.data.galactic_power / totalGuildOmis).toFixed(0).toLocaleString()}`,
         inline: true,
-      },
-      {
-        name: `Most Popular`,
-        value: `${mostPopular.join('\n')}`,
       },
       {
         name: `Total TW Omicrons`,
@@ -106,6 +102,10 @@ module.exports = async ggGuildData => {
         name: `Total GAC Omicrons`,
         value: `${totalGacOmis}`,
         inline: true,
+      },
+      {
+        name: `Most Popular`,
+        value: `${mostPopular.join('\n')}`,
       },
     ])
     .setFooter({ text: 'Source: SWGOH.GG // Last Sync Time' })

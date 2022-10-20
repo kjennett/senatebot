@@ -49,12 +49,12 @@ module.exports = {
     ),
 
   async execute(i) {
-    await i.deferReply({ ephemeral: true });
     const group = await i.options.getSubcommandGroup();
     const sub = await i.options.getSubcommand();
 
     if (group === 'change') {
       if (sub === 'tier') {
+        await i.deferReply({ ephemeral: true });
         const guildName = await i.options.getString('guild');
         const dbGuild = await db.collection('guilds').findOne({ name: guildName });
         if (!dbGuild) return i.editReply(`Guild ${guildName} was not found in the database.`);
@@ -114,6 +114,7 @@ module.exports = {
 
     if (group === 'report') {
       if (sub === 'omis') {
+        await i.deferReply();
         const guildName = i.options.getString('guild');
         const dbGuild = await db.collection('guilds').findOne({ name: guildName });
         if (!dbGuild) return i.editReply(`Guild ${guildName} was not found in the database.`);
