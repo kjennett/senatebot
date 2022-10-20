@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const { db } = require('../database');
 const fetchGgAccountData = require('../api/fetchGgAccountData');
 
@@ -68,6 +68,13 @@ module.exports = async ggGuildData => {
     mostPopular.push(`${allWithHighestCount[0].name} - **${highestCount}**`);
   }
 
+  const allCounts = [];
+  allCounts.push(`--- GUILD OMICRON COUNTS ---`);
+  for (const omi of omiCounts) {
+    allCounts.push(`${omi.name.padEnd(30)} - ${omi.count}`);
+  }
+  const file = new AttachmentBuilder(Buffer.from(allCounts.join('\n')));
+
   const guildOmiSummary = new EmbedBuilder()
     .setTitle(`Omicron Report: ${ggGuildData.data.name}`)
     .setURL(`https://swgoh.gg/g/${ggGuildData.data.guild_id}/omicrons`)
@@ -111,5 +118,5 @@ module.exports = async ggGuildData => {
     .setFooter({ text: 'Source: SWGOH.GG // Last Sync Time' })
     .setTimestamp(Date.parse(ggGuildData.data.last_sync));
 
-  return { embeds: [guildOmiSummary] };
+  return { embeds: [guildOmiSummary], files: [file] };
 };
