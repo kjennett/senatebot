@@ -115,6 +115,10 @@ module.exports = {
     if (group === 'report') {
       if (sub === 'omis') {
         await i.deferReply();
+        if (!i.member.roles.cache.has(config.roles.guildOfficer) && i.member.id !== process.env.OWNER) {
+          return i.editReply(`Only Guild Officers are currently allowed to use this command.`);
+        }
+
         const startTime = Date.now();
         const guildName = i.options.getString('guild');
         const dbGuild = await db.collection('guilds').findOne({ name: guildName });
