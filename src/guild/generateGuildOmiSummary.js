@@ -71,7 +71,7 @@ module.exports = async ggGuildData => {
   const guildOmiSummary = new EmbedBuilder()
     .setTitle(`Omicron Report: ${ggGuildData.data.name}`)
     .setURL(`https://swgoh.gg/g/${ggGuildData.data.guild_id}`)
-    .setDescription(`Members: ${ggGuildData.data.member_count}/50 | GP: ${ggGuildData.galactic_power.toLocaleString()}`)
+    .setDescription(`Members: ${ggGuildData.data.member_count}/50 | GP: ${ggGuildData.data.galactic_power.toLocaleString()}`)
     .addFields([
       {
         name: 'Total Guild Omicrons',
