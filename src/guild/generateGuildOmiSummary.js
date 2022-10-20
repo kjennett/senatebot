@@ -28,12 +28,12 @@ module.exports = async ggGuildData => {
     }
 
     // Filter characters that have at least one omicron ability
-    const omiCharacters = accountData.units.filter(unit => unit.omicron_abilities.length > 0);
+    const omiCharacters = accountData.units.filter(unit => unit.data.omicron_abilities.length > 0);
     for (const character of omiCharacters) {
       // Add each character's number of omicrons to the total count for the guild
-      totalGuildOmis += character.omicron_abilities.length;
+      totalGuildOmis += character.data.omicron_abilities.length;
 
-      for (const ability of character.ability_data.filter(ability => ability.has_omicron_learned)) {
+      for (const ability of character.data.ability_data.filter(ability => ability.has_omicron_learned)) {
         const index = omiCounts.findIndex(abi => abi.id === ability.id);
         if (index === -1) {
           omiCounts.push({
