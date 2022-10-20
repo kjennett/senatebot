@@ -36,7 +36,7 @@ module.exports = {
         .setDescription('Generate reports about your guild.')
         .addSubcommand(s1 =>
           s1
-            .setName('omiomicrons')
+            .setName('omis')
             .setDescription('Generate a report about all the omicrons your guild has.')
             .addStringOption(o =>
               o
