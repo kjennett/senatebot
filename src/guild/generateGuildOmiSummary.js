@@ -127,7 +127,7 @@ module.exports = async ggGuildData => {
 
   // After sorting, the first item in the list should have the highest number applied
   const highestCount = guildOmiCounts[0].count;
-  let mostPopular = [];
+  const mostPopular = [];
 
   for (const omi of guildOmiCounts) {
     if (omi.count === highestCount) mostPopular.push(`${omi.name} - **${omi.count}**`);
@@ -146,7 +146,7 @@ module.exports = async ggGuildData => {
 
   // After sorting, the first player should be the one with the highest number of omicrons
   const highestPlayerCount = playerCounts[0].count;
-  let mostTotalOmis = [];
+  const mostTotalOmis = [];
 
   // If more than one, include them all
   for (const player of playerCounts) {
@@ -165,7 +165,7 @@ module.exports = async ggGuildData => {
   });
 
   const highestTWCount = playerCounts[0].count;
-  let mostTotalTW = [];
+  const mostTotalTW = [];
   for (const player of playerCounts) {
     if (player.tw === highestTWCount) mostTotalTW.push(`${player.name} - **${player.tw}**`);
   }
@@ -181,7 +181,7 @@ module.exports = async ggGuildData => {
   });
 
   const highestTBCount = playerCounts[0].count;
-  let mostTotalTB = [];
+  const mostTotalTB = [];
   for (const player of playerCounts) {
     if (player.tb === highestTBCount) mostTotalTB.push(`${player.name} - **${player.tb}**`);
   }
@@ -197,7 +197,7 @@ module.exports = async ggGuildData => {
   });
 
   const highestGACCount = playerCounts[0].count;
-  let mostTotalGAC = [];
+  const mostTotalGAC = [];
   for (const player of playerCounts) {
     if (player.gac === highestGACCount) mostTotalGAC.push(`${player.name} - **${player.gac}**`);
   }
