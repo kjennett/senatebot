@@ -133,6 +133,7 @@ module.exports = async ggGuildData => {
   const highestTWCount = playerOmiCounts[0].count;
   const mostTotalTW = [];
   for (const player of playerOmiCounts) {
+    console.log(`${highestTWCount} -> ${player.tw}`);
     if (player.tw === highestTWCount) mostTotalTW.push(`${player.name} - **${player.tw}**`);
   }
   summaryFile.push(`--- PLAYER TW OMICRONS ---`);
@@ -148,6 +149,7 @@ module.exports = async ggGuildData => {
   const highestTBCount = playerOmiCounts[0].count;
   const mostTotalTB = [];
   for (const player of playerOmiCounts) {
+    console.log(`${highestTBCount} -> ${player.tb}`);
     if (player.tb === highestTBCount) mostTotalTB.push(`${player.name} - **${player.tb}**`);
   }
   summaryFile.push(`--- PLAYER TB OMICRONS ---`);
@@ -163,6 +165,7 @@ module.exports = async ggGuildData => {
   const highestGACCount = playerOmiCounts[0].count;
   const mostTotalGAC = [];
   for (const player of playerOmiCounts) {
+    console.log(`${highestGACCount} -> ${player.gac}`);
     if (player.gac === highestGACCount) mostTotalGAC.push(`${player.name} - **${player.gac}**`);
   }
   summaryFile.push(`--- PLAYER GAC OMICRONS ---`);
