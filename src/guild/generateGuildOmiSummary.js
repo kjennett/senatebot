@@ -54,7 +54,7 @@ module.exports = async ggGuildData => {
     const omiCharacters = accountData.units.filter(unit => unit.data.omicron_abilities.length > 0);
     const characters = omiCharacters.sort((a, b) => {
       if (a.data.name.toLowerCase() < b.data.name) return -1;
-      if (a.player.name.toLowerCase() > b.data.name) return 1;
+      if (a.data.name.toLowerCase() > b.data.name) return 1;
       return 0;
     });
 
