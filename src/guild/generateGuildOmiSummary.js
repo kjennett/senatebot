@@ -219,7 +219,7 @@ module.exports = async ggGuildData => {
   for (const player of allWithHighestGACCount) {
     mostTotalGAC.push(`${player.name} - **${player.gac}**`);
   }
-  console.log(`Highest GAC Count: ${mostTotaGAC.join('\n')}`);
+  console.log(`Highest GAC Count: ${mostTotalGAC.join('\n')}`);
 
   summaryFile.push(`--- PLAYER GAC OMICRONS ---`);
   for (const player of playerCounts) {
