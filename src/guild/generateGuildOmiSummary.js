@@ -255,10 +255,12 @@ module.exports = async ggGuildData => {
       {
         name: `Most Total TB Omicrons`,
         value: `${mostTotalTB.join('\n')}`,
+        inline: true,
       },
       {
         name: `Most Total GAC Omicrons`,
         value: `${mostTotalGAC.join('\n')}`,
+        inline: true,
       },
       {
         name: `Most Popular`,
