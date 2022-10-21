@@ -119,7 +119,6 @@ module.exports = {
           return i.editReply(`Only Guild Officers are currently allowed to use this command.`);
         }
 
-        const startTime = Date.now();
         const guildName = i.options.getString('guild');
         const dbGuild = await db.collection('guilds').findOne({ name: guildName });
         if (!dbGuild) return i.editReply(`Guild ${guildName} was not found in the database.`);
@@ -127,9 +126,8 @@ module.exports = {
 
         const ggGuildData = await fetchGgGuildData(dbGuild.gg);
         const omiSummary = await generateGuildOmiSummary(ggGuildData);
-        await i.editReply(omiSummary);
-        const endTime = Date.now();
-        console.log(`Omicron report finished in: ${((endTime - startTime) / 1000).toFixed(2)} seconds`);
+        await i.editReply({ embeds: omiSummary.embeds });
+        await i.channel.send({ files: omiSummary.files });
       }
     }
   },
