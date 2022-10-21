@@ -244,25 +244,25 @@ module.exports = async ggGuildData => {
       },
       {
         name: `Most Total Omicrons`,
-        value: `${mostTotalOmis.join('\n')}`,
+        value: mostTotalOmis.join('\n'),
       },
       {
         name: `Most Total TW Omicrons`,
-        value: `${mostTotalTW.join('\n')}`,
+        value: mostTotalTW.join('\n'),
       },
       {
         name: `Most Total TB Omicrons`,
-        value: `${mostTotalTB.join('\n')}`,
+        value: mostTotalTB.join('\n'),
         inline: true,
       },
       {
         name: `Most Total GAC Omicrons`,
-        value: `${mostTotalGAC.join('\n')}`,
+        value: mostTotalGAC.join('\n'),
         inline: true,
       },
       {
         name: `Most Popular`,
-        value: `${mostPopular.join('\n')}`,
+        value: mostPopular.join('\n'),
       },
     ])
     .setFooter({ text: 'Source: SWGOH.GG // Last Sync Time' })
