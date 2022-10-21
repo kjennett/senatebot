@@ -149,11 +149,11 @@ module.exports = async ggGuildData => {
   });
 
   const highestTWCount = playerCounts[0].count;
-  const allWithHighestTWCount = playerCounts.filter(player => player.count === highestTWCount);
+  const allWithHighestTWCount = playerCounts.filter(player => player.tw === highestTWCount);
   let mostTotalTW = [];
   if (allWithHighestTWCount.length > 1) {
     for (const player of allWithHighestTWCount) {
-      mostTotalTW.push(`${player.name} - **${player.count}**`);
+      mostTotalTW.push(`${player.name} - **${player.tw}**`);
     }
   } else {
     mostTotalTW.push(`${allWithHighestTWCount[0].name} - **${highestTWCount}**`);
@@ -171,7 +171,7 @@ module.exports = async ggGuildData => {
   });
 
   const highestTBCount = playerCounts[0].count;
-  const allWithHighestTBCount = playerCounts.filter(player => player.count === highestTBCount);
+  const allWithHighestTBCount = playerCounts.filter(player => player.tb === highestTBCount);
   let mostTotalTB = [];
   if (allWithHighestTBCount.length > 1) {
     for (const player of allWithHighestTBCount) {
@@ -193,7 +193,7 @@ module.exports = async ggGuildData => {
   });
 
   const highestGACCount = playerCounts[0].count;
-  const allWithHighestGACCount = playerCounts.filter(player => player.count === highestGACCount);
+  const allWithHighestGACCount = playerCounts.filter(player => player.gac === highestGACCount);
   let mostTotalGAC = [];
   if (allWithHighestGACCount.length > 1) {
     for (const player of allWithHighestGACCount) {
@@ -230,15 +230,6 @@ module.exports = async ggGuildData => {
         inline: true,
       },
       {
-        name: `GP per Omicron`,
-        value: `${(ggGuildData.data.galactic_power / totalGuildOmis).toLocaleString()}`,
-        inline: true,
-      },
-      {
-        name: `Most Popular`,
-        value: `${mostPopular.join('\n')}`,
-      },
-      {
         name: `Total Guild TW Omicrons`,
         value: `${totalTwOmis}`,
         inline: true,
@@ -268,6 +259,10 @@ module.exports = async ggGuildData => {
       {
         name: `Most Total GAC Omicrons`,
         value: `${mostTotalGAC.join('\n')}`,
+      },
+      {
+        name: `Most Popular`,
+        value: `${mostPopular.join('\n')}`,
       },
     ])
     .setFooter({ text: 'Source: SWGOH.GG // Last Sync Time' })
