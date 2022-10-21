@@ -79,16 +79,14 @@ module.exports = async ggGuildData => {
       }
     }
 
+    const total = playerTBOmis + playerGACOmis + playerTWOmis;
+
     // Add total and mode specific counts to the player summary
-    playerSummary.push(
-      `Total: ${
-        playerTBOmis + playerTWOmis + playerGACOmis
-      } | TW: ${playerTWOmis} | TB: ${playerTBOmis} | GAC: ${playerGACOmis}`
-    );
+    playerSummary.push(`Total: ${total} | TW: ${playerTWOmis} | TB: ${playerTBOmis} | GAC: ${playerGACOmis}`);
 
     const counts = {
       name: member.player_name,
-      count: playerTWOmis + playerTBOmis + playerGACOmis,
+      count: total,
       tw: playerTWOmis,
       tb: playerTBOmis,
       gac: playerGACOmis,
@@ -111,7 +109,6 @@ module.exports = async ggGuildData => {
   for (const omi of guildOmiCounts) {
     summaryFile.push(`${omi.name.padEnd(75)} - ${omi.count}`);
   }
-  console.log(mostPopular);
 
   // GUILD MEMBERS WITH MOST OMICRONS
   playerOmiCounts.sort((a, b) => {
@@ -126,13 +123,12 @@ module.exports = async ggGuildData => {
   for (const player of playerOmiCounts) {
     summaryFile.push(`${player.name} - ${player.count}`);
   }
-  console.log(mostTotalOmis);
 
   // GUILD MEMBERS WITH MOST TW OMICRONS
-  playerOmiCounts.sort(function (a, b) {
+  playerOmiCounts.sort((a, b) => {
     return b.tw - a.tw;
   });
-  const highestTWCount = playerOmiCounts[0].count;
+  const highestTWCount = playerOmiCounts[0].tw;
   const mostTotalTW = [];
   for (const player of playerOmiCounts) {
     console.log(`${highestTWCount} -> ${player.tw}`);
@@ -148,7 +144,7 @@ module.exports = async ggGuildData => {
   playerOmiCounts.sort(function (a, b) {
     return b.tb - a.tb;
   });
-  const highestTBCount = playerOmiCounts[0].count;
+  const highestTBCount = playerOmiCounts[0].tb;
   const mostTotalTB = [];
   for (const player of playerOmiCounts) {
     console.log(`${highestTBCount} -> ${player.tb}`);
@@ -164,7 +160,7 @@ module.exports = async ggGuildData => {
   playerOmiCounts.sort(function (a, b) {
     return b.gac - a.gac;
   });
-  const highestGACCount = playerOmiCounts[0].count;
+  const highestGACCount = playerOmiCounts[0].gac;
   const mostTotalGAC = [];
   for (const player of playerOmiCounts) {
     console.log(`${highestGACCount} -> ${player.gac}`);
