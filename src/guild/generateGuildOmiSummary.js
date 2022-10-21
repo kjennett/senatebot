@@ -4,136 +4,162 @@ const fetchGgAccountData = require('../api/fetchGgAccountData');
 const fs = require('fs');
 
 module.exports = async ggGuildData => {
-  let totalGuildOmis = 0;
-  let totalTwOmis = 0;
-  let totalTbOmis = 0;
-  let totalGacOmis = 0;
+  // Running counts of each type of omicron in the guild
+  let guildOmis = 0;
+  let guildTWOmis = 0;
+  let guildTBOmis = 0;
+  let guildGACOmis = 0;
 
-  const omiCounts = [];
+  // Running counts of the number of the number of each omicron in the guild
+  const guildOmiCounts = [];
+
+  // Running counts of the type of omicrons applied for each player
   const playerCounts = [];
+
+  // List of account names of players without SWGOH.GG data
   const noGg = [];
 
+  // Start arrays to store lines of guild and player account summary text files
   const summaryFile = [];
   summaryFile.push(`/////////// GUILD OMICRON SUMMARY: ${ggGuildData.data.name} ///////////`);
-  summaryFile.push('\n');
-
   const playerSummary = [];
   playerSummary.push(`/////////// OMICRONS BY PLAYER: ${ggGuildData.data.name} ///////////`);
-  playerSummary.push('\n');
 
-  // Sort members by account name
-  const members = ggGuildData.data.members.sort(function (a, b) {
-    return a.player_name - b.player_name;
+  // Sort guild members alphabetically by name
+  const members = ggGuildData.data.members.sort((a, b) => {
+    if (a.player_name.toLowerCase() < b.player_name.toLowerCase()) return -1;
+    if (a.player_name.toLowercase() > b.player_name.toLowerCase()) return 1;
+    return 0;
   });
 
-  // Loop through each guild member
+  // Loop through each guild member, sorted alphabetically by player name
   for (const member of members) {
     const accountData = await fetchGgAccountData(member.ally_code);
+
+    // Add username to the list if the player doesn't have data in SWGOH.GG
     if (!accountData) {
       noGg.push(member.player_name);
       continue;
     }
 
-    let playerGAC = 0;
-    let playerTW = 0;
-    let playerTB = 0;
+    // Start running count of the player's omicrons, by type
+    let playerGACOmis = 0;
+    let playerTWOmis = 0;
+    let playerTBOmis = 0;
 
+    // Add player name to player summary
     playerSummary.push(`--- ${member.player_name} ---`);
 
-    // Filter characters that have at least one omicron ability
+    // Filter to characters that have at least one omicron ability, sorted alphabetically by character name
     const omiCharacters = accountData.units.filter(unit => unit.data.omicron_abilities.length > 0);
-    const characters = omiCharacters.sort(function (a, b) {
-      a.data.name - b.data.name;
+    const characters = omiCharacters.sort((a, b) => {
+      if (a.data.name.toLowerCase() < b.data.name) return -1;
+      if (a.player.name.toLowerCase() > b.data.name) return 1;
+      return 0;
     });
 
+    // For each character with an omicron unlocked...
     for (const character of characters) {
-      totalGuildOmis += character.data.omicron_abilities.length;
-      playerSummary.push(`${character.data.name}:`);
+      // Add the total number of unlocked omicrons for the character to the guild count
+      guildOmis += character.data.omicron_abilities.length;
 
+      // Add character name to the summary
+      playerSummary.push(`${character.data.name} (${character.data.omicron_abilities.length}):`);
+
+      // For each omicron ability...
       for (const ability of character.data.ability_data.filter(ability => ability.has_omicron_learned)) {
-        const index = omiCounts.findIndex(abi => abi.id === ability.id);
+        // If the omicron already has a running count, add to it, otherwise, start the count
+        const index = guildOmiCounts.findIndex(abi => abi.id === ability.id);
         if (index === -1) {
-          omiCounts.push({
+          guildOmiCounts.push({
             name: `${ability.name} (${character.data.name})`,
             id: ability.id,
             count: 1,
           });
         } else {
-          omiCounts[index].count++;
+          guildOmiCounts[index].count++;
         }
 
+        // Add the ability name to the summary
         playerSummary.push(`   - ${ability.name}`);
 
+        // Pull database information about the ability
         const dbAbility = await db.collection('abilities').findOne({ base_id: ability.id });
         if (!dbAbility) continue;
 
+        // Match omicron mode to the ability and update running guild counts
         if (dbAbility.omicron_mode === 7) {
-          totalTbOmis++;
-          playerTB++;
+          guildTBOmis++;
+          playerTBOmis++;
         }
-
         if (dbAbility.omicron_mode === 8) {
-          totalTwOmis++;
-          playerTW++;
+          guildTWOmis++;
+          playerTWOmis++;
         }
-
         if (dbAbility.omicron_mode === 9 || dbAbility.omicron_mode === 14 || dbAbility.omicron_mode === 15) {
-          totalGacOmis++;
-          playerGAC++;
+          guildGACOmis++;
+          playerGACOmis++;
         }
       }
     }
 
-    playerSummary.push(`Total: ${playerTB + playerTW + playerGAC} | TW: ${playerTW} | TB: ${playerTB} | GAC: ${playerGAC}`);
-    playerSummary.push('\n');
+    // Add total and mode specific counts to the player summary
+    playerSummary.push(
+      `Total: ${
+        playerTBOmis + playerTWOmis + playerGACOmis
+      } | TW: ${playerTWOmis} | TB: ${playerTBOmis} | GAC: ${playerGACOmis}`
+    );
 
+    // Add the player counts to the running list
     playerCounts.push({
       name: member.player_name,
-      count: playerTW + playerTB + playerGAC,
-      tw: playerTW,
-      tb: playerTB,
-      gac: playerGAC,
+      count: playerTWOmis + playerTBOmis + playerGACOmis,
+      tw: playerTWOmis,
+      tb: playerTBOmis,
+      gac: playerGACOmis,
     });
   }
 
-  // Add omicrons to summary file sorted by number activated in guild
-  omiCounts.sort(function (a, b) {
+  // Sort omicrons by number applied in guild
+  guildOmiCounts.sort(function (a, b) {
     return b.count - a.count;
   });
 
-  const highestCount = omiCounts[0].count;
-  const allWithHighestCount = omiCounts.filter(omi => omi.count === highestCount);
+  // After sorting, the first item in the list should have the highest number applied
+  const highestCount = guildOmiCounts[0].count;
+
+  // Filter only for all the omicrons that have the highest number applied
+  const allWithHighestCount = guildOmiCounts.filter(omi => omi.count === highestCount);
   let mostPopular = [];
-  if (allWithHighestCount.length > 1) {
-    for (const omi of allWithHighestCount) {
-      mostPopular.push(`${omi.name} - **${omi.count}**`);
-    }
-  } else {
-    mostPopular.push(`${allWithHighestCount[0].name} - **${highestCount}**`);
+
+  for (const omi of allWithHighestCount) {
+    mostPopular.push(`${omi.name} - **${omi.count}**`);
   }
 
+  // Push count of all applied omicrons in guild to the summary file
   summaryFile.push(`--- GUILD OMICRON COUNTS ---`);
-  for (const omi of omiCounts) {
+  for (const omi of guildOmiCounts) {
     summaryFile.push(`${omi.name.padEnd(75)} - ${omi.count}`);
   }
-  summaryFile.push(`\n`);
 
-  // Add members to summary file sorted by number of total omicrons
-  playerCounts.sort(function (a, b) {
+  // Sort players by highest number of total omicrons applied
+  playerCounts.sort((a, b) => {
     return b.count - a.count;
   });
 
+  // After sorting, the first player should be the one with the highest number of omicrons
   const highestPlayerCount = playerCounts[0].count;
+
+  // Find all players who have the highest number of omicrons
   const allWithHighestPlayerCount = playerCounts.filter(player => player.count === highestPlayerCount);
   let mostTotalOmis = [];
-  if (allWithHighestPlayerCount.length > 1) {
-    for (const player of allWithHighestPlayerCount) {
-      mostTotalOmis.push(`${player.name} - **${player.count}**`);
-    }
-  } else {
-    mostTotalOmis.push(`${allWithHighestPlayerCount[0].name} - **${highestPlayerCount}**`);
+
+  // If more than one, include them all
+  for (const player of allWithHighestPlayerCount) {
+    mostTotalOmis.push(`${player.name} - **${player.count}**`);
   }
 
+  // Add players ordered by number of omicrons to the guild summary
   summaryFile.push(`--- PLAYER TOTAL OMICRONS ---`);
   for (const player of playerCounts) {
     summaryFile.push(`${player.name} - ${player.count}`);
@@ -148,12 +174,8 @@ module.exports = async ggGuildData => {
   const highestTWCount = playerCounts[0].count;
   const allWithHighestTWCount = playerCounts.filter(player => player.tw === highestTWCount);
   let mostTotalTW = [];
-  if (allWithHighestTWCount.length > 1) {
-    for (const player of allWithHighestTWCount) {
-      mostTotalTW.push(`${player.name} - **${player.tw}**`);
-    }
-  } else {
-    mostTotalTW.push(`${allWithHighestTWCount[0].name} - **${highestTWCount}**`);
+  for (const player of allWithHighestTWCount) {
+    mostTotalTW.push(`${player.name} - **${player.tw}**`);
   }
 
   summaryFile.push(`--- PLAYER TW OMICRONS ---`);
@@ -170,12 +192,8 @@ module.exports = async ggGuildData => {
   const highestTBCount = playerCounts[0].count;
   const allWithHighestTBCount = playerCounts.filter(player => player.tb === highestTBCount);
   let mostTotalTB = [];
-  if (allWithHighestTBCount.length > 1) {
-    for (const player of allWithHighestTBCount) {
-      mostTotalTB.push(`${player.name} - **${player.tb}**`);
-    }
-  } else {
-    mostTotalTB.push(`${allWithHighestTBCount[0].name} - **${highestTBCount}**`);
+  for (const player of allWithHighestTBCount) {
+    mostTotalTB.push(`${player.name} - **${player.tb}**`);
   }
 
   summaryFile.push(`--- PLAYER TB OMICRONS ---`);
@@ -192,12 +210,8 @@ module.exports = async ggGuildData => {
   const highestGACCount = playerCounts[0].count;
   const allWithHighestGACCount = playerCounts.filter(player => player.gac === highestGACCount);
   let mostTotalGAC = [];
-  if (allWithHighestGACCount.length > 1) {
-    for (const player of allWithHighestGACCount) {
-      mostTotalGAC.push(`${player.name} - **${player.gac}**`);
-    }
-  } else {
-    mostTotalGAC.push(`${allWithHighestGACCount[0].name} - **${highestGACCount}**`);
+  for (const player of allWithHighestGACCount) {
+    mostTotalGAC.push(`${player.name} - **${player.gac}**`);
   }
 
   summaryFile.push(`--- PLAYER GAC OMICRONS ---`);
@@ -218,27 +232,27 @@ module.exports = async ggGuildData => {
     .addFields([
       {
         name: 'Total Guild Omicrons',
-        value: `${totalGuildOmis}`,
+        value: `${guildOmis}`,
         inline: true,
       },
       {
         name: `Average Omicrons per Member`,
-        value: `${(totalGuildOmis / ggGuildData.data.member_count).toFixed(2)}`,
+        value: `${(guildOmis / ggGuildData.data.member_count).toFixed(2)}`,
         inline: true,
       },
       {
         name: `Total Guild TW Omicrons`,
-        value: `${totalTwOmis}`,
+        value: `${guildTWOmis}`,
         inline: true,
       },
       {
         name: `Total Guild TB Omicrons`,
-        value: `${totalTbOmis}`,
+        value: `${guildTBOmis}`,
         inline: true,
       },
       {
         name: `Total GuildGAC Omicrons`,
-        value: `${totalGacOmis}`,
+        value: `${guildGACOmis}`,
         inline: true,
       },
       {
@@ -270,7 +284,7 @@ module.exports = async ggGuildData => {
   if (noGg.length) {
     guildOmiSummary.addFields([
       {
-        name: `Players Without GG Data (Not Included in)`,
+        name: `Players Without GG Data (Not Counted)`,
         value: `${noGg.join(', ')}`,
       },
     ]);
