@@ -164,7 +164,6 @@ module.exports = async ggGuildData => {
   for (const player of playerCounts) {
     summaryFile.push(`${player.name} - ${player.count}`);
   }
-  summaryFile.push('\n');
 
   // Add members to summary file sorted by number of TW omicrons
   playerCounts.sort(function (a, b) {
@@ -182,7 +181,6 @@ module.exports = async ggGuildData => {
   for (const player of playerCounts) {
     summaryFile.push(`${player.name} - ${player.tw}`);
   }
-  summaryFile.push('\n');
 
   // Add members to summary file sorted by number of TB omicrons
   playerCounts.sort(function (a, b) {
@@ -200,7 +198,6 @@ module.exports = async ggGuildData => {
   for (const player of playerCounts) {
     summaryFile.push(`${player.name} - ${player.tb}`);
   }
-  summaryFile.push('\n');
 
   // Add members to summary file sorted by number total GAC omicrons
   playerCounts.sort(function (a, b) {
@@ -218,7 +215,6 @@ module.exports = async ggGuildData => {
   for (const player of playerCounts) {
     summaryFile.push(`${player.name} - ${player.gac}`);
   }
-  summaryFile.push('\n');
 
   fs.writeFileSync('./guildSummary.txt', summaryFile.join('\n'));
   const file = new AttachmentBuilder('./guildSummary.txt');
