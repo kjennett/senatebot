@@ -86,14 +86,16 @@ module.exports = async ggGuildData => {
       } | TW: ${playerTWOmis} | TB: ${playerTBOmis} | GAC: ${playerGACOmis}`
     );
 
-    // Add the player counts to the running list
-    playerOmiCounts.push({
+    const counts = {
       name: member.player_name,
       count: playerTWOmis + playerTBOmis + playerGACOmis,
       tw: playerTWOmis,
       tb: playerTBOmis,
       gac: playerGACOmis,
-    });
+    };
+    // Add the player counts to the running list
+    playerOmiCounts.push(counts);
+    console.log(JSON.stringify(counts));
   }
 
   // MOST POPULAR OMICRONS IN GUILD
