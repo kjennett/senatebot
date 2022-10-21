@@ -84,7 +84,6 @@ module.exports = async ggGuildData => {
       }
     }
 
-    playerSummary.push('\n');
     playerSummary.push(`Total: ${playerTB + playerTW + playerGAC} | TW: ${playerTW} | TB: ${playerTB} | GAC: ${playerGAC}`);
     playerSummary.push('\n');
 
@@ -120,7 +119,6 @@ module.exports = async ggGuildData => {
   summaryFile.push(`\n`);
 
   // Add members to summary file sorted by number of total omicrons
-
   playerCounts.sort(function (a, b) {
     return b.count - a.count;
   });
@@ -142,8 +140,7 @@ module.exports = async ggGuildData => {
   }
   summaryFile.push('\n');
 
-  // Add membrs to summary file sorted by number of TW Omicrons
-
+  // Add members to summary file sorted by number of TW omicrons
   playerCounts.sort(function (a, b) {
     return b.tw - a.tw;
   });
@@ -159,13 +156,13 @@ module.exports = async ggGuildData => {
     mostTotalTW.push(`${allWithHighestTWCount[0].name} - **${highestTWCount}**`);
   }
 
-  summaryFile.push(`--- PLAYER TOTAL TW OMICRONS ---`);
+  summaryFile.push(`--- PLAYER TW OMICRONS ---`);
   for (const player of playerCounts) {
     summaryFile.push(`${player.name} - ${player.tw}`);
   }
   summaryFile.push('\n');
 
-  // Add members to summary file sorted by number of TB Omicrons
+  // Add members to summary file sorted by number of TB omicrons
   playerCounts.sort(function (a, b) {
     return b.tb - a.tb;
   });
@@ -181,13 +178,13 @@ module.exports = async ggGuildData => {
     mostTotalTB.push(`${allWithHighestTBCount[0].name} - **${highestTBCount}**`);
   }
 
-  summaryFile.push(`--- PLAYER TOTAL TB OMICRONS ---`);
+  summaryFile.push(`--- PLAYER TB OMICRONS ---`);
   for (const player of playerCounts) {
     summaryFile.push(`${player.name} - ${player.tb}`);
   }
   summaryFile.push('\n');
 
-  // Add members to summary file sorted by number of GAC omicrons
+  // Add members to summary file sorted by number total GAC omicrons
   playerCounts.sort(function (a, b) {
     return b.gac - a.gac;
   });
@@ -203,7 +200,7 @@ module.exports = async ggGuildData => {
     mostTotalGAC.push(`${allWithHighestGACCount[0].name} - **${highestGACCount}**`);
   }
 
-  summaryFile.push(`--- PLAYER TOTAL GAC OMICRONS ---`);
+  summaryFile.push(`--- PLAYER GAC OMICRONS ---`);
   for (const player of playerCounts) {
     summaryFile.push(`${player.name} - ${player.gac}`);
   }
