@@ -28,7 +28,7 @@ module.exports = async ggGuildData => {
   // Sort guild members alphabetically by name
   const members = ggGuildData.data.members.sort((a, b) => {
     if (a.player_name.toLowerCase() < b.player_name.toLowerCase()) return -1;
-    if (a.player_name.toLowercase() > b.player_name.toLowerCase()) return 1;
+    if (a.player_name.toLowerCase() > b.player_name.toLowerCase()) return 1;
     return 0;
   });
 
