@@ -34,19 +34,20 @@ module.exports = async ggGuildData => {
     }
 
     playerSummary.push(`--- ${member.player_name} ---`);
+    playerSummary.push('\n');
 
     let playerGACOmis = 0;
     let playerTWOmis = 0;
     let playerTBOmis = 0;
 
     const omiCharacters = accountData.units.filter(unit => unit.data.omicron_abilities.length > 0);
-    const characters = omiCharacters.sort((a, b) => {
-      if (a.data.name.toLowerCase() < b.data.name) return -1;
-      if (a.data.name.toLowerCase() > b.data.name) return 1;
+    omiCharacters.sort((a, b) => {
+      if (a.data.name.toLowerCase() < b.data.name.toLowerCase()) return -1;
+      if (a.data.name.toLowerCase() > b.data.name.toLowerCase()) return 1;
       return 0;
     });
 
-    for (const character of characters) {
+    for (const character of omiCharacters) {
       guildOmis += character.data.omicron_abilities.length;
       playerSummary.push(`${character.data.name} (${character.data.omicron_abilities.length}):`);
 
@@ -84,7 +85,9 @@ module.exports = async ggGuildData => {
     const total = playerTBOmis + playerGACOmis + playerTWOmis;
 
     // Add total and mode specific counts to the player summary
+    playerSummary.push('\n');
     playerSummary.push(`Total: ${total} | TW: ${playerTWOmis} | TB: ${playerTBOmis} | GAC: ${playerGACOmis}`);
+    playerSummary.push('\n');
 
     const counts = {
       name: member.player_name,
