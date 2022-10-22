@@ -95,7 +95,6 @@ module.exports = async ggGuildData => {
     };
     // Add the player counts to the running list
     playerOmiCounts.push(counts);
-    console.log(JSON.stringify(counts));
   }
 
   // MOST POPULAR OMICRONS IN GUILD
