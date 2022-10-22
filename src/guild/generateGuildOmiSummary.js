@@ -112,7 +112,7 @@ module.exports = async ggGuildData => {
   summaryFile.push(`--- GUILD OMICRON COUNTS ---`);
   summaryFile.push('\n');
   for (const omi of guildOmiCounts) {
-    summaryFile.push(`${omi.name.padEnd(40)} - ${omi.count}`);
+    summaryFile.push(`${omi.name.padEnd(50)} - ${omi.count}`);
   }
   summaryFile.push('\n');
 
