@@ -186,27 +186,22 @@ module.exports = async ggGuildData => {
       {
         name: 'Total Guild Omicrons',
         value: `${guildOmis}`,
-        inline: true,
       },
       {
         name: `Average Omicrons per Member`,
         value: `${(guildOmis / ggGuildData.data.member_count).toFixed(2)}`,
-        inline: true,
       },
       {
         name: `Total Guild TW Omicrons`,
         value: `${guildTWOmis}`,
-        inline: true,
       },
       {
         name: `Total Guild TB Omicrons`,
         value: `${guildTBOmis}`,
-        inline: true,
       },
       {
-        name: `Total GuildGAC Omicrons`,
+        name: `Total Guild GAC Omicrons`,
         value: `${guildGACOmis}`,
-        inline: true,
       },
       {
         name: `Most Total Omicrons`,
@@ -215,17 +210,14 @@ module.exports = async ggGuildData => {
       {
         name: `Most Total TW Omicrons`,
         value: mostTotalTW.join('\n'),
-        inline: true,
       },
       {
         name: `Most Total TB Omicrons`,
         value: mostTotalTB.join('\n'),
-        inline: true,
       },
       {
         name: `Most Total GAC Omicrons`,
         value: mostTotalGAC.join('\n'),
-        inline: true,
       },
       {
         name: `Most Popular`,

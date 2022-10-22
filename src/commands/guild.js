@@ -45,6 +45,11 @@ module.exports = {
                 .setAutocomplete(true)
                 .setRequired(true)
             )
+            .addBooleanOption(o =>
+              o
+                .setName('detailed')
+                .setDescription('Whether to include text files with more detailed information about each player.')
+            )
         )
     ),
 
@@ -127,7 +132,7 @@ module.exports = {
         const ggGuildData = await fetchGgGuildData(dbGuild.gg);
         const omiSummary = await generateGuildOmiSummary(ggGuildData);
         await i.editReply({ embeds: omiSummary.embeds });
-        await i.channel.send({ files: omiSummary.files });
+        if (i.options.getBoolean('detailed')) await i.channel.send({ files: omiSummary.files });
       }
     }
   },
