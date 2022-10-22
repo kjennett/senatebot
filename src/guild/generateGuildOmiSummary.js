@@ -110,8 +110,9 @@ module.exports = async ggGuildData => {
     if (omi.count === highestCount) mostPopular.push(`${omi.name} - **${omi.count}**`);
   }
   summaryFile.push(`--- GUILD OMICRON COUNTS ---`);
+  summaryFile.push('\n');
   for (const omi of guildOmiCounts) {
-    summaryFile.push(`${omi.name.padEnd(75)} - ${omi.count}`);
+    summaryFile.push(`${omi.name.padEnd(40)} - ${omi.count}`);
   }
   summaryFile.push('\n');
 
@@ -125,6 +126,7 @@ module.exports = async ggGuildData => {
     if (player.count === highestPlayerCount) mostTotalOmis.push(`${player.name} - **${player.count}**`);
   }
   summaryFile.push(`--- PLAYER TOTAL OMICRONS ---`);
+  summaryFile.push('\n');
   for (const player of playerOmiCounts) {
     summaryFile.push(`${player.name} - ${player.count}`);
   }
@@ -140,6 +142,7 @@ module.exports = async ggGuildData => {
     if (player.tw === highestTWCount) mostTotalTW.push(`${player.name} - **${player.tw}**`);
   }
   summaryFile.push(`--- PLAYER TW OMICRONS ---`);
+  summaryFile.push('\n');
   for (const player of playerOmiCounts) {
     summaryFile.push(`${player.name} - ${player.tw}`);
   }
@@ -155,6 +158,7 @@ module.exports = async ggGuildData => {
     if (player.tb === highestTBCount) mostTotalTB.push(`${player.name} - **${player.tb}**`);
   }
   summaryFile.push(`--- PLAYER TB OMICRONS ---`);
+  summaryFile.push('\n');
   for (const player of playerOmiCounts) {
     summaryFile.push(`${player.name} - ${player.tb}`);
   }
@@ -170,6 +174,7 @@ module.exports = async ggGuildData => {
     if (player.gac === highestGACCount) mostTotalGAC.push(`${player.name} - **${player.gac}**`);
   }
   summaryFile.push(`--- PLAYER GAC OMICRONS ---`);
+  summaryFile.push('\n');
   for (const player of playerOmiCounts) {
     summaryFile.push(`${player.name} - ${player.gac}`);
   }
