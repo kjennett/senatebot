@@ -31,6 +31,8 @@ class SBClient extends Client {
   commands = new Collection();
 
   deployCommands = async () => {
+    console.info(SENATESERVER);
+    console.info(BETASERVER);
     const rest = new REST({ version: '10' }).setToken(TOKEN);
 
     // If this variable is set to true, all prior command data for all scopes will be
