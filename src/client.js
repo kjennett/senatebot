@@ -85,4 +85,4 @@ class SBClient extends Client {
   }
 }
 
-module.exports = new SenateBotClient();
+module.exports = new SBClient();
