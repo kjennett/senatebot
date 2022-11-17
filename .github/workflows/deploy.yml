@@ -19,4 +19,4 @@ jobs:
             cd /etc/senatebot
             git pull
             npm i
-            pm2 restart /etc/senatebot/ecosystem.config.js --env production
+            pm2 restart /etc/senatebot/ecosystem.config.js --env production --update-env
