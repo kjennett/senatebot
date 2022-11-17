@@ -63,7 +63,7 @@ class SBClient extends Client {
       this.commands.set(module.data.name, module);
     }
     if (redeploy) await rest.put(Routes.applicationGuildCommands(CLIENT, SENATESERVER), { body: [] });
-    await rest.put(Routes.applicationGuildCommands(CLIENT, SENATESERVER), { body: commandData });
+    await rest.put(Routes.applicationGuildCommands(CLIENT, SENATESERVER), { body: senateCommandData });
 
     // GLOBAL commands deploy to all servers the bot is in, as well as DMs
     console.info('Registering GLOBAL-scoped commands...');
@@ -74,7 +74,7 @@ class SBClient extends Client {
       this.commands.set(module.data.name, module);
     }
     if (redeploy) await rest.put(Routes.applicationCommands(CLIENT), { body: [] });
-    await rest.put(Routes.applicationCommands(CLIENT), { body: commandData });
+    await rest.put(Routes.applicationCommands(CLIENT), { body: globalCommandData });
     console.info(redeploy ? 'Slash commands redeployed.' : 'Slash commands registered.');
   };
 
