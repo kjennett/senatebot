@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
-const generateAccountSummary = require('../account/generateAccountSummary');
-const fetchGgAccountData = require('../api/fetchGgAccountData');
-const parseAllyCode = require('../api/parseAllyCode');
+const generateAccountSummary = require('../../account/generateAccountSummary');
+const fetchGgAccountData = require('../../api/fetchGgAccountData');
+const parseAllyCode = require('../../api/parseAllyCode');
 
 module.exports = {
   enabled: true,

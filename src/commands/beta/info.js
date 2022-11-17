@@ -1,5 +1,5 @@
-const { db } = require('../database');
-const config = require('../config');
+const { db } = require('../../database');
+const config = require('../../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {

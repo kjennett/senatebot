@@ -1,9 +1,9 @@
-const parseAllyCode = require('../api/parseAllyCode');
-const fetchGgAccountData = require('../api/fetchGgAccountData');
-const config = require('../config');
-const generateAccountSummary = require('../account/generateAccountSummary');
-const generateTierPriority = require('../recruitment/generateTierPriority');
-const { db } = require('../database');
+const parseAllyCode = require('../../api/parseAllyCode');
+const fetchGgAccountData = require('../../api/fetchGgAccountData');
+const config = require('../../config');
+const generateAccountSummary = require('../../account/generateAccountSummary');
+const generateTierPriority = require('../../recruitment/generateTierPriority');
+const { db } = require('../../database');
 const { EmbedBuilder, SlashCommandBuilder, roleMention, userMention } = require('discord.js');
 
 async function findStartingTier(gp) {

@@ -10,7 +10,7 @@ async function startup() {
   console.clear();
   await mongo.connect();
   await updateGameInfo();
-  await client.registerEvents();
+  await client.registerEventListeners();
   await client.deployCommands();
   await client.login(TOKEN);
   await startPriorityBoard();
