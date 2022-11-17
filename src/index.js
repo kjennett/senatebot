@@ -7,6 +7,7 @@ const updateEvents = require('./api/updateEvents');
 const { TOKEN } = process.env;
 
 async function startup() {
+  console.clear();
   await mongo.connect();
   await updateGameInfo();
   await client.registerEvents();
@@ -15,5 +16,4 @@ async function startup() {
   await startPriorityBoard();
   await updateEvents();
 }
-
 startup();
