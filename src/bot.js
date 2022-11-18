@@ -130,4 +130,5 @@ const client = new SBClient();
 client.on('error', error => console.log(error));
 
 module.exports = client;
+console.log('testing');
 client.start();
