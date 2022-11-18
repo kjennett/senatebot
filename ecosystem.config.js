@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'Senatebot',
-      script: './src/index.js',
+      script: './src/bot.js',
       max_restarts: 20,
       restart_delay: 5000,
       autorestart: true,

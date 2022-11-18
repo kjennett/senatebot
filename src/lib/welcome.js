@@ -1,6 +1,8 @@
 const { ActionRowBuilder, SelectMenuBuilder } = require('discord.js');
+const Jimp = require('jimp');
+const { AttachmentBuilder } = require('discord.js');
 
-module.exports = new ActionRowBuilder().addComponents(
+exports.welcomeMenu = new ActionRowBuilder().addComponents(
   new SelectMenuBuilder()
     .setCustomId('welcomeMenu')
     .setPlaceholder("I'm here to...")
@@ -13,3 +15,11 @@ module.exports = new ActionRowBuilder().addComponents(
       { label: 'Leave immediately without saying anything', value: 'kick' },
     ])
 );
+
+exports.welcomeImage = async name => {
+  const font = await Jimp.loadFont('src/welcome/img/pathway.ttf.fnt');
+  const bg = await Jimp.read('src/welcome/img/welcometothesenate.png');
+  const image = await bg.print(font, 350 - Jimp.measureText(font, name) / 2, 150, name);
+  const welcomeImage = await image.getBufferAsync(Jimp.MIME_PNG);
+  return new AttachmentBuilder(welcomeImage);
+};

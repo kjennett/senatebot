@@ -1,14 +1,13 @@
 {
   "name": "senatebot",
   "version": "0.1.0",
-  "main": "src/index.js",
+  "main": "src/bot.js",
   "type": "commonjs",
   "repository": "https://github.com/veritable-quandary/senatebot.git",
   "author": "Seth Morgan <admin@veritablequandary.io>",
   "license": "MIT",
   "scripts": {
-    "dev": "node -r dotenv/config src/index.js",
-    "test": "jest"
+    "dev": "node -r dotenv/config src/bot.js"
   },
   "devDependencies": {
     "eslint": "^8.11.0",

@@ -1,9 +1,9 @@
 const { EmbedBuilder } = require('discord.js');
-const client = require('../client');
+const client = require('../bot');
 const config = require('../config');
 const { db } = require('../database');
 
-const generatePriorityBoard = async () => {
+const generatePriorityBoard = async client => {
   const allTierEmbeds = [];
 
   const titleEmbed = new EmbedBuilder()

@@ -1,7 +1,6 @@
 const { EmbedBuilder, roleMention, userMention, hyperlink, ComponentType } = require('discord.js');
 const config = require('../config');
-const createWelcomeImage = require('../welcome/createWelcomeImage');
-const welcomeMenu = require('../welcome/welcomeMenu');
+const { welcomeImage, welcomeMenu } = require('../lib/welcome');
 
 module.exports = {
   name: 'guildMemberAdd',
@@ -10,10 +9,10 @@ module.exports = {
     if (m.user.bot) return;
     await m.roles.add(await m.guild.roles.fetch(config.roles.potentialGuildMember));
 
-    const welcomeImage = await createWelcomeImage(m.user.username);
+    const image = await welcomeImage(m.user.username);
 
     const landingBay = await m.client.channels.fetch(config.channels.landingBay);
-    await landingBay.send({ files: [welcomeImage] });
+    await landingBay.send({ files: [image] });
     const menuMessage = await landingBay.send({
       content: `Greetings, ${m.user}, and welcome to THE SENATE!\nTo help us serve you, please select an option from the following menu.`,
       components: [welcomeMenu],

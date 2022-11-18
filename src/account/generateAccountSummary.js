@@ -1,6 +1,6 @@
 const config = require('../config');
 const { db } = require('../database');
-const client = require('../client');
+const client = require('../bot');
 const fetchOmegaAccountData = require('../api/fetchOmegaAccountData');
 const fetchGgGuildData = require('../api/fetchGgGuildData');
 const { AttachmentBuilder, EmbedBuilder, hyperlink } = require('discord.js');
