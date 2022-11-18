@@ -99,6 +99,7 @@ class SBClient extends Client {
   // --------------------
 
   start = async () => {
+    console.info('Testing...');
     console.info('Starting...');
 
     await mongo.connect();
