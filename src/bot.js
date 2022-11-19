@@ -129,5 +129,5 @@ class SBClient extends Client {
 const client = new SBClient();
 client.on('error', error => console.log(error));
 
-module.exports = client;
+exports.client = client;
 client.start();

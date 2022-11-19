@@ -1,6 +1,5 @@
-const { ActionRowBuilder, SelectMenuBuilder } = require('discord.js');
+const { ActionRowBuilder, SelectMenuBuilder, AttachmentBuilder } = require('discord.js');
 const Jimp = require('jimp');
-const { AttachmentBuilder } = require('discord.js');
 
 exports.welcomeMenu = new ActionRowBuilder().addComponents(
   new SelectMenuBuilder()

@@ -1,6 +1,6 @@
 const parseAllyCode = require('../../api/parseAllyCode');
 const fetchGgAccountData = require('../../api/fetchGgAccountData');
-const config = require('../../config');
+const { config } = require('../../config');
 const generateAccountSummary = require('../../account/generateAccountSummary');
 const generateTierPriority = require('../../recruitment/generateTierPriority');
 const { db } = require('../../database');

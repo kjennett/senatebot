@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const client = require('../bot');
-const config = require('../config');
+const { client } = require('../bot');
+const { config } = require('../config');
 const { db } = require('../database');
 
 const generatePriorityBoard = async client => {

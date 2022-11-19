@@ -1,5 +1,5 @@
 const { EmbedBuilder, roleMention, userMention, hyperlink, ComponentType } = require('discord.js');
-const config = require('../config');
+const { config } = require('../config');
 const { welcomeImage, welcomeMenu } = require('../lib/welcome');
 
 module.exports = {
