@@ -123,10 +123,13 @@ class SBClient extends Client {
     console.info('Priority Board started.');
 
     console.info('Startup complete.');
+    console.info('--------------------');
   };
 }
 
 const client = new SBClient();
+
+// Catch-all logging for Discord client errors
 client.on('error', error => console.log(error));
 
 exports.client = client;
