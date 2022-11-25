@@ -1,7 +1,7 @@
 const { extractAllyCode } = require('../../lib/account/extractAllyCode');
 const fetchGgAccountData = require('../../api/fetchGgAccountData');
 const { config } = require('../../config');
-const generateAccountSummary = require('../../account/generateAccountSummary');
+const { accountSummary } = require('../../lib/accountSummary');
 const generateTierPriority = require('../../recruitment/generateTierPriority');
 const { db } = require('../../database');
 const { EmbedBuilder, SlashCommandBuilder, roleMention, userMention } = require('discord.js');
@@ -137,7 +137,7 @@ module.exports = {
       const startingTier = await findStartingTier(ggData.data.galactic_power);
       const tier = await db.collection('tiers').findOne({ number: startingTier });
 
-      const accountSummary = await generateAccountSummary(ggData);
+      const summary = await accountSummary(ggData);
 
       const recruitmentChannel = await i.client.channels.fetch(config.channels.recruitmentRoom);
       const thread = await recruitmentChannel.threads.create({
@@ -145,7 +145,7 @@ module.exports = {
         autoArchiveDuration: 10080,
       });
       await thread.join();
-      await thread.send(accountSummary);
+      await thread.send(summary);
       if (notes) {
         const notesEmbed = new EmbedBuilder().setTitle('Recruitment Notes').setDescription(notes);
         await thread.send({ embeds: [notesEmbed] });
@@ -193,14 +193,14 @@ module.exports = {
       const startingTier = await findStartingTier(ggData.data.galactic_power);
       const tier = await db.collection('tiers').findOne({ number: startingTier });
 
-      const accountSummary = await generateAccountSummary(ggData);
+      const summary = await accountSummary(ggData);
 
       const thread = i.channel;
       await thread.join();
       await thread.edit({
         name: `${discorduser.username} (T${startingTier})`,
       });
-      await thread.send(accountSummary);
+      await thread.send(summary);
       if (notes) {
         const notesEmbed = new EmbedBuilder().setTitle('Recruitment Notes').setDescription(notes);
         await thread.send({ embeds: [notesEmbed] });
