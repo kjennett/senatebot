@@ -2,7 +2,7 @@ const { db } = require('../../database');
 const { config } = require('../../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const fetchGgGuildData = require('../../api/fetchGgGuildData');
-const generateGuildOmiSummary = require('../../guild/generateGuildOmiSummary');
+const { guildOmiSummary } = require('../../lib/guildOmiSummary');
 
 module.exports = {
   enabled: true,
@@ -130,7 +130,7 @@ module.exports = {
         if (!dbGuild.gg) return i.editReply(`Unable to find a SWGOH.GG guild ID for ${guildName}.`);
 
         const ggGuildData = await fetchGgGuildData(dbGuild.gg);
-        const omiSummary = await generateGuildOmiSummary(ggGuildData);
+        const omiSummary = await guildOmiSummary(ggGuildData);
         await i.editReply({ embeds: omiSummary.embeds });
         if (i.options.getBoolean('detailed')) await i.channel.send({ files: omiSummary.files });
       }

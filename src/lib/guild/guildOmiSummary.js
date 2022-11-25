@@ -1,9 +1,9 @@
 const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
-const { db } = require('../database');
-const fetchGgAccountData = require('../api/fetchGgAccountData');
+const { db } = require('../../database');
+const fetchGgAccountData = require('../../api/fetchGgAccountData');
 const fs = require('fs');
 
-module.exports = async ggGuildData => {
+exports.guildOmiSummary = async ggGuildData => {
   let guildOmis = 0;
   let guildTWOmis = 0;
   let guildTBOmis = 0;
