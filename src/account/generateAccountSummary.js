@@ -194,7 +194,7 @@ module.exports = async ggData => {
   if (r9crons.join('\n').length > 1024) {
     accountSummaryEmbed.addFields([
       {
-        name: hyperlink(`Tier 9 Datacrons: ${numberOfR9Crons}`, `https://swgoh.gg${ggData.data.url}datacrons/`),
+        name: `[Tier 9 Datacrons: ${numberOfR9Crons}](https://swgoh.gg${ggData.data.url}datacrons/)`,
         value: 'Click this link to view account datacrons.',
       },
     ]);
