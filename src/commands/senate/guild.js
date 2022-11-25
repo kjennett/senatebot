@@ -2,7 +2,7 @@ const { db } = require('../../database');
 const { config } = require('../../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const fetchGgGuildData = require('../../api/fetchGgGuildData');
-const { guildOmiSummary } = require('../../lib/guildOmiSummary');
+const { guildOmiSummary } = require('../../lib/guild/guildOmiSummary');
 
 module.exports = {
   enabled: true,
