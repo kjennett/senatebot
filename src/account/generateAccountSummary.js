@@ -194,15 +194,15 @@ module.exports = async ggData => {
   if (r9crons.join('\n').length > 1024) {
     accountSummaryEmbed.addFields([
       {
-        name: `Tier 9 Datacrons: ${numberOfR9Crons}`https://swgoh.gg${ggData.data.url}datacrons/`,
-        value: 'Click this link to view account datacrons.',
+        name: `Tier 9 Datacrons: ${numberOfR9Crons}`,
+        value: hyperlink('Click this link to view account datacrons.', `https://swgoh.gg${ggData.data.url}datacrons/`),
       },
     ]);
   } else {
     accountSummaryEmbed.addFields([
       {
         name: `Tier 9 Datacrons: ${numberOfR9Crons}`,
-        value: hyperlink('Click this link to view account datacrons.', `https://swgoh.gg${ggData.data.url}datacrons/`)
+        value: r9crons.join('\n'),
       },
     ]);
   }
