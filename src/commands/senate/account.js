@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const generateAccountSummary = require('../../account/generateAccountSummary');
 const fetchGgAccountData = require('../../api/fetchGgAccountData');
-const parseAllyCode = require('../../api/parseAllyCode');
+const { extractAllyCode } = require('../../lib/account/extractAllyCode');
 
 module.exports = {
   enabled: true,
@@ -24,7 +24,7 @@ module.exports = {
   async execute(i) {
     await i.deferReply();
 
-    const parsedAllyCode = await parseAllyCode(i.options.getString('allycode'));
+    const parsedAllyCode = extractAllyCode(i.options.getString('allycode'));
     if (!parsedAllyCode)
       return i.editReply(`Unable to determine ally code using the provided input: (${i.options.getString('allycode')})`);
 

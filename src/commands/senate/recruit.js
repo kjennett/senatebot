@@ -1,4 +1,4 @@
-const parseAllyCode = require('../../api/parseAllyCode');
+const { extractAllyCode } = require('../../lib/account/extractAllyCode');
 const fetchGgAccountData = require('../../api/fetchGgAccountData');
 const { config } = require('../../config');
 const generateAccountSummary = require('../../account/generateAccountSummary');
@@ -121,7 +121,7 @@ module.exports = {
         i.options.getString('notes'),
       ]);
 
-      const parsedAllyCode = await parseAllyCode(allycode);
+      const parsedAllyCode = extractAllyCode(allycode);
       if (!parsedAllyCode)
         return i.editReply(`Unable to determine ally code using the provided input: (${i.options.getString('allycode')})`);
 
@@ -177,7 +177,7 @@ module.exports = {
         i.options.getString('notes'),
       ]);
 
-      const parsedAllyCode = await parseAllyCode(allycode);
+      const parsedAllyCode = extractAllyCode(allycode);
       if (!parsedAllyCode)
         return i.editReply(`Unable to determine ally code using the provided input: (${i.options.getString('allycode')})`);
 
