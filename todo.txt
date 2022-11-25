@@ -1,5 +1,1 @@
 [] Fix priority board
-
-[] Rey not showing in account summaries
-
-[] Welcome image / menu breaking

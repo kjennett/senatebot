@@ -35,23 +35,27 @@ const capitalShips = [
 
 const conquestShips = ['RAZORCREST', 'SCYTHE', 'TIEINTERCEPTOR'];
 
-module.exports = async ggData => {
-  const accountSummaryEmbed = new EmbedBuilder().setDescription(`${ggData.data.ally_code}`);
+// --------------------
+// Generate Account Summary
+// --------------------
 
-  accountSummaryEmbed
+module.exports = async ggData => {
+  // Create embed with basic info
+  const accountSummaryEmbed = new EmbedBuilder()
+    .setDescription(`${ggData.data.ally_code}`)
     .setTitle(`${ggData.data.name}`)
     .setThumbnail(ggData.data.portrait_image)
     .setTimestamp(Date.parse(ggData.data.last_updated))
-    .setFooter({ text: 'Source: SWGOH.GG // Last Sync Time' })
-    .setURL(`https://swgoh.gg${ggData.data.url}`);
+    .setFooter({ text: 'Source: SWGOH.GG' })
+    .setURL(`https://swgoh.gg${ggData.data.url}`)
+    .addFields([
+      {
+        name: 'Galactic Power:',
+        value: `${ggData.data.galactic_power.toLocaleString()}`,
+      },
+    ]);
 
-  accountSummaryEmbed.addFields([
-    {
-      name: 'Galactic Power:',
-      value: `${ggData.data.galactic_power.toLocaleString()}`,
-    },
-  ]);
-
+  // Add GAC data if applicable
   if (ggData.data.level >= 85 && ggData.data.league_name)
     accountSummaryEmbed.addFields([
       {
@@ -60,6 +64,7 @@ module.exports = async ggData => {
       },
     ]);
 
+  // Add Fleet arena data if applicable
   if (ggData.data.level >= 60 && ggData.data.fleet_arena)
     accountSummaryEmbed.addFields([
       {
@@ -68,9 +73,11 @@ module.exports = async ggData => {
       },
     ]);
 
+  // Fetch ultimate and omicron material emojis
   const ultEmoji = await client.emojis.cache.get('976604889260126248');
   const omiEmoji = await client.emojis.cache.get('984941574439972954');
 
+  // Arrays to hold applicable unit objects
   const caps = [];
   const GLs = [];
   const conChars = [];
@@ -80,25 +87,30 @@ module.exports = async ggData => {
   const r9crons = [];
 
   for (const unit of ggData.units) {
+    // Galactic legends
     if (galacticLegends.includes(unit.data.base_id)) {
       const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
       const ult = unit.data.has_ultimate ? ` ${ultEmoji}` : '';
       GLs.push(`${unit.data.name}: ${gearLevel}${ult}`);
     }
 
+    // Capital ships
     if (capitalShips.includes(unit.data.base_id)) {
       caps.push(`${unit.data.name}: ${unit.data.rarity}:star:`);
     }
 
+    // Conquest characters
     if (conquestCharacters.includes(unit.data.base_id)) {
       const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
       conChars.push(`${unit.data.name}: ${gearLevel}`);
     }
 
+    // Conquest ships
     if (conquestShips.includes(unit.data.base_id)) {
       conShips.push(`${unit.data.name}: ${unit.data.rarity}:star:`);
     }
 
+    // Units with omicron abilities unlocked
     if (unit.data.ability_data.some(a => a.has_omicron_learned)) {
       const tbOmisLearned = [];
       const twOmisLearned = [];
@@ -122,6 +134,7 @@ module.exports = async ggData => {
     }
   }
 
+  // Count Tier 9 datacrons
   for (const cron of ggData.datacrons) {
     if (cron.tier === 9) {
       r9crons.push(hyperlink(`${cron.tiers.at(-1).scope_target_name}`, `https://swgoh.gg/${cron.url}`));
@@ -175,12 +188,26 @@ module.exports = async ggData => {
       name: `TB Omicrons:`,
       value: tbOmis.join('\n'),
     },
-    {
-      name: `Tier 9 Datacrons: ${numberOfR9Crons}`,
-      value: r9crons.join('\n'),
-    },
   ]);
 
+  // Deal with overflow if too many R9 crons
+  if (r9crons.join('\n').length > 1024) {
+    accountSummaryEmbed.addFields([
+      {
+        name: hyperlink(`Tier 9 Datacrons: ${numberOfR9Crons}`, `https://swgoh.gg${ggData.data}datacrons/`),
+        value: 'Click this link to view account datacrons.',
+      },
+    ]);
+  } else {
+    accountSummaryEmbed.addFields([
+      {
+        name: `Tier 9 Datacrons: ${numberOfR9Crons}`,
+        value: r9crons.join('\n'),
+      },
+    ]);
+  }
+
+  // Add current guild data if available
   if (ggData.data.guild_id) {
     const ggGuildData = await fetchGgGuildData(ggData.data.guild_id);
     const gp = ggGuildData.data.galactic_power / 1000000;
@@ -202,6 +229,7 @@ module.exports = async ggData => {
     ]);
   }
 
+  // Add mod data if available
   const modData = await fetchOmegaAccountData(ggData.data.ally_code);
   let image;
   if (modData) {
