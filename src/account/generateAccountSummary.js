@@ -1,9 +1,39 @@
-const { config } = require('../config');
 const { db } = require('../database');
 const { client } = require('../bot');
 const fetchOmegaAccountData = require('../api/fetchOmegaAccountData');
 const fetchGgGuildData = require('../api/fetchGgGuildData');
 const { AttachmentBuilder, EmbedBuilder, hyperlink } = require('discord.js');
+
+// --------------------
+// Tracked Character IDs
+// --------------------
+
+const galacticLegends = [
+  'JABBATHEHUTT',
+  'LORDVADER',
+  'JEDIMASTERKENOBI',
+  'GRANDMASTERLUKE',
+  'SITHPALPATINE',
+  'SUPREMELEADERKYLOREN',
+  'GLREY',
+];
+
+const conquestCharacters = ['BOBAFETTSCION', 'MAULS7', 'BENSOLO', 'DARTHMALGUS', 'COMMANDERAHSOKA'];
+
+const capitalShips = [
+  'CAPITALNEGOTIATOR',
+  'CAPITALEXECUTOR',
+  'CAPITALPROFUNDITY',
+  'CAPITALMALEVOLENCE',
+  'CAPITALFINALIZER',
+  'CAPITALMONCALAMARICRUISER',
+  'CAPITALRADDUS',
+  'CAPITALSTARDESTROYER',
+  'CAPITALCHIMAERA',
+  'CAPITALJEDICRUISER',
+];
+
+const conquestShips = ['RAZORCREST', 'SCYTHE', 'TIEINTERCEPTOR'];
 
 module.exports = async ggData => {
   const accountSummaryEmbed = new EmbedBuilder().setDescription(`${ggData.data.ally_code}`);
@@ -50,22 +80,22 @@ module.exports = async ggData => {
   const r9crons = [];
 
   for (const unit of ggData.units) {
-    if (config.galacticLegends.includes(unit.data.base_id)) {
+    if (galacticLegends.includes(unit.data.base_id)) {
       const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
       const ult = unit.data.has_ultimate ? ` ${ultEmoji}` : '';
       GLs.push(`${unit.data.name}: ${gearLevel}${ult}`);
     }
 
-    if (config.capitalShips.includes(unit.data.base_id)) {
+    if (capitalShips.includes(unit.data.base_id)) {
       caps.push(`${unit.data.name}: ${unit.data.rarity}:star:`);
     }
 
-    if (config.conquestCharacters.includes(unit.data.base_id)) {
+    if (conquestCharacters.includes(unit.data.base_id)) {
       const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
       conChars.push(`${unit.data.name}: ${gearLevel}`);
     }
 
-    if (config.conquestShips.includes(unit.data.base_id)) {
+    if (conquestShips.includes(unit.data.base_id)) {
       conShips.push(`${unit.data.name}: ${unit.data.rarity}:star:`);
     }
 
@@ -122,19 +152,19 @@ module.exports = async ggData => {
 
   accountSummaryEmbed.addFields([
     {
-      name: `Galactic Legends: ${numberOfGLs}/${config.galacticLegends.length}`,
+      name: `Galactic Legends: ${numberOfGLs}/${galacticLegends.length}`,
       value: GLs.join('\n'),
     },
     {
-      name: `Conquest Characters: ${numberOfConChars}/${config.conquestCharacters.length}`,
+      name: `Conquest Characters: ${numberOfConChars}/${conquestCharacters.length}`,
       value: conChars.join('\n'),
     },
     {
-      name: `Capital Ships: ${numberOfCaps}/${config.capitalShips.length}`,
+      name: `Capital Ships: ${numberOfCaps}/${capitalShips.length}`,
       value: caps.join('\n'),
     },
     {
-      name: `Conquest Ships: ${numberOfConShips}/${config.conquestShips.length}`,
+      name: `Conquest Ships: ${numberOfConShips}/${conquestShips.length}`,
       value: conShips.join('\n'),
     },
     {

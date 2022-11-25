@@ -30,30 +30,4 @@ exports.config = Object.freeze({
     4: 'Security Primer',
     5: 'Projecting Power',
   },
-
-  galacticLegends: [
-    'JABBATHEHUTT',
-    'LORDVADER',
-    'JEDIMASTERKENOBI',
-    'GRANDMASTERLUKE',
-    'SITHPALPATINE',
-    'SUPREMELEADERKYLOREN',
-  ],
-
-  conquestCharacters: ['BOBAFETTSCION', 'MAULS7', 'BENSOLO', 'DARTHMALGUS', 'COMMANDERAHSOKA'],
-
-  capitalShips: [
-    'CAPITALNEGOTIATOR',
-    'CAPITALEXECUTOR',
-    'CAPITALPROFUNDITY',
-    'CAPITALMALEVOLENCE',
-    'CAPITALFINALIZER',
-    'CAPITALMONCALAMARICRUISER',
-    'CAPITALRADDUS',
-    'CAPITALSTARDESTROYER',
-    'CAPITALCHIMAERA',
-    'CAPITALJEDICRUISER',
-  ],
-
-  conquestShips: ['RAZORCREST', 'SCYTHE', 'TIEINTERCEPTOR'],
 });
