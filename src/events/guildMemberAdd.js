@@ -1,6 +1,6 @@
 const { EmbedBuilder, roleMention, userMention, hyperlink, ComponentType } = require('discord.js');
 const { config } = require('../config');
-const { welcomeImage, welcomeMenu } = require('../lib/welcome');
+const { welcomeImage, welcomeMenu } = require('../lib/welcome/welcome');
 
 module.exports = {
   name: 'guildMemberAdd',
