@@ -1,7 +1,7 @@
 const { extractAllyCode } = require('../../lib/account/extractAllyCode');
 const fetchGgAccountData = require('../../api/fetchGgAccountData');
 const { config } = require('../../config');
-const { accountSummary } = require('../../lib/accountSummary');
+const { accountSummary } = require('../../lib/account/accountSummary');
 const generateTierPriority = require('../../recruitment/generateTierPriority');
 const { db } = require('../../database');
 const { EmbedBuilder, SlashCommandBuilder, roleMention, userMention } = require('discord.js');
