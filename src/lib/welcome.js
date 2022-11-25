@@ -16,8 +16,8 @@ exports.welcomeMenu = new ActionRowBuilder().addComponents(
 );
 
 exports.welcomeImage = async name => {
-  const font = await Jimp.loadFont('src/lib/welcome/img/pathway.ttf.fnt');
-  const bg = await Jimp.read('src/lib/welcome/img/welcometothesenate.png');
+  const font = await Jimp.loadFont('src/lib/img/pathway.ttf.fnt');
+  const bg = await Jimp.read('src/lib/img/welcometothesenate.png');
   const image = await bg.print(font, 350 - Jimp.measureText(font, name) / 2, 150, name);
   const welcomeImage = await image.getBufferAsync(Jimp.MIME_PNG);
   return new AttachmentBuilder(welcomeImage);
