@@ -1,7 +1,7 @@
-const { db } = require('../database');
-const { client } = require('../bot');
-const fetchOmegaAccountData = require('../api/fetchOmegaAccountData');
-const fetchGgGuildData = require('../api/fetchGgGuildData');
+const { db } = require('../../database');
+const { client } = require('../../bot');
+const fetchOmegaAccountData = require('../../api/fetchOmegaAccountData');
+const fetchGgGuildData = require('../../api/fetchGgGuildData');
 const { AttachmentBuilder, EmbedBuilder, hyperlink } = require('discord.js');
 
 // --------------------
@@ -39,7 +39,7 @@ const conquestShips = ['RAZORCREST', 'SCYTHE', 'TIEINTERCEPTOR'];
 // Generate Account Summary
 // --------------------
 
-module.exports = async ggData => {
+exports.accountSummary = async ggData => {
   // Create embed with basic info
   const accountSummaryEmbed = new EmbedBuilder()
     .setDescription(`${ggData.data.ally_code}`)

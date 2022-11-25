@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const generateAccountSummary = require('../../account/generateAccountSummary');
+const { accountSummary } = require('../../lib/account/accountSummary');
 const fetchGgAccountData = require('../../api/fetchGgAccountData');
 const { extractAllyCode } = require('../../lib/account/extractAllyCode');
 
@@ -34,7 +34,7 @@ module.exports = {
         `Unable to find SWGOH.GG data for ally code ${parsedAllyCode}. Please scan this ally code to add the account to SWGOH.GG: https://swgoh.gg/scan-player/`
       );
 
-    const accountSummary = await generateAccountSummary(ggData);
-    await i.editReply(accountSummary);
+    const summary = await accountSummary(ggData);
+    await i.editReply(summary);
   },
 };
