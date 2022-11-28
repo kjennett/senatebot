@@ -17,7 +17,11 @@ const circleGIFs = [
   'https://tenor.com/view/circular-teles-brito-teles-britto-maria-manuela-maria-manuela-teles-brito-gif-15681727',
   'https://tenor.com/view/join-a-circle-womens-march-join-hands-circle-come-together-gif-20882813',
   'https://tenor.com/view/circle-gif-18023149',
+  'https://tenor.com/view/full-circle-olanrogers-youtube-gif-4749604',
+  '',
 ];
+
+const circleRole = '1046627394146021448';
 
 module.exports = {
   enabled: true,
@@ -27,6 +31,7 @@ module.exports = {
     .setDescription('CIRCLE IS LIFE. CIRCLE IS LOVE. CIRCLE IS FOREVER.'),
 
   async execute(i) {
+    await i.member.roles.add(await i.member.guild.roles.fetch(circleRole));
     await i.reply(circleGIFs[Math.floor(Math.random() * circleGIFs.length)]);
   },
 };
