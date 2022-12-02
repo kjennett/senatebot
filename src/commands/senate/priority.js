@@ -42,6 +42,8 @@ module.exports = {
         i++;
       }
 
+      if (guilds.join() === '') guilds.push('No guilds in this tier!');
+
       e.addFields([
         {
           name: `Tier ${tier.number}`,
