@@ -23,6 +23,8 @@ module.exports = {
     if (!bonkedUser) await db.collection('bonks').insertOne({ id: message.member.id, count: bonkCount });
     if (bonkedUser) await db.collection('bonks').findOneAndUpdate({ id: message.member.id }, { $set: { count: bonkCount } });
 
+    console.log(`Bonked ${message.member.displayName}. Bonk Count: ${bonkCount}`);
+
     return message.member.send(
       `BONK! The following message has been bonked:\n\n${message.url}\n\nYou have been bonked ${bonkCount} times. Don't make SenateBONK send you to horny jail!`
     );
