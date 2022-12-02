@@ -11,9 +11,10 @@ module.exports = {
       return i.reply({ content: `BONK! You don't have permission to use SenateBONK!`, ephemeral: true });
     }
 
-    await i.reply({ content: i.targetMessage, ephemeral: true });
+    await i.reply({ content: 'SenateBONK Activated!', ephemeral: true });
 
     const { message } = i.targetMessage;
+    console.log(`Bonking message with id: ${message.id}`);
     await message.channel.send('https://tenor.com/view/bonk-mega-bonk-bonk-dog-bonkers-bonk-anime-gif-24565990');
 
     let bonkCount = 1;
