@@ -16,6 +16,8 @@ module.exports = {
     const message = i.targetMessage;
     await message.reply('https://tenor.com/view/bonk-mega-bonk-bonk-dog-bonkers-bonk-anime-gif-24565990');
 
+    await message.member.roles.add(await i.member.guild.roles.fetch('1048311613284941854'));
+
     let bonkCount = 1;
     const bonkedUser = await db.collection('bonks').findOne({ id: message.member.id });
     if (bonkedUser) bonkCount = bonkedUser.count + 1;
