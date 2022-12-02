@@ -14,7 +14,7 @@ module.exports = {
     await i.reply({ content: 'SenateBONK Activated!', ephemeral: true });
 
     const message = i.targetMessage;
-    await message.channel.send('https://tenor.com/view/bonk-mega-bonk-bonk-dog-bonkers-bonk-anime-gif-24565990');
+    await message.reply('https://tenor.com/view/bonk-mega-bonk-bonk-dog-bonkers-bonk-anime-gif-24565990');
 
     let bonkCount = 1;
     const bonkedUser = await db.collection('bonks').findOne({ id: message.member.id });
