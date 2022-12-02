@@ -26,7 +26,7 @@ module.exports = {
     .addSubcommand(s3 => s3.setName('order66').setDescription('Remove all users from the server that meet purge criteria.')),
 
   async execute(i) {
-    if (i.member.id !== config.owner) {
+    if (i.member.id !== process.env.OWNER) {
       return i.reply({
         content: 'This command is usable by the bot administrator only.',
         ephemeral: true,

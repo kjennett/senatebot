@@ -7,6 +7,10 @@ module.exports = {
   data: new ContextMenuCommandBuilder().setName('BONK').setType(ApplicationCommandType.Message),
 
   async execute(i) {
+    if (i.member.id !== process.env.OWNER) {
+      return i.reply({ content: `BONK! You don't have permission to use SenateBONK!`, ephemeral: true });
+    }
+
     await i.reply({ content: 'SenateBONK Activated!', ephemeral: true });
 
     const { message } = i.targetMessage;
