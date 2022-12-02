@@ -1,5 +1,9 @@
 const { SlashCommandBuilder } = require('discord.js');
 
+// --------------------
+// Circle GIFs
+// --------------------
+
 const circleGIFs = [
   'https://tenor.com/view/circle-marriage-love-like-a-circle-never-ends-gif-12894046',
   'https://tenor.com/view/im-a-circle-circle-smile-happy-gif-16681322',
@@ -14,24 +18,38 @@ const circleGIFs = [
   'https://tenor.com/view/star-wars-circle-is-now-complete-ready-to-fight-gif-13935226',
   'https://tenor.com/view/signs-infinity-spin-circle-gif-16004697',
   'https://tenor.com/view/donald-trump-potus-president-georgia-dalton-gif-19834205',
-  'https://tenor.com/view/circular-teles-brito-teles-britto-maria-manuela-maria-manuela-teles-brito-gif-15681727',
   'https://tenor.com/view/join-a-circle-womens-march-join-hands-circle-come-together-gif-20882813',
   'https://tenor.com/view/circle-gif-18023149',
   'https://tenor.com/view/full-circle-olanrogers-youtube-gif-4749604',
-  '',
+  'https://tenor.com/view/circle-rolling-roll-digital-art-circle-digital-art-gif-15098198',
+  'https://cdn.discordapp.com/attachments/543616183237345280/1046791669149872149/tenor.gif',
+  'https://tenor.com/view/neil-primrose-travis-band-music-motorbike-gif-22542797',
+  'https://tenor.com/view/gift-colors-circles-gif-12745720',
 ];
+
+// --------------------
+// PRAISE THE CIRCLE Role
+// --------------------
 
 const circleRole = '1046627394146021448';
 
 module.exports = {
   enabled: true,
-
   data: new SlashCommandBuilder()
     .setName('praisethecircle')
     .setDescription('CIRCLE IS LIFE. CIRCLE IS LOVE. CIRCLE IS FOREVER.'),
 
   async execute(i) {
+    // --------------------
+    // Add PRAISE THE CIRCLE Role
+    // --------------------
+
     await i.member.roles.add(await i.member.guild.roles.fetch(circleRole));
+
+    // --------------------
+    // Random Circle GIF Response
+    // --------------------
+
     await i.reply(circleGIFs[Math.floor(Math.random() * circleGIFs.length)]);
   },
 };
