@@ -23,6 +23,7 @@ class SBClient extends Client {
       intents: new IntentsBitField().add(
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMembers,
+        IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent
       ),
     });
