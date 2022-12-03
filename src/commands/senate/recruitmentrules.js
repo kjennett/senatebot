@@ -23,11 +23,11 @@ module.exports = {
 
     if (i.member.roles.cache.has(config.roles.allianceRecruitmentTeam)) {
       return i.editReply(
-        'This is an EDIT link for the recruitment rules - please DO NOT share this link!\n\nhttps://docs.google.com/document/d/1SatHQcnBmB3zp-0DccrJWe7h62KzULcvnZLNRys53Xc/edit'
+        '[This is an EDIT link for the recruitment rules - please DO NOT share this link!](https://docs.google.com/document/d/1SatHQcnBmB3zp-0DccrJWe7h62KzULcvnZLNRys53Xc/edit)'
       );
     } else {
       return i.editReply(
-        'https://docs.google.com/document/u/1/d/e/2PACX-1vQbd8FzOhgM1q9eFe1KmeaSThTds1G_e7UwBXHUF042OEbA2TCz40SqGS8Gi-FTSel5xm7aB6jTCeQ7/pub'
+        '[Click this link to view the recruitment rules!](https://docs.google.com/document/u/1/d/e/2PACX-1vQbd8FzOhgM1q9eFe1KmeaSThTds1G_e7UwBXHUF042OEbA2TCz40SqGS8Gi-FTSel5xm7aB6jTCeQ7/pub)'
       );
     }
   },
