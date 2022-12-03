@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'threadUpdate',
+  name: 'messageCreate',
 
   async execute(message) {
     if (message.content.toLowerCase().includes('circle')) {
