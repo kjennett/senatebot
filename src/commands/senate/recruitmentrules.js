@@ -14,7 +14,7 @@ module.exports = {
     // Recruitment / ART Permissions Checks
     // --------------------
 
-    if (!i.member.roles.cache.has(config.roles.recruit))
+    if (!i.member.roles.cache.has(config.roles.recruitment))
       return i.editReply('You must have the Recruitment role to view the recruitment rules.');
 
     // --------------------
