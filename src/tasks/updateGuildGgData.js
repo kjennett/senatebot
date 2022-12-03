@@ -3,10 +3,10 @@ const { db } = require('../database');
 const fetchGgGuildData = require('../api/fetchGgGuildData');
 
 // --------------------
-// GG Guild Data Update Task
+// GG Guild Data Update Function
 // --------------------
 
-cron.schedule('* * 5 * * *', async () => {
+async function update() {
   console.log(`Updating GP and member count data from SWGOH.GG.`);
   const allGuilds = await db.collection('guilds').find({}).sort({ name: 1 }).toArray();
 
@@ -47,4 +47,12 @@ cron.schedule('* * 5 * * *', async () => {
 
   console.log(`Successfully update GP and member count data for ${i} of ${allGuilds.length} guilds.`);
   if (failed.length) console.log(`Unable to update the following guilds: ${failed.join(', ')}`);
+}
+
+// --------------------
+// GG Guild Data Update Task
+// --------------------
+
+cron.schedule('* 2 * * * *', () => {
+  update();
 });
