@@ -42,10 +42,11 @@ module.exports = {
       const guilds = [];
       let i = 1;
       for (const guild of guildsInTier) {
+        const gp = guild.gp / 1000000;
         guilds.push(
-          `${i}. ${guild.name} - *${guild.last_recruit_name}* | <t:${Math.floor(
-            new Date(guild.last_recruit_time) / 1000
-          )}:d>`
+          `${i}. ${guild.name} - ${guild.members}/50 - ${gp.toFixed(2)}M GP\n    *${
+            guild.last_recruit_name
+          }* | <t:${Math.floor(new Date(guild.last_recruit_time) / 1000)}:d>`
         );
         i++;
       }
