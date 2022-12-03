@@ -20,7 +20,11 @@ const commandsDir = join(__dirname, './commands');
 class SBClient extends Client {
   constructor() {
     super({
-      intents: new IntentsBitField().add(IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers),
+      intents: new IntentsBitField().add(
+        IntentsBitField.Flags.Guilds,
+        IntentsBitField.Flags.GuildMembers,
+        IntentsBitField.Flags.MessageContent
+      ),
     });
   }
 
@@ -44,7 +48,7 @@ class SBClient extends Client {
 
   // If this variable is set to true, all prior command data for all scopes will be
   // cleared prior to command registration
-  redeploy = false;
+  redeploy = true;
 
   deployCommands = async () => {
     const rest = new REST({ version: '10' }).setToken(TOKEN);
