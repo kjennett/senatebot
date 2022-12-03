@@ -90,21 +90,9 @@ module.exports = {
           await m.kick('Purged: 14 days without receiving a role.');
         });
 
-        await i.editReply({
-          embeds: [
-            new EmbedBuilder({
-              title: `Order 66 Complete - ${numberOfUsers} users have been removed.`,
-            }),
-          ],
-        });
+        await i.editReply(`${numberOfUsers} younglings have been eliminated. Good soldiers follow orders.`);
       } else {
-        return i.editReply({
-          embeds: [
-            new EmbedBuilder({
-              title: `No purge-eligible members were found.`,
-            }),
-          ],
-        });
+        return i.editReply(`No younglings were found in the Temple.`);
       }
     }
   },

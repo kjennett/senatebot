@@ -35,12 +35,19 @@ const capitalShips = [
 
 const conquestShips = ['RAZORCREST', 'SCYTHE', 'TIEINTERCEPTOR'];
 
+const geoIDs = ['GEONOSIANBROODALPHA', 'GEONOSIANSPY', 'GEONOSIANSOLDIER', 'POGGLETHELESSER', 'SUNFAC'];
+
+const cloneIDs = ['CT5555', 'ARCTROOPER501ST', 'CT210408', 'CT7567'];
+
 // --------------------
 // Generate Account Summary
 // --------------------
 
 exports.accountSummary = async ggData => {
-  // Create embed with basic info
+  // --------------------
+  // Generate Summary Embed
+  // --------------------
+
   const accountSummaryEmbed = new EmbedBuilder()
     .setDescription(`${ggData.data.ally_code}`)
     .setTitle(`${ggData.data.name}`)
@@ -55,7 +62,10 @@ exports.accountSummary = async ggData => {
       },
     ]);
 
-  // Add GAC data if applicable
+  // --------------------
+  // GAC Information
+  // --------------------
+
   if (ggData.data.level >= 85 && ggData.data.league_name)
     accountSummaryEmbed.addFields([
       {
@@ -64,7 +74,10 @@ exports.accountSummary = async ggData => {
       },
     ]);
 
-  // Add Fleet arena data if applicable
+  // --------------------
+  // Fleet Arena Information
+  // --------------------
+
   if (ggData.data.level >= 60 && ggData.data.fleet_arena)
     accountSummaryEmbed.addFields([
       {
@@ -73,44 +86,91 @@ exports.accountSummary = async ggData => {
       },
     ]);
 
-  // Fetch ultimate and omicron material emojis
+  // --------------------
+  // Material Emojis
+  // --------------------
+
   const ultEmoji = await client.emojis.cache.get('976604889260126248');
   const omiEmoji = await client.emojis.cache.get('984941574439972954');
 
-  // Arrays to hold applicable unit objects
+  // --------------------
+  // Unit Count Arrays
+  // --------------------
+
   const caps = [];
   const GLs = [];
   const conChars = [];
   const conShips = [];
+  const geos = [];
+  const shaak = [];
+  const clones = [];
   const twOmis = [];
   const tbOmis = [];
   const r9crons = [];
 
   for (const unit of ggData.units) {
-    // Galactic legends
+    // --------------------
+    // Galactic Legends
+    // --------------------
+
     if (galacticLegends.includes(unit.data.base_id)) {
       const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
       const ult = unit.data.has_ultimate ? ` ${ultEmoji}` : '';
       GLs.push(`${unit.data.name}: ${gearLevel}${ult}`);
     }
 
-    // Capital ships
+    // --------------------
+    // Capital Ships
+    // --------------------
+
     if (capitalShips.includes(unit.data.base_id)) {
       caps.push(`${unit.data.name}: ${unit.data.rarity}:star:`);
     }
 
-    // Conquest characters
+    // --------------------
+    // Conquest Characters
+    // --------------------
+
     if (conquestCharacters.includes(unit.data.base_id)) {
       const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
       conChars.push(`${unit.data.name}: ${gearLevel}`);
     }
 
-    // Conquest ships
+    // --------------------
+    // Conquest Ships
+    // --------------------
+
     if (conquestShips.includes(unit.data.base_id)) {
       conShips.push(`${unit.data.name}: ${unit.data.rarity}:star:`);
     }
 
-    // Units with omicron abilities unlocked
+    // --------------------
+    // Geonosians
+    // --------------------
+
+    if (geoIDs.includes(unit.data.base_id)) {
+      const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+      geos.push(`${unit.data.name}: ${gearLevel}`);
+    }
+
+    // --------------------
+    // Shaak 501st
+    // --------------------
+
+    if (unit.data.base_id === 'SHAAKTI') {
+      const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+      shaak.push(`${unit.data.name}: ${gearLevel}`);
+    }
+
+    if (cloneIDs.includes(unit.data.base_id)) {
+      const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+      clones.push(`${unit.data.name}: ${gearLevel}`);
+    }
+
+    // --------------------
+    // Units With Omicron Abilities
+    // --------------------
+
     if (unit.data.ability_data.some(a => a.has_omicron_learned)) {
       const tbOmisLearned = [];
       const twOmisLearned = [];
@@ -134,31 +194,48 @@ exports.accountSummary = async ggData => {
     }
   }
 
-  // Count Tier 9 datacrons
+  // --------------------
+  // Level 9 Datacrons
+  // --------------------
+
   for (const cron of ggData.datacrons) {
     if (cron.tier === 9) {
       r9crons.push(hyperlink(`${cron.tiers.at(-1).scope_target_name}`, `https://swgoh.gg/${cron.url}`));
     }
   }
 
+  // --------------------
+  // Sort Arrays
+  // --------------------
+
   caps.sort();
   GLs.sort();
   conChars.sort();
   conShips.sort();
+  geos.sort();
+  const shaak501st = shaak.concat(clones);
   twOmis.sort();
   tbOmis.sort();
   r9crons.sort();
+
+  // --------------------
+  // Array Counts
+  // --------------------
 
   const numberOfCaps = caps.length;
   const numberOfGLs = GLs.length;
   const numberOfConChars = conChars.length;
   const numberOfConShips = conShips.length;
+  const numberOfGeos = geos.length;
+  const numberOfShaak501st = shaak501st.length;
   const numberOfR9Crons = r9crons.length;
 
   if (caps.join() === '') caps.push('-----');
   if (GLs.join() === '') GLs.push('-----');
   if (conChars.join() === '') conChars.push('-----');
   if (conShips.join() === '') conShips.push('-----');
+  if (geos.join() === '') geos.push('-----');
+  if (shaak501st.join() === '') shaak501st.push('-----');
   if (twOmis.join() === '') twOmis.push('-----');
   if (tbOmis.join() === '') tbOmis.push('-----');
   if (r9crons.join() === '') r9crons.push('-----');
@@ -179,6 +256,14 @@ exports.accountSummary = async ggData => {
     {
       name: `Conquest Ships: ${numberOfConShips}/${conquestShips.length}`,
       value: conShips.join('\n'),
+    },
+    {
+      name: `Geonosians: ${numberOfGeos}/5`,
+      value: geos.join('\n'),
+    },
+    {
+      name: `Shaak 501st: ${numberOfShaak501st}/5`,
+      value: shaak501st.join('\n'),
     },
     {
       name: `TW Omicrons:`,
