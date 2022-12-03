@@ -6,7 +6,7 @@ const fetchGgGuildData = require('../api/fetchGgGuildData');
 // GG Guild Data Update Task
 // --------------------
 
-cron.schedule('* 5 * * *', async () => {
+cron.schedule('* * 5 * * *', async () => {
   console.log(`Updating GP and member count data from SWGOH.GG.`);
   const allGuilds = await db.collection('guilds').find({}).sort({ name: 1 }).toArray();
 
