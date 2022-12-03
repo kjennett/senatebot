@@ -102,8 +102,10 @@ exports.accountSummary = async ggData => {
   const conChars = [];
   const conShips = [];
   const geos = [];
+  let g12GeoCount = 0;
   const shaak = [];
   const clones = [];
+  let r5CloneCount = 0;
   const twOmis = [];
   const tbOmis = [];
   const r9crons = [];
@@ -150,6 +152,7 @@ exports.accountSummary = async ggData => {
 
     if (geoIDs.includes(unit.data.base_id)) {
       const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+      if (unit.data.gear_level >= 12) g12GeoCount++;
       geos.push(`${unit.data.name}: ${gearLevel}`);
     }
 
@@ -159,11 +162,13 @@ exports.accountSummary = async ggData => {
 
     if (unit.data.base_id === 'SHAAKTI') {
       const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+      if (unit.data.gear_level === 13 && unit.data.relic_tier - 2 >= 5) r5CloneCount++;
       shaak.push(`${unit.data.name}: ${gearLevel}`);
     }
 
     if (cloneIDs.includes(unit.data.base_id)) {
       const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+      if (unit.data.gear_level === 13 && unit.data.relic_tier - 2 >= 5) r5CloneCount++;
       clones.push(`${unit.data.name}: ${gearLevel}`);
     }
 
@@ -258,11 +263,11 @@ exports.accountSummary = async ggData => {
       value: conShips.join('\n'),
     },
     {
-      name: `Geonosians: ${numberOfGeos}/5`,
+      name: `Geonosians: ${numberOfGeos}/5 ${g12GeoCount === 5 ? '✅' : '⛔'}`,
       value: geos.join('\n'),
     },
     {
-      name: `Shaak 501st: ${numberOfShaak501st}/5`,
+      name: `Shaak 501st: ${numberOfShaak501st}/5  ${r5CloneCount === 5 ? '✅' : '⛔'}`,
       value: shaak501st.join('\n'),
     },
     {
