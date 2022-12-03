@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const { db } = require('../database');
-const { fetchGgGuildData } = require('../api/fetchGgGuildData');
+const fetchGgGuildData = require('../api/fetchGgGuildData');
 
 exports.updateGuildGgData = async () => {
   console.log(`Updating GP and member count data from SWGOH.GG.`);
