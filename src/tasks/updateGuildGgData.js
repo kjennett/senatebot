@@ -54,7 +54,7 @@ async function update() {
 // --------------------
 
 cron.schedule(
-  '* * * * *',
+  '* */6 * * *',
   () => {
     update();
   },
