@@ -44,7 +44,7 @@ module.exports = {
       for (const guild of guildsInTier) {
         const gp = guild.gp / 1000000;
         guilds.push(
-          `${i}. ${guild.name} - ${guild.members}/50 - ${gp.toFixed(2)}M GP\n    *${
+          `${i}. ${guild.name} - ${guild.members}/50 - ${gp.toFixed(2)}M GP\n_ __ __ __ _*${
             guild.last_recruit_name
           }* | <t:${Math.floor(new Date(guild.last_recruit_time) / 1000)}:d>`
         );
