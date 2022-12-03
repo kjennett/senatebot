@@ -53,6 +53,13 @@ async function update() {
 // GG Guild Data Update Task
 // --------------------
 
-cron.schedule('* 2 * * * *', () => {
-  update();
-});
+cron.schedule(
+  '* * * * * *',
+  () => {
+    update();
+  },
+  {
+    scheduled: true,
+    timezone: 'America/Los_Angeles',
+  }
+);
