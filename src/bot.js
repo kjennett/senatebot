@@ -2,7 +2,6 @@ const { Client, Collection, Routes, REST, IntentsBitField } = require('discord.j
 const { readdirSync } = require('fs');
 const { join } = require('path');
 const { mongo } = require('./database');
-const { updateGuildGgDataTask } = require('./tasks/updateGuildGgData');
 const updateGameInfo = require('./api/updateGameInfo');
 const updateEvents = require('./api/updateEvents');
 
@@ -115,7 +114,7 @@ class SBClient extends Client {
     await updateEvents();
     console.info('Game events updated.');
 
-    updateGuildGgDataTask.start();
+    require('./tasks/updateGuildGgData');
     console.info('Guild data update task scheduled.');
 
     await this.registerEventListeners();
