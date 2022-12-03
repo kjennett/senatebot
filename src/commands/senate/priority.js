@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { db } = require('../../database');
+const { config } = require('../../config');
 
 module.exports = {
   enabled: true,
@@ -7,6 +8,13 @@ module.exports = {
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
+
+    // --------------------
+    // Recruitment Permission Check
+    // --------------------
+
+    if (!i.member.roles.cache.has(config.roles.recruitment) && !i.member.roles.cache.has(process.env.OWNER))
+      return i.editReply('You must have the Recruitment role to use this command!');
 
     // --------------------
     // Generate Embed
@@ -51,6 +59,10 @@ module.exports = {
         },
       ]);
     }
+
+    // --------------------
+    // Interaction Response
+    // --------------------
 
     return i.editReply({ embeds: [e] });
   },

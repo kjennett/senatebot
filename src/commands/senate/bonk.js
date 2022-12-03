@@ -19,7 +19,6 @@ module.exports = {
     // --------------------
 
     await i.reply({ content: 'BONKED!', ephemeral: true });
-
     const message = i.targetMessage;
 
     // --------------------

@@ -2,9 +2,9 @@ const { Client, Collection, Routes, REST, IntentsBitField } = require('discord.j
 const { readdirSync } = require('fs');
 const { join } = require('path');
 const { mongo } = require('./database');
+const { updateGuildGgDataTask } = require('./tasks/updateGuildGgData');
 const updateGameInfo = require('./api/updateGameInfo');
 const updateEvents = require('./api/updateEvents');
-// const startPriorityBoard = require('./recruitment/priorityBoard');
 
 const { TOKEN, SENATESERVER, BETASERVER, CLIENT } = process.env;
 
@@ -110,6 +110,9 @@ class SBClient extends Client {
     await updateEvents();
     console.info('Game events updated.');
 
+    updateGuildGgDataTask.start();
+    console.info('Guild data updated task scheduled.');
+
     await this.registerEventListeners();
     console.info('Event listeners registered.');
 
@@ -118,9 +121,6 @@ class SBClient extends Client {
 
     await this.login(TOKEN);
     console.info('Connected to Discord gateway.');
-
-    // await startPriorityBoard(this);
-    console.info('Priority Board started.');
 
     console.info('Startup complete.');
     console.info('--------------------');
