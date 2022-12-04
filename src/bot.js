@@ -115,7 +115,7 @@ class SBClient extends Client {
     console.info('Game events updated.');
 
     require('./tasks/updateGuildGgData');
-    console.info('Guild data update task scheduled.');
+    console.info('Task schedulers started');
 
     await this.registerEventListeners();
     console.info('Event listeners registered.');
