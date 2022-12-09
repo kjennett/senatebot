@@ -39,6 +39,8 @@ const geoIDs = ['GEONOSIANBROODALPHA', 'GEONOSIANSPY', 'GEONOSIANSOLDIER', 'POGG
 
 const cloneIDs = ['CT5555', 'ARCTROOPER501ST', 'CT210408', 'CT7567'];
 
+const inquisIDs = ['EIGHTHBROTHER', 'FIFTHBROTHER', 'NINTHSISTER', 'SECONDSISTER', 'SEVENTHSISTER'];
+
 // --------------------
 // Generate Account Summary
 // --------------------
@@ -103,9 +105,10 @@ exports.accountSummary = async ggData => {
   const conShips = [];
   const geos = [];
   let g12GeoCount = 0;
-  const shaak = [];
-  const clones = [];
+  let shaak = false;
   let r5CloneCount = 0;
+  let gi = false;
+  let r7InquisCount = 0;
   const twOmis = [];
   const tbOmis = [];
   const r9crons = [];
@@ -151,9 +154,7 @@ exports.accountSummary = async ggData => {
     // --------------------
 
     if (geoIDs.includes(unit.data.base_id)) {
-      const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
       if (unit.data.gear_level >= 12) g12GeoCount++;
-      geos.push(`${unit.data.name}: ${gearLevel}`);
     }
 
     // --------------------
@@ -161,15 +162,23 @@ exports.accountSummary = async ggData => {
     // --------------------
 
     if (unit.data.base_id === 'SHAAKTI') {
-      const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
-      if (unit.data.gear_level === 13 && unit.data.relic_tier - 2 >= 5) r5CloneCount++;
-      shaak.push(`${unit.data.name}: ${gearLevel}`);
+      if (unit.data.gear_level === 13 && unit.data.relic_tier - 2 >= 5) shaak = true;
     }
 
     if (cloneIDs.includes(unit.data.base_id)) {
-      const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
       if (unit.data.gear_level === 13 && unit.data.relic_tier - 2 >= 5) r5CloneCount++;
-      clones.push(`${unit.data.name}: ${gearLevel}`);
+    }
+
+    // --------------------
+    // Inquisitors / GI
+    // --------------------
+
+    if (unit.data.base_id === 'GRANDINQUISITOR') {
+      if (unit.data.gear_level === 13 && unit.data.relic_tier - 2 >= 7) gi = true;
+    }
+
+    if (inquisIDs.includes(unit.data.base_id)) {
+      if (unit.data.gear_level === 13 && unit.data.relic_tier - 2 >= 7) r7InquisCount++;
     }
 
     // --------------------
@@ -218,7 +227,6 @@ exports.accountSummary = async ggData => {
   conChars.sort();
   conShips.sort();
   geos.sort();
-  const shaak501st = shaak.concat(clones);
   twOmis.sort();
   tbOmis.sort();
   r9crons.sort();
@@ -231,19 +239,19 @@ exports.accountSummary = async ggData => {
   const numberOfGLs = GLs.length;
   const numberOfConChars = conChars.length;
   const numberOfConShips = conShips.length;
-  const numberOfGeos = geos.length;
-  const numberOfShaak501st = shaak501st.length;
   const numberOfR9Crons = r9crons.length;
 
   if (caps.join() === '') caps.push('-----');
   if (GLs.join() === '') GLs.push('-----');
   if (conChars.join() === '') conChars.push('-----');
   if (conShips.join() === '') conShips.push('-----');
-  if (geos.join() === '') geos.push('-----');
-  if (shaak501st.join() === '') shaak501st.push('-----');
   if (twOmis.join() === '') twOmis.push('-----');
   if (tbOmis.join() === '') tbOmis.push('-----');
   if (r9crons.join() === '') r9crons.push('-----');
+
+  const watReady = g12GeoCount === 5;
+  const kamReady = shaak && r5CloneCount === 4;
+  const revaReady = gi && r7InquisCount >= 4;
 
   accountSummaryEmbed.addFields([
     {
@@ -263,12 +271,10 @@ exports.accountSummary = async ggData => {
       value: conShips.join('\n'),
     },
     {
-      name: `Geonosians: ${numberOfGeos}/5 ${g12GeoCount === 5 ? '✅' : '⛔'}`,
-      value: geos.join('\n'),
-    },
-    {
-      name: `Shaak 501st: ${numberOfShaak501st}/5  ${r5CloneCount === 5 ? '✅' : '⛔'}`,
-      value: shaak501st.join('\n'),
+      name: `Special Mission Readiness`,
+      value: `**Wat Tambor** (G12+ Geos): ${watReady ? '✅' : '⛔'}\n**Ki-Adi-Mundi (R5+ Shaak 501st): ${
+        kamReady ? '✅' : '⛔'
+      }\n**Third Sister** (R7+ GI Inquisitors): ${revaReady ? '✅' : '⛔'}`,
     },
     {
       name: `TW Omicrons:`,
