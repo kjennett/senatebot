@@ -272,7 +272,7 @@ exports.accountSummary = async ggData => {
     },
     {
       name: `Special Mission Readiness`,
-      value: `**Wat Tambor** (G12+ Geos): ${watReady ? '✅' : '⛔'}\n**Ki-Adi-Mundi (R5+ Shaak 501st): ${
+      value: `**Wat Tambor** (G12+ Geos): ${watReady ? '✅' : '⛔'}\n**Ki-Adi-Mundi** (R5+ Shaak 501st): ${
         kamReady ? '✅' : '⛔'
       }\n**Third Sister** (R7+ GI Inquisitors): ${revaReady ? '✅' : '⛔'}`,
     },
