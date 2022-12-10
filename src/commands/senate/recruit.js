@@ -1,8 +1,8 @@
 const { extractAllyCode } = require('../../lib/account/extractAllyCode');
-const fetchGgAccountData = require('../../api/fetchGgAccountData');
+const { fetchAccount } = require('../../api/swgohgg');
 const { config } = require('../../config');
 const { accountSummary } = require('../../lib/account/accountSummary');
-const generateTierPriority = require('../../recruitment/generateTierPriority');
+const { generateTierPriority } = require('../../lib/recruitment/generateTierPriority');
 const { db } = require('../../database');
 const { EmbedBuilder, SlashCommandBuilder, roleMention, userMention } = require('discord.js');
 
@@ -128,7 +128,7 @@ module.exports = {
       if (await db.collection('recruits').countDocuments({ ally_code: parsedAllyCode }))
         return i.editReply(`A recruitment thread already exists for this ally code.`);
 
-      const ggData = await fetchGgAccountData(parsedAllyCode);
+      const ggData = await fetchAccount(parsedAllyCode);
       if (!ggData)
         return i.editReply(
           `Unable to find SWGOH.GG data for ally code ${parsedAllyCode}. Please scan this ally code to add the account to SWGOH.GG: https://swgoh.gg/scan-player/`
@@ -184,7 +184,7 @@ module.exports = {
       if (await db.collection('recruits').countDocuments({ ally_code: parsedAllyCode }))
         return i.editReply(`A recruitment thread already exists for this ally code.`);
 
-      const ggData = await fetchGgAccountData(parsedAllyCode);
+      const ggData = await fetchAccount(parsedAllyCode);
       if (!ggData)
         return i.editReply(
           `Unable to find SWGOH.GG data for ally code ${parsedAllyCode}. Please scan this ally code to add the account to SWGOH.GG: https://swgoh.gg/scan-player/`

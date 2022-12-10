@@ -1,6 +1,7 @@
 const { MongoClient } = require('mongodb');
 
-const mongo = new MongoClient(process.env.DB);
-const db = mongo.db();
-exports.mongo = mongo;
-exports.db = db;
+/** Default database connection */
+exports.mongo = new MongoClient(process.env.DB);
+
+/** Default collection accessor (based on connection URL) */
+exports.db = exports.mongo.db();

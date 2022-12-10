@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { accountSummary } = require('../../lib/account/accountSummary');
-const fetchGgAccountData = require('../../api/fetchGgAccountData');
+const { fetchAccount } = require('../../api/swgohgg');
 const { extractAllyCode } = require('../../lib/account/extractAllyCode');
 
 module.exports = {
@@ -20,7 +20,7 @@ module.exports = {
     if (!parsedAllyCode)
       return i.editReply(`Unable to determine ally code using the provided input: (${i.options.getString('allycode')})`);
 
-    const ggData = await fetchGgAccountData(parsedAllyCode);
+    const ggData = await fetchAccount(parsedAllyCode);
     if (!ggData)
       return i.editReply(
         `Unable to find SWGOH.GG data for ally code ${parsedAllyCode}. Please scan this ally code to add the account to SWGOH.GG: https://swgoh.gg/scan-player/`

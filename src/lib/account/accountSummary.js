@@ -1,7 +1,7 @@
 const { db } = require('../../database');
 const { client } = require('../../bot');
 const fetchOmegaAccountData = require('../../api/fetchOmegaAccountData');
-const fetchGgGuildData = require('../../api/fetchGgGuildData');
+const { fetchGuildProfile } = require('../../api/swgohgg');
 const { AttachmentBuilder, EmbedBuilder, hyperlink } = require('discord.js');
 
 // --------------------
@@ -305,7 +305,7 @@ exports.accountSummary = async ggData => {
 
   // Add current guild data if available
   if (ggData.data.guild_id) {
-    const ggGuildData = await fetchGgGuildData(ggData.data.guild_id);
+    const ggGuildData = await fetchGuildProfile(ggData.data.guild_id);
     const gp = ggGuildData.data.galactic_power / 1000000;
     accountSummaryEmbed.addFields([
       {

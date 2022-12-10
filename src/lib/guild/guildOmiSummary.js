@@ -1,6 +1,6 @@
 const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const { db } = require('../../database');
-const fetchGgAccountData = require('../../api/fetchGgAccountData');
+const { fetchAccount } = require('../../api/swgohgg');
 const fs = require('fs');
 
 exports.guildOmiSummary = async ggGuildData => {
@@ -27,7 +27,7 @@ exports.guildOmiSummary = async ggGuildData => {
   });
 
   for (const member of members) {
-    const accountData = await fetchGgAccountData(member.ally_code);
+    const accountData = await fetchAccount(member.ally_code);
     if (!accountData) {
       noGg.push(member.player_name);
       continue;

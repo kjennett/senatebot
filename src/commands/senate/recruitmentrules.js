@@ -10,17 +10,10 @@ module.exports = {
   async execute(i) {
     await i.deferReply({ ephemeral: true });
 
-    // --------------------
-    // Recruitment / ART Permissions Checks
-    // --------------------
-
     if (!i.member.roles.cache.has(config.roles.recruitment))
       return i.editReply('You must have the Recruitment role to view the recruitment rules.');
 
-    // --------------------
-    // Send Google Doc Links
-    // --------------------
-
+    // Alliance Recruitment Team members get the editable link
     return i.editReply(
       i.member.roles.cache.has(config.roles.allianceRecruitmentTeam)
         ? '[This is an EDIT link for the recruitment rules - please DO NOT share this link!](https://docs.google.com/document/d/1SatHQcnBmB3zp-0DccrJWe7h62KzULcvnZLNRys53Xc/edit)'

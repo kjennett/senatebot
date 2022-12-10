@@ -2,19 +2,14 @@ const { Client, Collection, Routes, REST, IntentsBitField } = require('discord.j
 const { readdirSync } = require('fs');
 const { join } = require('path');
 const { mongo } = require('./database');
-const updateGameInfo = require('./api/updateGameInfo');
-const updateEvents = require('./api/updateEvents');
 
 const { TOKEN, SENATESERVER, BETASERVER, CLIENT } = process.env;
 
-// Computed absolute paths of event and command directories
+// Computed absolute paths of task, event and command directories
 // (These will change from Windows dev to Linux prod)
 const eventsDir = join(__dirname, './events');
 const commandsDir = join(__dirname, './commands');
-
-// --------------------
-// Discord Client
-// --------------------
+const tasksDir = join(__dirname, './tasks');
 
 class SBClient extends Client {
   constructor() {
@@ -28,10 +23,6 @@ class SBClient extends Client {
     });
   }
 
-  // --------------------
-  // Event Listeners
-  // --------------------
-
   registerEventListeners = () => {
     const files = readdirSync(eventsDir);
     for (const file of files) {
@@ -39,10 +30,6 @@ class SBClient extends Client {
       super.on(event.name, (...args) => event.execute(...args));
     }
   };
-
-  // --------------------
-  // Command Deployment
-  // --------------------
 
   commands = new Collection();
 
@@ -53,7 +40,6 @@ class SBClient extends Client {
   deployCommands = async () => {
     const rest = new REST({ version: '10' }).setToken(TOKEN);
 
-    // Separate command JSON data based on the endpoint it will target
     const betaCommandData = [];
     const senateCommandData = [];
     const globalCommandData = [];
@@ -61,7 +47,6 @@ class SBClient extends Client {
     // BETA commands deploy to the "BotDev" beta server
     const betaFiles = readdirSync(`${commandsDir}/beta/`);
     if (betaFiles.length) {
-      console.info('Registering BETA-scoped commands...');
       for (const file of betaFiles) {
         const module = require(`${commandsDir}/beta/${file}`);
         betaCommandData.push(module.data.toJSON());
@@ -74,7 +59,6 @@ class SBClient extends Client {
     // SENATE commands deploy to "The Senate" server
     const senateFiles = readdirSync(`${commandsDir}/senate/`);
     if (senateFiles.length) {
-      console.info('Registering SENATE-scoped commands...');
       for (const file of senateFiles) {
         const module = require(`${commandsDir}/senate/${file}`);
         senateCommandData.push(module.data.toJSON());
@@ -87,7 +71,6 @@ class SBClient extends Client {
     // GLOBAL commands deploy to all servers the bot is in, as well as DMs
     const globalFiles = readdirSync(`${commandsDir}/global/`);
     if (globalFiles.length) {
-      console.info('Registering GLOBAL-scoped commands...');
       for (const file of globalFiles) {
         const module = require(`${commandsDir}/global/${file}`);
         globalCommandData.push(module.data.toJSON());
@@ -98,33 +81,26 @@ class SBClient extends Client {
     }
   };
 
-  // --------------------
-  // Bot Startup
-  // --------------------
+  scheduleTasks = () => {
+    const taskFiles = readdirSync(`${tasksDir}`);
+    if (taskFiles.length) {
+      for (const file of taskFiles) {
+        require(`${tasksDir}/${file}`);
+      }
+    }
+  };
 
   start = async () => {
+    console.info('--------------------');
     console.info('Starting...');
 
     await mongo.connect();
-    console.info('Connected to MongoDB.');
 
-    await updateGameInfo();
-    console.info('Game information updated.');
-
-    await updateEvents();
-    console.info('Game events updated.');
-
-    require('./tasks/updateGuildGgData');
-    console.info('Task schedulers started');
-
+    await this.scheduleTasks();
     await this.registerEventListeners();
-    console.info('Event listeners registered.');
-
     await this.deployCommands();
-    console.info('Slash commands deployed.');
 
     await this.login(TOKEN);
-    console.info('Connected to Discord gateway.');
 
     console.info('Startup complete.');
     console.info('--------------------');

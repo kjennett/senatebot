@@ -1,7 +1,7 @@
 const { db } = require('../database');
 const { EmbedBuilder } = require('discord.js');
 
-module.exports = async parsedAllyCode => {
+exports.generateTierPriority = async parsedAllyCode => {
   const recruit = await db.collection('recruits').findOne({ ally_code: parsedAllyCode });
 
   const guildsInTier = await db.collection('guilds').find({ tier: recruit.tier }).sort({ last_recruit_time: 1 }).toArray();
