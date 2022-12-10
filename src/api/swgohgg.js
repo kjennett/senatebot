@@ -48,7 +48,7 @@ exports.fetchAccount = async allyCode => {
 /** Fetch a guild profile data object from SWGOH.GG */
 exports.fetchGuildProfile = async guildId => {
   try {
-    const result = await axios.get(`${apiUrls.gg.guldProfile}${guildId}`);
+    const result = await axios.get(`${apiUrls.gg.guildProfile}${guildId}`);
     if (!result.status === 200) return null;
     return result.data;
   } catch (e) {
