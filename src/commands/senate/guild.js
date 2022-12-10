@@ -1,8 +1,6 @@
 const { db } = require('../../database');
 const { config } = require('../../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
-const { fetchGuildProfile } = require('../../api/swgohgg');
-const { guildOmiSummary } = require('../../lib/guild/guildOmiSummary');
 
 module.exports = {
   enabled: true,
@@ -27,28 +25,6 @@ module.exports = {
             )
             .addIntegerOption(option =>
               option.setName('tier').setDescription('The tier to move the guild to.').setAutocomplete(true).setRequired(true)
-            )
-        )
-    )
-    .addSubcommandGroup(sG3 =>
-      sG3
-        .setName('report')
-        .setDescription('Generate reports about your guild.')
-        .addSubcommand(s1 =>
-          s1
-            .setName('omis')
-            .setDescription('Generate a report about all the omicrons your guild has.')
-            .addStringOption(o =>
-              o
-                .setName('guild')
-                .setDescription('The guild to pull omicron information about.')
-                .setAutocomplete(true)
-                .setRequired(true)
-            )
-            .addBooleanOption(o =>
-              o
-                .setName('detailed')
-                .setDescription('Whether to include text files with more detailed information about each player.')
             )
         )
     ),
@@ -114,25 +90,6 @@ module.exports = {
             }),
           ],
         });
-      }
-    }
-
-    if (group === 'report') {
-      if (sub === 'omis') {
-        await i.deferReply();
-        if (!i.member.roles.cache.has(config.roles.guildOfficer) && i.member.id !== process.env.OWNER) {
-          return i.editReply(`Only Guild Officers are currently allowed to use this command.`);
-        }
-
-        const guildName = i.options.getString('guild');
-        const dbGuild = await db.collection('guilds').findOne({ name: guildName });
-        if (!dbGuild) return i.editReply(`Guild ${guildName} was not found in the database.`);
-        if (!dbGuild.gg) return i.editReply(`Unable to find a SWGOH.GG guild ID for ${guildName}.`);
-
-        const ggGuildData = await fetchGuildProfile(dbGuild.gg);
-        const omiSummary = await guildOmiSummary(ggGuildData);
-        await i.editReply({ embeds: omiSummary.embeds });
-        if (i.options.getBoolean('detailed')) await i.channel.send({ files: omiSummary.files });
       }
     }
   },
