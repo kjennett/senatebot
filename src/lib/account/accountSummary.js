@@ -214,7 +214,7 @@ exports.accountSummary = async ggData => {
 
   for (const cron of ggData.datacrons) {
     if (cron.tier === 9) {
-      r9crons.push(hyperlink(`${cron.tiers.at(-1).scope_target_name}`, `https://swgoh.gg/${cron.url}`));
+      r9crons.push(hyperlink(`${cron.tiers.at(-1).scope_target_name}`, `https://swgoh.gg${cron.url}`));
     }
   }
 
