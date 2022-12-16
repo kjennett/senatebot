@@ -56,7 +56,7 @@ module.exports = {
       const omi = ability.is_omicron ? omiEmoji : '';
 
       const abilityDisplay = new EmbedBuilder()
-        .setName(`${ability.name} ${zeta} ${omi}`)
+        .setTitle(`${ability.name} ${zeta} ${omi}`)
         .setThumbnail(ability.image)
         .setURL(`https:${ability.url}`)
         .setDescription(
