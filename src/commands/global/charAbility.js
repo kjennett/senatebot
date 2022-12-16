@@ -44,7 +44,7 @@ module.exports = {
       .find({ character_base_id: char.base_id })
       .sort({ base_id: 1 })
       .toArray();
-    const abilities = allAbilities.filter(abi => abi.base_id.contains(i.options.getString('abilitytype').toLowerCase()));
+    const abilities = allAbilities.filter(abi => abi.base_id.includes(i.options.getString('abilitytype').toLowerCase()));
     if (abilities.length === 0)
       return i.editReply(`No ${i.options.getString('abilitytype')} abilities were found for ${char.name}`);
 
