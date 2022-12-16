@@ -1,1 +1,5 @@
-[] Fix priority board
+[] Some sort of saving / retrieval of records from previous visits (i.e. recruitment)
+
+[] Detailed mission readiness report of some kind?
+
+[] Re-work /info command to use character name and ability type, rather than ability name
