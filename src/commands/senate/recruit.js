@@ -5,6 +5,7 @@ const { accountSummary } = require('../../lib/account/accountSummary');
 const { generateTierPriority } = require('../../lib/recruitment/generateTierPriority');
 const { db } = require('../../database');
 const { EmbedBuilder, SlashCommandBuilder, roleMention, userMention } = require('discord.js');
+const { removeRecruit } = require('../../lib/recruitment/removeRecruit');
 
 async function findStartingTier(gp) {
   const result = await db.collection('tiers').findOne({
@@ -365,8 +366,8 @@ module.exports = {
 
       await i.channel.send(`Thread closed by ${i.member} for the following reason: "${reason}".`);
 
-      await db.collection('recruits').findOneAndDelete({ thread_id: i.channel.id });
-      await db.collection('decisions').deleteMany({ ally_code: recruit.ally_code });
+      const rec = await db.collection('recruits').findOne({ thread_id: i.channel.id });
+      await removeRecruit(rec.ally_code);
       await i.channel.setLocked(true);
       await i.channel.setArchived(true);
     }
@@ -405,8 +406,7 @@ module.exports = {
         }
       );
 
-      await db.collection('recruits').findOneAndDelete({ ally_code: recruit.ally_code });
-      await db.collection('decisions').deleteMany({ ally_code: recruit.ally_code });
+      await removeRecruit(recruit.ally_code);
       await i.channel.setLocked(true);
       await i.channel.setArchived(true);
     }

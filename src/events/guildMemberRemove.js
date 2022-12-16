@@ -1,5 +1,6 @@
 const { db } = require('../database');
 const { EmbedBuilder } = require('discord.js');
+const { removeRecruit } = require('../lib/recruitment/removeRecruit');
 
 module.exports = {
   name: 'guildMemberRemove',
@@ -7,6 +8,8 @@ module.exports = {
   async execute(member) {
     const rec = await db.collection('recruits').findOne({ discord_user_id: member.id });
     if (!rec) return;
+
+    await removeRecruit(rec.ally_code);
 
     const t = await member.client.channels.fetch(rec.thread_id);
     if (!t) return;
