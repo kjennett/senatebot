@@ -16,7 +16,7 @@ module.exports = {
     )
     .addStringOption(o =>
       o
-        .setName('abilitytype')
+        .setName('type')
         .setDescription('If there are multiple abilities of the given type, all abilities will be shown.')
         .setRequired(true)
         .addChoices(
