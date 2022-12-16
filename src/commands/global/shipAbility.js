@@ -5,11 +5,11 @@ module.exports = {
   enabled: true,
 
   data: new SlashCommandBuilder()
-    .setName('charability')
+    .setName('shipability')
     .setDescription('View information about an in-game CHARACTER ability.')
     .addStringOption(o =>
       o
-        .setName('charactername')
+        .setName('shipname')
         .setDescription('The name of the character to view ability information about.')
         .setRequired(true)
         .setAutocomplete(true)
@@ -23,8 +23,7 @@ module.exports = {
           { name: 'Basic', value: 'Basic' },
           { name: 'Special', value: 'Special' },
           { name: 'Unique', value: 'Unique' },
-          { name: 'Leader', value: 'Leader' },
-          { name: 'Granted', value: 'Granted' }
+          { name: 'Hardware', value: 'Hardware' }
         )
     ),
 
@@ -35,32 +34,26 @@ module.exports = {
     const embeds = [];
 
     // Pull database entry for the character
-    const char = await db.collection('characters').findOne({ base_id: i.options.getString('charactername') });
-    if (!char) return i.editReply('Unable to find a character with the provided name.');
+    const ship = await db.collection('ships').findOne({ base_id: i.options.getString('shipname') });
+    if (!ship) return i.editReply('Unable to find a ship with the provided name.');
 
     // Pull all abilities for that character, and filter to the selected type
     const allAbilities = await db
       .collection('abilities')
-      .find({ character_base_id: char.base_id })
+      .find({ ship_base_id: ship.base_id })
       .sort({ base_id: 1 })
       .toArray();
     const abilities = allAbilities.filter(abi => abi.base_id.includes(i.options.getString('type').toLowerCase()));
     if (abilities.length === 0)
-      return i.editReply(`No ${i.options.getString('type')} abilities were found for ${char.name}`);
-
-    const zetaEmoji = await i.client.emojis.cache.get('984941532845056100');
-    const omiEmoji = await i.client.emojis.cache.get('984941574439972954');
+      return i.editReply(`No ${i.options.getString('type')} abilities were found for ${ship.name}`);
 
     for (const ability of abilities) {
-      const zeta = ability.is_zeta ? zetaEmoji : '';
-      const omi = ability.is_omicron ? omiEmoji : '';
-
       const abilityDisplay = new EmbedBuilder()
-        .setTitle(`${ability.name} ${zeta} ${omi}`)
+        .setTitle(ability.name)
         .setThumbnail(ability.image)
         .setURL(`https:${ability.url}`)
         .setDescription(
-          `${char.name} ${i.options.getString('type')} Ability\n\n${ability.description.replace(/\[.{6}\]/gm, '')}`
+          `${ship.name} ${i.options.getString('type')} Ability\n\n${ability.description.replace(/\[.{6}\]/gm, '')}`
         );
 
       embeds.push(abilityDisplay);
