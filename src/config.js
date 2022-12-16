@@ -2,12 +2,12 @@ exports.config = Object.freeze({
   invite:
     'https://discord.com/api/oauth2/authorize?client_id=898606121512755201&permissions=8&scope=bot%20applications.commands',
 
-  channels: {
+  channels: Object.freeze({
     landingBay: '518436413344317450',
     recruitmentRoom: '518436714176577563',
     securityCouncil: '515882219525373955',
     allianceRecruitmentTeam: '907823084566892576',
-  },
+  }),
 
   roles: {
     potentialGuildMember: '543791694726823997',

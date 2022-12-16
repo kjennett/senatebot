@@ -59,7 +59,7 @@ module.exports = {
         await recruitment.send({
           embeds: [
             new EmbedBuilder({
-              title: `Order 66 Complete - ${numberOfUsers} younglings have been eliminated. Good soldiers folow orders.`,
+              title: `Order 66 Complete - ${numberOfUsers} younglings have been eliminated. Good soldiers follow orders.`,
             }),
           ],
         });

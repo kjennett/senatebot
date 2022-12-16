@@ -159,6 +159,7 @@ module.exports = {
         discord_user_id: discorduser.id,
         tier: startingTier,
         thread_id: thread.id,
+        thread_url: thread.url,
         priority_message_id: priorityMessage.id,
       });
 
