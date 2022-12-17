@@ -11,6 +11,13 @@ module.exports = {
     .setName('transfer')
     .setDescription('Open a player transfer thread in the Galactic Trade Federation.')
     .addStringOption(option =>
+      option
+        .setName('type')
+        .setDescription('Whether the transfer is temporary (i.e. mercing for TB), or permanent.')
+        .setRequired(true)
+        .addChoices({ name: 'Temporary (Merc/Backpack)', value: 'TEMP' }, { name: 'Permanent', value: 'TRANSFER' })
+    )
+    .addStringOption(option =>
       option.setName('allycode').setDescription('Ally code OR swgoh.gg profile for the account.').setRequired(true)
     )
     .addStringOption(option =>
@@ -23,7 +30,11 @@ module.exports = {
     if (!i.member.roles.cache.has(config.roles.guildOfficer))
       return i.editReply('You must have the Guild Officer role to list players for transfer.');
 
-    const [allycode, notes] = await Promise.all([i.options.getString('allycode'), i.options.getString('notes')]);
+    const [type, allycode, notes] = await Promise.all([
+      i.options.getString('type'),
+      i.options.getString('allycode'),
+      i.options.getString('notes'),
+    ]);
 
     // Extract an ally code from the provided input
     const ally = extractAllyCode(allycode);
@@ -42,7 +53,7 @@ module.exports = {
     // Create a thread for the recruit in the recruitment channel
     const tradeChannel = await i.client.channels.fetch(config.channels.tradeFederation);
     const thread = await tradeChannel.threads.create({
-      name: `${ggData.data.name}`,
+      name: `${type}: ${ggData.data.name}`,
       autoArchiveDuration: 10080,
     });
     await thread.join();
