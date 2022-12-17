@@ -3,35 +3,20 @@ const { db } = require('../../database');
 const { config } = require('../../config');
 
 module.exports = {
-  enabled: true,
-  data: new SlashCommandBuilder().setName('priority').setDescription('View the current recruitment priority for all tiers.'),
+  data: new SlashCommandBuilder()
+    .setName('priority')
+    .setDescription('View the current recruitment priority for all tiers.'),
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
 
-    // --------------------
-    // Recruitment Permission Check
-    // --------------------
-
-    if (!i.member.roles.cache.has(config.roles.recruitment) && !i.member.roles.cache.has(process.env.OWNER))
+    // Check for Recruitment role
+    if (!i.member.roles.cache.has(config.roles.recruitment))
       return i.editReply('You must have the Recruitment role to use this command!');
-
-    // --------------------
-    // Generate Embed
-    // --------------------
-
-    const e = new EmbedBuilder().setTitle('__Current Tier Priority__');
-
-    // --------------------
-    // Fetch Tiers
-    // --------------------
 
     const tiers = await db.collection('tiers').find().sort({ number: -1 }).toArray();
 
-    // --------------------
-    // Determine Priority For Each Tier
-    // --------------------
-
+    const e = new EmbedBuilder().setTitle('__Current Priority - All Tiers__');
     for (const tier of tiers) {
       const guildsInTier = await db
         .collection('guilds')
@@ -51,19 +36,15 @@ module.exports = {
         i++;
       }
 
-      if (guilds.join() === '') guilds.push('No guilds in this tier!');
+      if (guilds.length === 0) guilds.push('No guilds in this tier!');
 
       e.addFields([
         {
-          name: `Tier ${tier.number}`,
+          name: `__Tier ${tier.number}__`,
           value: guilds.join('\n'),
         },
       ]);
     }
-
-    // --------------------
-    // Interaction Response
-    // --------------------
 
     return i.editReply({ embeds: [e] });
   },

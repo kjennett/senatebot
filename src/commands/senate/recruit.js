@@ -16,8 +16,6 @@ async function findStartingTier(gp) {
 }
 
 module.exports = {
-  enabled: true,
-
   data: new SlashCommandBuilder()
     .setName('recruit')
     .setDescription('Manages recruits in the SenateBot database.')

@@ -2,8 +2,6 @@ const { config } = require('../../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-  enabled: true,
-
   data: new SlashCommandBuilder()
     .setName('a')
     .setDescription('Configuration and administration commands.')

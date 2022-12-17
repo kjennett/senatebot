@@ -2,7 +2,6 @@ const { SlashCommandBuilder } = require('discord.js');
 const { config } = require('../../config');
 
 module.exports = {
-  enabled: true,
   data: new SlashCommandBuilder()
     .setName('recruitmentrules')
     .setDescription('Displays a view-only or edit link to the official Recruitment Rules, depending on your roles.'),

@@ -9,8 +9,6 @@ const { addRecruit } = require('../../lib/recruitment/addRecruit');
 const { findStartingTier } = require('../../lib/recruitment/findStartingTier');
 
 module.exports = {
-  enabled: true,
-
   data: new SlashCommandBuilder()
     .setName('newrecruit')
     .setDescription('Creates a new recruitment thread.')

@@ -5,8 +5,6 @@ const { accountSummary } = require('../../lib/account/accountSummary');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-  enabled: true,
-
   data: new SlashCommandBuilder()
     .setName('transfer')
     .setDescription('Open a player transfer thread in the Galactic Trade Federation.')

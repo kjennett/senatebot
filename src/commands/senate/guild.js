@@ -3,8 +3,6 @@ const { config } = require('../../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-  enabled: true,
-
   data: new SlashCommandBuilder()
     .setName('guild')
     .setDescription('Commands for managing guild status and member roles.')

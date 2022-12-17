@@ -3,7 +3,6 @@ const { config } = require('../../config');
 const { db } = require('../../database');
 
 module.exports = {
-  enabled: true,
   data: new SlashCommandBuilder()
     .setName('keepalive')
     .setDescription('Enable or disable keep-alive service for a thread (prevents threads from being auto-archived).')

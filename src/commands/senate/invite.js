@@ -2,7 +2,6 @@ const { SlashCommandBuilder } = require('discord.js');
 const { config } = require('../../config');
 
 module.exports = {
-  enabled: true,
   data: new SlashCommandBuilder().setName('invite').setDescription('Invite SenateBot to another server.'),
 
   async execute(i) {

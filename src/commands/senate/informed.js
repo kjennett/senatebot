@@ -2,8 +2,6 @@ const { config } = require('../../config');
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-  enabled: true,
-
   data: new SlashCommandBuilder()
     .setName('informed')
     .setDescription('Indicate that a player has been informed of their transfer.'),
