@@ -1,6 +1,6 @@
 const { db } = require('../../database');
 const { client } = require('../../bot');
-const fetchOmegaAccountData = require('../../api/fetchOmegaAccountData');
+const { fetchOmega } = require('../../api/omega');
 const { fetchGuildProfile } = require('../../api/swgohgg');
 const { AttachmentBuilder, EmbedBuilder, hyperlink } = require('discord.js');
 
@@ -326,7 +326,7 @@ exports.accountSummary = async ggData => {
   }
 
   // Add mod data if available
-  const modData = await fetchOmegaAccountData(ggData.data.ally_code);
+  const modData = await fetchOmega(ggData.data.ally_code);
   let image;
   if (modData) {
     accountSummaryEmbed.addFields([
