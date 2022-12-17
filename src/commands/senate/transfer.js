@@ -53,7 +53,7 @@ module.exports = {
     // Create a thread for the recruit in the recruitment channel
     const tradeChannel = await i.client.channels.fetch(config.channels.tradeFederation);
     const thread = await tradeChannel.threads.create({
-      name: `${type}: ${ggData.data.name}`,
+      name: `${type} - ${ggData.data.name}`,
       autoArchiveDuration: 10080,
     });
     await thread.join();
@@ -62,7 +62,7 @@ module.exports = {
     // Post the reason for transfer in the thread
     const notesEmbed = new EmbedBuilder().setTitle('Reason for Transfer').setDescription(notes);
     await thread.send({ embeds: [notesEmbed] });
-    await thread.send(':no_entry: **DO NOT contact this player yet!** :no_entry');
+    await thread.send(':no_entry: **DO NOT contact this player yet!** :no_entry:');
 
     return i.editReply(
       'Transfer thread created. Use `/informed` in the thread once the player has been informed of their transfer.'
