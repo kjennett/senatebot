@@ -16,7 +16,8 @@ module.exports = {
 
     let totalAllianceMembers;
     let totalAlliancePower;
-    const allGuilds = await db.collection('guilds').find({}).toArray();
+    const allGuilds = await db.collection('guilds').find().toArray();
+    console.log(allGuilds.length);
     for (const guild of allGuilds) {
       totalAllianceMembers += guild.members;
       totalAlliancePower += guild.gp;
