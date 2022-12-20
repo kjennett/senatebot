@@ -23,7 +23,9 @@ async function update() {
     const members = guildData.data.member_count;
     const gp = guildData.data.galactic_power;
 
-    await db.collection('guilds').findOneAndUpdate({ name: guild.name }, { $set: { members: members, gp: gp } });
+    await db
+      .collection('guilds')
+      .findOneAndUpdate({ name: guild.name }, { $set: { members: members, gp: gp } });
 
     i++;
   }
