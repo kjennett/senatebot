@@ -14,8 +14,8 @@ module.exports = {
     if (i.member.id !== process.env.OWNER)
       return i.deferReply('Only the bot administrator may run this command (for now!)');
 
-    let totalAllianceMembers;
-    let totalAlliancePower;
+    let totalAllianceMembers = 0;
+    let totalAlliancePower = 0;
     const allGuilds = await db.collection('guilds').find().toArray();
     console.log(allGuilds.length);
     for (const guild of allGuilds) {
