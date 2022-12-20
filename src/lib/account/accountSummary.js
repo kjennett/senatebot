@@ -35,7 +35,13 @@ const capitalShips = [
 
 const conquestShips = ['RAZORCREST', 'SCYTHE', 'TIEINTERCEPTOR'];
 
-const geoIDs = ['GEONOSIANBROODALPHA', 'GEONOSIANSPY', 'GEONOSIANSOLDIER', 'POGGLETHELESSER', 'SUNFAC'];
+const geoIDs = [
+  'GEONOSIANBROODALPHA',
+  'GEONOSIANSPY',
+  'GEONOSIANSOLDIER',
+  'POGGLETHELESSER',
+  'SUNFAC',
+];
 
 const cloneIDs = ['CT5555', 'ARCTROOPER501ST', 'CT210408', 'CT7567'];
 
@@ -72,7 +78,9 @@ exports.accountSummary = async ggData => {
     accountSummaryEmbed.addFields([
       {
         name: 'GAC League (Skill Rating):',
-        value: `${ggData.data.league_name} ${ggData.data.division_number} (${ggData.data.skill_rating.toLocaleString()})`,
+        value: `${ggData.data.league_name} ${
+          ggData.data.division_number
+        } (${ggData.data.skill_rating.toLocaleString()})`,
       },
     ]);
 
@@ -119,7 +127,8 @@ exports.accountSummary = async ggData => {
     // --------------------
 
     if (galacticLegends.includes(unit.data.base_id)) {
-      const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+      const gearLevel =
+        unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
       const ult = unit.data.has_ultimate ? ` ${ultEmoji}` : '';
       GLs.push(`${unit.data.name}: ${gearLevel}${ult}`);
     }
@@ -137,7 +146,8 @@ exports.accountSummary = async ggData => {
     // --------------------
 
     if (conquestCharacters.includes(unit.data.base_id)) {
-      const gearLevel = unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
+      const gearLevel =
+        unit.data.gear_level === 13 ? `R${unit.data.relic_tier - 2}` : `G${unit.data.gear_level}`;
       conChars.push(`${unit.data.name}: ${gearLevel}`);
     }
 
@@ -214,7 +224,9 @@ exports.accountSummary = async ggData => {
 
   for (const cron of ggData.datacrons) {
     if (cron.tier === 9) {
-      r9crons.push(hyperlink(`${cron.tiers.at(-1).scope_target_name}`, `https://swgoh.gg${cron.url}`));
+      r9crons.push(
+        hyperlink(`${cron.tiers.at(-1).scope_target_name}`, `https://swgoh.gg${cron.url}`)
+      );
     }
   }
 
@@ -272,7 +284,9 @@ exports.accountSummary = async ggData => {
     },
     {
       name: `Special Mission Readiness`,
-      value: `**Wat Tambor** (G12+ Geos): ${watReady ? '✅' : '⛔'}\n**Ki-Adi-Mundi** (R5+ Shaak 501st): ${
+      value: `**Wat Tambor** (G12+ Geos): ${
+        watReady ? '✅' : '⛔'
+      }\n**Ki-Adi-Mundi** (R5+ Shaak 501st): ${
         kamReady ? '✅' : '⛔'
       }\n**Third Sister** (R7+ GI Inquisitors): ${revaReady ? '✅' : '⛔'}`,
     },
@@ -291,7 +305,10 @@ exports.accountSummary = async ggData => {
     accountSummaryEmbed.addFields([
       {
         name: `Tier 9 Datacrons: ${numberOfR9Crons}`,
-        value: hyperlink('Click this link to view account datacrons.', `https://swgoh.gg${ggData.data.url}datacrons/`),
+        value: hyperlink(
+          'Click this link to view account datacrons.',
+          `https://swgoh.gg${ggData.data.url}datacrons/`
+        ),
       },
     ]);
   } else {
