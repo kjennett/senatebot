@@ -2,8 +2,7 @@ const cron = require('node-cron');
 const { db } = require('../database');
 const { fetchGuildProfile } = require('../api/swgohgg');
 
-async function update() {
-  console.log(`Updating GP and member count data from SWGOH.GG.`);
+async function updateGuildGgData() {
   const allGuilds = await db.collection('guilds').find({}).sort({ name: 1 }).toArray();
 
   let i = 0;
@@ -38,7 +37,7 @@ async function update() {
 cron.schedule(
   '1 */12 * * *',
   () => {
-    update();
+    updateGuildGgData();
   },
   {
     scheduled: true,
