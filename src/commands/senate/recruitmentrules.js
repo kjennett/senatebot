@@ -4,7 +4,9 @@ const { config } = require('../../config');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('recruitmentrules')
-    .setDescription('Displays a view-only or edit link to the official Recruitment Rules, depending on your roles.'),
+    .setDescription(
+      'Displays a view-only or edit link to the official Recruitment Rules, depending on your roles.'
+    ),
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
