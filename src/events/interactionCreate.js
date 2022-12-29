@@ -4,6 +4,11 @@ module.exports = {
   name: 'interactionCreate',
 
   async execute(interaction) {
+    if (interaction.isCommand()) {
+      const command = interaction.client.commands.get(interaction.commandName);
+      await command.execute(interaction);
+    }
+
     if (interaction.isAutocomplete()) {
       const focused = await interaction.options.getFocused(true);
 
@@ -61,21 +66,19 @@ module.exports = {
         const choices = await db.collection('characters').find().sort({ name: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
         if (filtered.length < 25)
-          await interaction.respond(filtered.map(choice => ({ name: choice.name, value: choice.base_id })));
+          await interaction.respond(
+            filtered.map(choice => ({ name: choice.name, value: choice.base_id }))
+          );
       }
 
       if (focused.name === 'shipname') {
         const choices = await db.collection('ships').find().sort({ name: 1 }).toArray();
         const filtered = await choices.filter(isIncluded);
         if (filtered.length < 25)
-          await interaction.respond(filtered.map(choice => ({ name: choice.name, value: choice.base_id })));
+          await interaction.respond(
+            filtered.map(choice => ({ name: choice.name, value: choice.base_id }))
+          );
       }
     }
-
-    if (!interaction.isCommand()) return;
-    const command = interaction.client.commands.get(interaction.commandName);
-    if (!command) return;
-
-    await command.execute(interaction);
   },
 };
