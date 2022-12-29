@@ -4,6 +4,7 @@ module.exports = {
   name: 'interactionCreate',
 
   async execute(interaction) {
+    console.time('Command Response');
     if (interaction.isCommand()) {
       console.log(
         `User: ${interaction.member.displayName} | Command: ${interaction.toString()} | Channel: ${
