@@ -23,9 +23,6 @@ module.exports = {
 
     if (interaction.isAutocomplete()) {
       console.time(`${interaction.id} Autocomplete`);
-
-      console.log(`${interaction.toString()}`);
-
       const focused = await interaction.options.getFocused(true);
 
       function isIncluded(value) {
