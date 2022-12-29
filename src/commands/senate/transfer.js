@@ -13,17 +13,27 @@ module.exports = {
         .setName('type')
         .setDescription('Whether the transfer is temporary (i.e. mercing for TB), or permanent.')
         .setRequired(true)
-        .addChoices({ name: 'Temporary (Merc/Backpack)', value: 'TEMP' }, { name: 'Permanent', value: 'TRANSFER' })
+        .addChoices(
+          { name: 'Temporary (Merc/Backpack)', value: 'TEMP' },
+          { name: 'Permanent', value: 'TRANSFER' }
+        )
     )
     .addStringOption(option =>
-      option.setName('allycode').setDescription('Ally code OR swgoh.gg profile for the account.').setRequired(true)
+      option
+        .setName('allycode')
+        .setDescription('Ally code OR swgoh.gg profile for the account.')
+        .setRequired(true)
     )
     .addStringOption(option =>
-      option.setName('notes').setDescription('The reason for the transfer, as well as ').setRequired(true)
+      option
+        .setName('notes')
+        .setDescription('The reason for the transfer, as well as ')
+        .setRequired(true)
     ),
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
+    console.timeEnd(`${i.id} Response`);
 
     if (!i.member.roles.cache.has(config.roles.guildOfficer))
       return i.editReply('You must have the Guild Officer role to list players for transfer.');
