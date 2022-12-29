@@ -6,13 +6,13 @@ module.exports = {
   async execute(interaction) {
     if (interaction.isCommand()) {
       console.log(
-        `${interaction.id} Execution Time: ${Date.now() - interaction.createdTimestamp} ms`
-      );
-
-      console.log(
         `User: ${interaction.member.displayName} | Command: ${interaction.toString()} | Channel: ${
           interaction.channel.name
         }`
+      );
+
+      console.log(
+        `${interaction.id} Execution Time: ${Date.now() - interaction.createdTimestamp} ms`
       );
 
       console.time(`${interaction.id} Response`);
