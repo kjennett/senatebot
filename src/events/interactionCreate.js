@@ -4,22 +4,28 @@ module.exports = {
   name: 'interactionCreate',
 
   async execute(interaction) {
-    console.log(
-      `${interaction.id} Execution Time: ${Date.now() - interaction.createdTimestamp} ms`
-    );
-    console.time(`${interaction.id} Response`);
-
     if (interaction.isCommand()) {
+      console.log(
+        `${interaction.id} Execution Time: ${Date.now() - interaction.createdTimestamp} ms`
+      );
+
       console.log(
         `User: ${interaction.member.displayName} | Command: ${interaction.toString()} | Channel: ${
           interaction.channel.name
         }`
       );
+
+      console.time(`${interaction.id} Response`);
+
       const command = interaction.client.commands.get(interaction.commandName);
       await command.execute(interaction);
     }
 
     if (interaction.isAutocomplete()) {
+      console.time(`${interaction.id} Autocomplete`);
+
+      console.log(`${interaction.toString()}`);
+
       const focused = await interaction.options.getFocused(true);
 
       function isIncluded(value) {
@@ -89,6 +95,8 @@ module.exports = {
             filtered.map(choice => ({ name: choice.name, value: choice.base_id }))
           );
       }
+
+      console.timeEnd(`${interaction.id} Autocomplete`);
     }
   },
 };
