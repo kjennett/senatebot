@@ -9,6 +9,7 @@ module.exports = {
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
+    console.timeEnd('Command Response');
 
     // Check for Recruitment role
     if (!i.member.roles.cache.has(config.roles.recruitment))
