@@ -4,8 +4,11 @@ module.exports = {
   name: 'interactionCreate',
 
   async execute(interaction) {
-    console.log(`Time to command execution: ${Date.now() - interaction.createdTimestamp} ms`);
-    console.time('Command Response');
+    console.log(
+      `${interaction.id} Execution time: ${Date.now() - interaction.createdTimestamp} ms`
+    );
+    console.time(`${interaction.id} Response`);
+
     if (interaction.isCommand()) {
       console.log(
         `User: ${interaction.member.displayName} | Command: ${interaction.toString()} | Channel: ${

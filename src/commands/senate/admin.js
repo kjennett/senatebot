@@ -13,7 +13,7 @@ module.exports = {
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
-    console.timeEnd('Command Response');
+    console.timeEnd(`${i.id} Response`);
 
     if (i.member.id !== process.env.OWNER)
       return i.reply('Only the bot administrator may use admin commands.');
