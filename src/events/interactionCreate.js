@@ -4,8 +4,8 @@ module.exports = {
   name: 'interactionCreate',
 
   async execute(interaction) {
-    console.log(interaction);
     if (interaction.isCommand()) {
+      console.log(`User: ${i.member.displayName} | Command: ${interaction.toString()}`);
       const command = interaction.client.commands.get(interaction.commandName);
       await command.execute(interaction);
     }
