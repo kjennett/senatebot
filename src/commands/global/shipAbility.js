@@ -17,7 +17,9 @@ module.exports = {
     .addStringOption(o =>
       o
         .setName('type')
-        .setDescription('If there are multiple abilities of the given type, all abilities will be shown.')
+        .setDescription(
+          'If there are multiple abilities of the given type, all abilities will be shown.'
+        )
         .setRequired(true)
         .addChoices(
           { name: 'Basic', value: 'Basic' },
@@ -29,6 +31,7 @@ module.exports = {
 
   async execute(i) {
     await i.deferReply();
+    console.timeEnd(`${i.id} Response`);
 
     // List of embeds to be displayed, one for each ability
     const embeds = [];
@@ -43,7 +46,9 @@ module.exports = {
       .find({ ship_base_id: ship.base_id })
       .sort({ base_id: 1 })
       .toArray();
-    const abilities = allAbilities.filter(abi => abi.base_id.includes(i.options.getString('type').toLowerCase()));
+    const abilities = allAbilities.filter(abi =>
+      abi.base_id.includes(i.options.getString('type').toLowerCase())
+    );
     if (abilities.length === 0)
       return i.editReply(`No ${i.options.getString('type')} abilities were found for ${ship.name}`);
 
@@ -53,7 +58,10 @@ module.exports = {
         .setThumbnail(ability.image)
         .setURL(`https:${ability.url}`)
         .setDescription(
-          `${ship.name} ${i.options.getString('type')} Ability\n\n${ability.description.replace(/\[.{6}\]/gm, '')}`
+          `${ship.name} ${i.options.getString('type')} Ability\n\n${ability.description.replace(
+            /\[.{6}\]/gm,
+            ''
+          )}`
         );
 
       embeds.push(abilityDisplay);

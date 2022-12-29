@@ -16,11 +16,16 @@ module.exports = {
         .setRequired(true)
     )
     .addBooleanOption(o =>
-      o.setName('detailed').setDescription('Whether to include text files with more detailed information about each player.')
+      o
+        .setName('detailed')
+        .setDescription(
+          'Whether to include text files with more detailed information about each player.'
+        )
     ),
 
   async execute(i) {
     await i.deferReply();
+    console.timeEnd(`${i.id} Response`);
 
     const guildName = i.options.getString('guild');
     const dbGuild = await db.collection('guilds').findOne({ name: guildName });
