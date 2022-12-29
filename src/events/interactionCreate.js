@@ -4,7 +4,7 @@ module.exports = {
   name: 'interactionCreate',
 
   async execute(interaction) {
-    console.log(`Time to command execution: ${interaction.createdTimestamp - Date.now()} ms`);
+    console.log(`Time to command execution: ${Date.now() - interaction.createdTimestamp} ms`);
     console.time('Command Response');
     if (interaction.isCommand()) {
       console.log(
