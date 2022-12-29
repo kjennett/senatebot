@@ -5,7 +5,7 @@ module.exports = {
 
   async execute(interaction) {
     if (interaction.isCommand()) {
-      console.log(`User: ${i.member.displayName} | Command: ${interaction.toString()}`);
+      console.log(`User: ${interaction.member.displayName} | Command: ${interaction.toString()}`);
       const command = interaction.client.commands.get(interaction.commandName);
       await command.execute(interaction);
     }
