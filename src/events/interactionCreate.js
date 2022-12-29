@@ -5,7 +5,7 @@ module.exports = {
 
   async execute(interaction) {
     console.log(
-      `${interaction.id} Execution time: ${Date.now() - interaction.createdTimestamp} ms`
+      `${interaction.id} Execution Time: ${Date.now() - interaction.createdTimestamp} ms`
     );
     console.time(`${interaction.id} Response`);
 
