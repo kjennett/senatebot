@@ -34,7 +34,7 @@ module.exports = {
     const memberList = [];
     let count = 1;
     for (const member of ggGuildData.data.members) {
-      const name = `${count}. ${member.player_name}`.padEnd(20);
+      const name = `${count}. ${member.player_name}`.padEnd(20, ' ');
       const joinDate = new Date(member.guild_join_time);
       const joinTimestamp = joinDate.getTime();
 
