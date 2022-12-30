@@ -38,7 +38,7 @@ module.exports = {
       const joinDate = new Date(member.guild_join_time);
       const joinTimestamp = joinDate.getTime();
 
-      memberList.push(`${count}. ${name} - Joined <t:${Math.floor(joinTimestamp / 1000)}:R>`);
+      memberList.push(`${count}. ${name} - Joined <t:${Math.floor(joinTimestamp / 1000)}:d`);
       count++;
     }
 
