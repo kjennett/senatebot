@@ -28,18 +28,18 @@ module.exports = {
     if (!ggGuildData)
       return i.editReply(`Unable to retrieve SWGOH.GG guild profile data for ${guildName}.`);
 
-    const members = ggGuildData.data.members;
-    members.sort((a, b) => a.guild_join_time.localeCompare(b.guild_join_time));
-    const oldestMembers = members.slice(9);
+    ggGuildData.data.members.sort((a, b) => a.guild_join_time.localeCompare(b.guild_join_time));
+    ggGuildData.data.members.length = 10;
 
     const memberList = [];
     let count = 1;
-    for (const member of oldestMembers) {
+    for (const member of ggGuildData.data.members) {
       const name = member.player_name;
       const joinDate = new Date(member.guild_join_time);
       const joinTimestamp = joinDate.getTime();
 
       memberList.push(`${count}. ${name} - Joined <t:${Math.floor(joinTimestamp / 1000)}:R>`);
+      count++;
     }
 
     const embed = new EmbedBuilder()
