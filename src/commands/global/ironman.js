@@ -25,15 +25,13 @@ module.exports = {
     if (!dbGuild.gg) return i.editReply(`Unable to find a SWGOH.GG guild ID for ${guildName}.`);
 
     const ggGuildData = await fetchGuildProfile(dbGuild.gg);
-    if (!ggGuildData)
-      return i.editReply(`Unable to retrieve SWGOH.GG guild profile data for ${guildName}.`);
+    if (!ggGuildData) return i.editReply(`Unable to retrieve SWGOH.GG guild profile data for ${guildName}.`);
 
-    ggGuildData.data.members.sort((a, b) => a.guild_join_time.localeCompare(b.guild_join_time));
-    ggGuildData.data.members.length = 10;
+    const oldestMembers = ggGuildData.data.members.slice(0, Math.min(ggGuildData.data.members.length, 10));
 
     const memberList = [];
     let count = 1;
-    for (const member of ggGuildData.data.members) {
+    for (const member of oldestMembers) {
       const name = `${count}. ${member.player_name}`.padEnd(20, ' ');
       const joinDate = new Date(member.guild_join_time);
       const joinTimestamp = joinDate.getTime();
@@ -42,9 +40,7 @@ module.exports = {
       count++;
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle(`Oldest Member Accounts - ${guildName}`)
-      .setDescription(memberList.join('\n'));
+    const embed = new EmbedBuilder().setTitle(`Oldest Member Accounts - ${guildName}`).setDescription(memberList.join('\n'));
 
     await i.editReply({ embeds: [embed] });
   },
