@@ -3,7 +3,7 @@ const { readdirSync } = require('fs');
 const { join } = require('path');
 const { mongo } = require('./database');
 
-const { TOKEN, SENATESERVER, BETASERVER, CLIENT } = process.env;
+const { TOKEN, SENATESERVER, CLIENT } = process.env;
 
 // Computed absolute paths of task, event and command directories
 // (These will change from Windows dev to Linux prod)
@@ -40,21 +40,8 @@ class SBClient extends Client {
   deployCommands = async () => {
     const rest = new REST({ version: '10' }).setToken(TOKEN);
 
-    const betaCommandData = [];
     const senateCommandData = [];
     const globalCommandData = [];
-
-    // BETA commands deploy to the "BotDev" beta server
-    const betaFiles = readdirSync(`${commandsDir}/beta/`);
-    if (betaFiles.length) {
-      for (const file of betaFiles) {
-        const module = require(`${commandsDir}/beta/${file}`);
-        betaCommandData.push(module.data.toJSON());
-        this.commands.set(module.data.name, module);
-      }
-      if (this.redeploy) await rest.put(Routes.applicationGuildCommands(CLIENT, BETASERVER), { body: [] });
-      await rest.put(Routes.applicationGuildCommands(CLIENT, BETASERVER), { body: betaCommandData });
-    }
 
     // SENATE commands deploy to "The Senate" server
     const senateFiles = readdirSync(`${commandsDir}/senate/`);

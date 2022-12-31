@@ -10,6 +10,7 @@ module.exports = {
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
+    console.timeEnd(`${i.id} Response`);
 
     if (!i.member.roles.cache.has(config.roles.recruitment))
       return i.editReply('You must have the Recruitment role to view the recruitment rules.');
