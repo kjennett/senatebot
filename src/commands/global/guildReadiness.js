@@ -58,12 +58,12 @@ function RevaReadiness(ggAccountData) {
     if (!GIPass && ggAccountData.units[i].data.base_id === GI) { // Grand Inquisitor Check
       if (ggAccountData.units[i].data.relic_tier < 9) return 2; // return failure if not R7
       GIPass = true;
-      if (inquisitorsSeen === inquisitors.length) break; // if we've seen GI and all inquisitors we need to check, we can break out of the loop.
+      if (inquisitorsSeen === inquisitors.length || inquisitorsPass >= 4) break; // if we've seen GI and all inquisitors we need to check (or 4 have passed), we can break out of the loop.
     }
     if (inquisitors.includes(ggAccountData.units[i].data.base_id)) { // general inquisitor check
       inquisitorsSeen++; // increase number seen
       if (ggAccountData.units[i].data.relic_tier >= 9) inquisitorsPass++; // if above R7, increase passing counter
-      if (GIPass && inquisitorsSeen === inquisitors.length) break; // if GI has passed, and we've seen all inquisitors, we're done
+      if (GIPass && (inquisitorsSeen === inquisitors.length || inquisitorsPass >= 4)) break; // if GI has passed, and we've seen all inquisitors (or 4 inquisitors have passed), we're done
     }
   }
   return GIPass && inquisitorsPass >= 4 ? 0 : 2; // if we have GI and at least 4 inquisitors, technically ready, otherwise not.
