@@ -3,58 +3,53 @@ const { fetchGuildProfile, fetchAllAccounts } = require('../../api/swgohgg');
 const { db } = require('../../database');
 
 function KAMReadiness(ggAccountData) {
-  let shaakTroopersReadiness = -1;
-  let badBatchReadiness= -1;
-
-  let shaakTrooperCount = 0;
-  let badBatchCount = 0;
-
   const shaakTrooperIDs = ['SHAAKTI', 'CT7567', 'CT210408', 'CT5555', 'ARCTROOPER501ST'];
   const badBatchIDs = ['BADBATCHHUNTER', 'BADBATCHECHO', 'BADBATCHTECH', 'BADBATCHWRECKER', 'BADBATCHOMEGA'];
 
+  let shaakTroopers = [];
+  let badBatch = [];
+
   for (let i = 0; i < ggAccountData.units.length; i++) {
     if (shaakTrooperIDs.includes(ggAccountData.units[i].data.base_id)) {
-      shaakTrooperCount++; // update number of shaak troopers seen
-      if (ggAccountData.units[i].data.power < 22000) shaakTroopersReadiness = 2; // worst case
-      if (ggAccountData.units[i].data.relic_tier < 7 && shaakTroopersReadiness < 2) shaakTroopersReadiness = 1; // only set to 1 if already < 2
-      if (shaakTrooperCount === shaakTrooperIDs.length && badBatchCount === badBatchIDs.length) break; // end loop if we've looked at all necessary characters
+      if (ggAccountData.units[i].data.power < 22000) shaakTroopers.push(2); // worst case, cant use, push 2
+      else if (ggAccountData.units[i].data.relic_tier < 7) shaakTroopers.push(1); // maybe ready, push 1
+      else shaakTroopers.push(0); // ready character
+
+      if (shaakTroopers.length === shaakTrooperIDs.length && badBatch.length === badBatchIDs.length) break; // end loop if we've looked at all necessary characters
     }
     if (badBatchIDs.includes(ggAccountData.units[i].data.base_id)) {
-      badBatchCount++; // update number of bad batch seen
-      if (ggAccountData.units[i].data.power < 22000) badBatchReadiness = 2; // worst case
-      if (ggAccountData.units[i].data.relic_tier < 7 && badBatchReadiness < 2) badBatchReadiness = 1; // only set to 1 if already < 2
-      if (shaakTrooperCount === shaakTrooperIDs.length && badBatchCount === badBatchIDs.length) break; // end loop if we've looked at all necessary characters
+      if (ggAccountData.units[i].data.power < 22000) badBatch.push(2); // worst case, cant use, push 2
+      else if (ggAccountData.units[i].data.relic_tier < 7) badBatch.push(1); // maybe ready, push 1
+      else badBatch.push(0);
+
+      if (shaakTroopers.length === shaakTrooperIDs.length && badBatch.length === badBatchIDs.length) break; // end loop if we've looked at all necessary characters
     }
   }
 
-  if (shaakTrooperCount < shaakTrooperIDs.length) shaakTroopersReadiness = 2; // if we didn't see a necessary character, not ready
-  else if (shaakTroopersReadiness === -1) shaakTroopersReadiness = 0; // else, we saw the needed shaak troopers. if readiness wasn't changed, all are ready.
+  if (shaakTroopers.length < shaakTrooperIDs.length) shaakTroopers.push(2); // if we didn't find a character, push a 2 for not ready
+  if (badBatch.length < badBatchIDs.length) badBatch.push(2); // if we didn't find a character, push a 2 for not ready
 
-  if (badBatchCount < badBatchIDs.length) badBatchReadiness = 2; // if we didn't see a necessary character, not ready
-  else if (badBatchReadiness === -1) badBatchReadiness = 0; // else, we saw needed bad batch. if readiness wasn't changed, all are ready
-
-  return Math.min(shaakTroopersReadiness, badBatchReadiness); // return best case
+  // return best case of bad batch and shaak trooper options using worst case from each.
+  return Math.min(Math.max(...shaakTroopers), Math.max(...badBatch));
 }
 
 function WatReadiness(ggAccountData) {
-  let readiness = -1;
-  let count = 0;
-
-  const geos = ['GEONOSIANBROODALPHA', 'SUNFAC', 'GEONOSIANSOLDIER', 'GEONOSIANSPY', 'POGGLETHELESSER'];
+  const geoIDs = ['GEONOSIANBROODALPHA', 'SUNFAC', 'GEONOSIANSOLDIER', 'GEONOSIANSPY', 'POGGLETHELESSER'];
+  let geos = [];
 
   for (let i = 0; i < ggAccountData.units.length; i++) {
-    if (geos.includes(ggAccountData.units[i].data.base_id)) {
-      count++; // update number of geos seen
-      if (ggAccountData.units[i].data.power < 16500) readiness = 2; // worst case
-      if (ggAccountData.units[i].data.gear_level < 12 && readiness < 2) readiness = 1; // only set to 1 if already < 2
-      if (count === geos.length) break; // end loop if we've looked at all necessary characters
+    if (geoIDs.includes(ggAccountData.units[i].data.base_id)) {
+      if (ggAccountData.units[i].data.power < 16500) geos.push(2); // worst case, can't use (doesn't meet power threshold), push 2
+      else if (ggAccountData.units[i].data.gear_level < 12) geos.push(1); // maybe ready, push 1 (meets power level, but not >= G12)
+      else geos.push(0); // above power level of 16,500 and >= G12
+
+      if (geos.length === geoIDs.length) break; // end loop if we've looked at all necessary characters
     }
   }
 
-  if (count < geos.length) readiness = 2; // didn't see all geos, not ready.
-  else if (readiness === -1) readiness = 0; // saw all geos and readiness wasn't changed, so we must be ready
+  if (geos.length < geoIDs.length) geos.push(2); // couldn't find at least one character, add 2 for not ready
 
-  return readiness;
+  return Math.max(...geos); // returns worst case geo for readiness indicator
 }
 
 function RevaReadiness(ggAccountData) {
