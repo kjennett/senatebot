@@ -3,8 +3,8 @@ const { fetchGuildProfile, fetchAllAccounts } = require('../../api/swgohgg');
 const { db } = require('../../database');
 
 function KAMReadiness(ggAccountData) {
-  let shaakTroopersReadiness = 0;
-  let badBatchReadiness= 0;
+  let shaakTroopersReadiness = -1;
+  let badBatchReadiness= -1;
 
   let shaakTrooperCount = 0;
   let badBatchCount = 0;
@@ -26,11 +26,18 @@ function KAMReadiness(ggAccountData) {
       if (shaakTrooperCount === shaakTrooperIDs.length && badBatchCount === badBatchIDs.length) break; // end loop if we've looked at all necessary characters
     }
   }
+
+  if (shaakTrooperCount < shaakTrooperIDs.length) shaakTroopersReadiness = 2; // if we didn't see a necessary character, not ready
+  else if (shaakTroopersReadiness === -1) shaakTroopersReadiness = 0; // else, we saw the needed shaak troopers. if readiness wasn't changed, all are ready.
+
+  if (badBatchCount < badBatchIDs.length) badBatchReadiness = 2; // if we didn't see a necessary character, not ready
+  else if (badBatchReadiness === -1) badBatchReadiness = 0; // else, we saw needed bad batch. if readiness wasn't changed, all are ready
+
   return Math.min(shaakTroopersReadiness, badBatchReadiness); // return best case
 }
 
 function WatReadiness(ggAccountData) {
-  let readiness = 0;
+  let readiness = -1;
   let count = 0;
 
   const geos = ['GEONOSIANBROODALPHA', 'SUNFAC', 'GEONOSIANSOLDIER', 'GEONOSIANSPY', 'POGGLETHELESSER'];
@@ -43,6 +50,10 @@ function WatReadiness(ggAccountData) {
       if (count === geos.length) break; // end loop if we've looked at all necessary characters
     }
   }
+
+  if (count < geos.length) readiness = 2; // didn't see all geos, not ready.
+  else if (readiness === -1) readiness = 0; // saw all geos and readiness wasn't changed, so we must be ready
+
   return readiness;
 }
 
