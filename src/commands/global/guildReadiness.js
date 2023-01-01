@@ -102,9 +102,9 @@ module.exports = {
     await i.deferReply();
     console.timeEnd(`${i.id} Response`);
 
-    const guildName = i.options.getString('Guild');
-    const character = i.options.getString('Character');
-    const detailed = i.options.getBoolean('Detailed');
+    const guildName = i.options.getString('guild');
+    const character = i.options.getString('character');
+    const detailed = i.options.getBoolean('detailed');
 
     const dbGuild = await db.collection('guilds').findOne({ name: guildName });
     if (!dbGuild) return i.editReply(`Guild ${guildName} was not found in the database.`);
