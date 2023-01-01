@@ -76,14 +76,14 @@ module.exports = {
     .setDescription('Displays guild readiness for TB Character Special Missions.')
     .addStringOption(o =>
       o
-        .setName('Guild')
+        .setName('guild')
         .setDescription('The guild to pull member information about.')
         .setAutocomplete(true)
         .setRequired(true)
     ).addStringOption(o =>
       o
-        .setName('Character')
-        .setDescription('Check guild readiness for the specified character mission.')
+        .setName('character')
+        .setDescription('Check guild readiness for the specified character.')
         .setRequired(true)
         .setAutocomplete(true)
         .addChoices(
@@ -93,7 +93,7 @@ module.exports = {
         )
     ).addBooleanOption(o =>
       o
-        .setName("Detailed")
+        .setName("detailed")
         .setDescription("List users at each step in the readiness check.")
         .setRequired(false)
     ),
