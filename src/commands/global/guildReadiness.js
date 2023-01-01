@@ -140,9 +140,9 @@ module.exports = {
 
     for (let i = 0; i < ggAccountsData.length; i++) {
       const accountReadiness = readinessFunction(ggAccountsData[i]);
-      if (accountReadiness === 0) ready.push(ggAccountsData.data.name);
-      else if (accountReadiness === 1) maybeReady.push(ggAccountsData.data.name);
-      else notReady.push(ggAccountsData.data.name);
+      if (accountReadiness === 0) ready.push(ggAccountsData[i].data.name);
+      else if (accountReadiness === 1) maybeReady.push(ggAccountsData[i].data.name);
+      else notReady.push(ggAccountsData[i].data.name);
     }
 
     const embed = new EmbedBuilder()
