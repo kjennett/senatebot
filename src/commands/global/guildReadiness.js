@@ -120,7 +120,7 @@ module.exports = {
     if (!ggGuildData)
       return i.editReply(`Unable to retrieve SWGOH.GG guild profile data for ${guildName}.`);
 
-    const allyCodes = ggGuildData.data.members.map((member) => member.ally_code);
+    const allyCodes = ggGuildData.data.members.map((member) => member.ally_code).filter((allyCode) => allyCode !== null);
     const ggAccountsData = fetchAllAccounts(allyCodes);
 
     if (!ggAccountsData || ggAccountsData.length === 0) return i.editReply(`Unable to retrieve SWGOH.GG account profile data.`);
