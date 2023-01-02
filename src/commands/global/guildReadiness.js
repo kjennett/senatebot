@@ -39,8 +39,10 @@ function WatReadiness(ggAccountData) {
 
   for (let i = 0; i < ggAccountData.units.length; i++) {
     if (geoIDs.includes(ggAccountData.units[i].data.base_id)) {
-      if (ggAccountData.units[i].data.power < 16500) geos.push(2); // worst case, can't use (doesn't meet power threshold), push 2
-      else if (ggAccountData.units[i].data.gear_level < 12) geos.push(1); // maybe ready, push 1 (meets power level, but not >= G12)
+      if (ggAccountData.units[i].data.power < 16500)
+        geos.push(2); // worst case, can't use (doesn't meet power threshold), push 2
+      else if (ggAccountData.units[i].data.gear_level < 12)
+        geos.push(1); // maybe ready, push 1 (meets power level, but not >= G12)
       else geos.push(0); // above power level of 16,500 and >= G12
 
       if (geos.length === geoIDs.length) break; // end loop if we've looked at all necessary characters
@@ -61,12 +63,14 @@ function RevaReadiness(ggAccountData) {
   let inquisitorsPass = 0;
 
   for (let i = 0; i < ggAccountData.units.length; i++) {
-    if (!GIPass && ggAccountData.units[i].data.base_id === GI) { // Grand Inquisitor Check
+    if (!GIPass && ggAccountData.units[i].data.base_id === GI) {
+      // Grand Inquisitor Check
       if (ggAccountData.units[i].data.relic_tier < 9) return 2; // return failure if not R7
       GIPass = true;
       if (inquisitorsSeen === inquisitors.length || inquisitorsPass >= 4) break; // if we've seen GI and all inquisitors we need to check (or 4 have passed), we can break out of the loop.
     }
-    if (inquisitors.includes(ggAccountData.units[i].data.base_id)) { // general inquisitor check
+    if (inquisitors.includes(ggAccountData.units[i].data.base_id)) {
+      // general inquisitor check
       inquisitorsSeen++; // increase number seen
       if (ggAccountData.units[i].data.relic_tier >= 9) inquisitorsPass++; // if above R7, increase passing counter
       if (GIPass && (inquisitorsSeen === inquisitors.length || inquisitorsPass >= 4)) break; // if GI has passed, and we've seen all inquisitors (or 4 inquisitors have passed), we're done
@@ -86,22 +90,20 @@ module.exports = {
         .setDescription('The guild to pull member information about.')
         .setAutocomplete(true)
         .setRequired(true)
-    ).addStringOption(o =>
+    )
+    .addStringOption(o =>
       o
         .setName('character')
         .setDescription('Check guild readiness for the specified character.')
         .setRequired(true)
-        .setAutocomplete(true)
         .addChoices(
           { name: 'Wat Tambor', value: 'Wat Tambor' },
           { name: 'Ki-Adi-Mundi', value: 'Ki-Adi-Mundi' },
           { name: 'Third Sister', value: 'Third Sister' }
         )
-    ).addBooleanOption(o =>
-      o
-        .setName("detailed")
-        .setDescription("List users at each step in the readiness check.")
-        .setRequired(false)
+    )
+    .addBooleanOption(o =>
+      o.setName('detailed').setDescription('List users at each step in the readiness check.').setRequired(false)
     ),
 
   async execute(i) {
@@ -117,13 +119,13 @@ module.exports = {
     if (!dbGuild.gg) return i.editReply(`Unable to find a SWGOH.GG guild ID for ${guildName}.`);
 
     const ggGuildData = await fetchGuildProfile(dbGuild.gg);
-    if (!ggGuildData)
-      return i.editReply(`Unable to retrieve SWGOH.GG guild profile data for ${guildName}.`);
+    if (!ggGuildData) return i.editReply(`Unable to retrieve SWGOH.GG guild profile data for ${guildName}.`);
 
-    const allyCodes = ggGuildData.data.members.map((member) => member.ally_code).filter((allyCode) => allyCode !== null);
+    const allyCodes = ggGuildData.data.members.map(member => member.ally_code).filter(allyCode => allyCode !== null);
     const ggAccountsData = fetchAllAccounts(allyCodes);
 
-    if (!ggAccountsData || ggAccountsData.length === 0) return i.editReply(`Unable to retrieve SWGOH.GG account profile data.`);
+    if (!ggAccountsData || ggAccountsData.length === 0)
+      return i.editReply(`Unable to retrieve SWGOH.GG account profile data.`);
 
     let notReady = [];
     let maybeReady = [];
@@ -151,27 +153,32 @@ module.exports = {
       else notReady.push(ggAccountsData[i].data.name);
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle(`${character} Readiness Accounts - ${guildName}`);
+    const embed = new EmbedBuilder().setTitle(`${character} Readiness Accounts - ${guildName}`);
 
     if (detailed) {
       if (ready.length > 0) {
-        embed.addFields([{
-          name: `Ready: ${ready.length}/${ggAccountsData.length}`,
-          value: ready.join('\n'),
-        }]);
+        embed.addFields([
+          {
+            name: `Ready: ${ready.length}/${ggAccountsData.length}`,
+            value: ready.join('\n'),
+          },
+        ]);
       }
       if (maybeReady.length > 0) {
-        embed.addFields([{
-          name: `Maybe Ready: ${maybeReady.length}/${ggAccountsData.length}`,
-          value: maybeReady.join('\n'),
-        }]);
+        embed.addFields([
+          {
+            name: `Maybe Ready: ${maybeReady.length}/${ggAccountsData.length}`,
+            value: maybeReady.join('\n'),
+          },
+        ]);
       }
       if (notReady.length > 0) {
-        embed.addFields([{
-          name: `Not Ready: ${notReady.length}/${ggAccountsData.length}`,
-          value: notReady.join('\n'),
-        }]);
+        embed.addFields([
+          {
+            name: `Not Ready: ${notReady.length}/${ggAccountsData.length}`,
+            value: notReady.join('\n'),
+          },
+        ]);
       }
     } else {
       let descriptionStrings = [];
