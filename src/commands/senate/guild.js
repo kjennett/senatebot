@@ -1,6 +1,7 @@
 const { db } = require('../../database');
 const { config } = require('../../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const { guildChoices } = require('../../configs/guildChoices');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -18,15 +19,11 @@ module.exports = {
               o
                 .setName('guild')
                 .setDescription('The guild to change the recruitment tier of.')
-                .setAutocomplete(true)
+                .addChoices(guildChoices)
                 .setRequired(true)
             )
             .addIntegerOption(option =>
-              option
-                .setName('tier')
-                .setDescription('The tier to move the guild to.')
-                .setAutocomplete(true)
-                .setRequired(true)
+              option.setName('tier').setDescription('The tier to move the guild to.').setAutocomplete(true).setRequired(true)
             )
         )
     ),
@@ -48,17 +45,11 @@ module.exports = {
         const dbTier = await db.collection('tiers').findOne({ number: tierNumber });
         if (!dbTier) return i.editReply(`Tier ${tierNumber} was not found in the database.`);
 
-        if (
-          !i.member.roles.cache.has(dbGuild.officer_role_id) &&
-          i.member.id !== process.env.OWNER
-        ) {
-          return i.editReply(
-            `Only ${guildName} Officers are allowed to change the recruitment tier of their guild.`
-          );
+        if (!i.member.roles.cache.has(dbGuild.officer_role_id) && i.member.id !== process.env.OWNER) {
+          return i.editReply(`Only ${guildName} Officers are allowed to change the recruitment tier of their guild.`);
         }
 
-        if (tierNumber === dbGuild.tier)
-          return i.editReply(`${guildName} is already in Tier ${tierNumber}!`);
+        if (tierNumber === dbGuild.tier) return i.editReply(`${guildName} is already in Tier ${tierNumber}!`);
 
         const allMembers = await i.guild.members.fetch();
         const recruiters = allMembers.filter(m => m.roles.cache.has(dbGuild.recruiter_role_id));
