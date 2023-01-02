@@ -38,6 +38,7 @@ exports.watSummary = async ggData => {
 
     // Check Zetas
     let unlockedZetas = 0;
+    console.log(gba.data.ability_data);
     const queensWill = gba.data.ability_data[5].has_zeta_learned;
     const geonosianSwarm = gba.data.ability_data[4].has_zeta_learned;
     if (queensWill) unlockedZetas++;
