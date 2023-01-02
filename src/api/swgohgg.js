@@ -55,3 +55,13 @@ exports.fetchGuildProfile = async guildId => {
     return null;
   }
 };
+
+exports.fetchAllAccounts = async allyCodes => {
+  try {
+    const promises = allyCodes.map((allyCode) => axios.get(`${apiUrls.gg.player}${allyCode}`));
+    let results = await Promise.allSettled(promises);
+    return results.filter((result) => result.status === 'fulfilled').map((result) => result.value.data);
+  } catch (e) {
+    return null;
+  }
+}
