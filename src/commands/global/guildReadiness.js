@@ -96,6 +96,10 @@ module.exports = {
         .setName('character')
         .setDescription('Check guild readiness for the specified character.')
         .setRequired(true)
+        /**
+         * I removed the autocomplete flag here. The choices flag means the option input must be one of the provided choice options -
+         * since autocomplete responses could be anything, a command option can't use choices and autocomplete together.
+         */
         .addChoices(
           { name: 'Wat Tambor', value: 'Wat Tambor' },
           { name: 'Ki-Adi-Mundi', value: 'Ki-Adi-Mundi' },
@@ -122,8 +126,8 @@ module.exports = {
     if (!ggGuildData) return i.editReply(`Unable to retrieve SWGOH.GG guild profile data for ${guildName}.`);
 
     const allyCodes = ggGuildData.data.members.map(member => member.ally_code).filter(allyCode => allyCode !== null);
-    const ggAccountsData = fetchAllAccounts(allyCodes);
-
+    /** Added an "await" here - couldn't figure out why all the embeds were coming back empty! lol. */
+    const ggAccountsData = await fetchAllAccounts(allyCodes);
     if (!ggAccountsData || ggAccountsData.length === 0)
       return i.editReply(`Unable to retrieve SWGOH.GG account profile data.`);
 

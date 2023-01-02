@@ -56,12 +56,17 @@ exports.fetchGuildProfile = async guildId => {
   }
 };
 
-exports.fetchAllAccounts = async allyCodes => {
+/**
+ * Fetch account profile data for multiple ally codes.
+ * @param {number[]} allyCodes Array of valid nine-digit ally codes
+ * @return {Object[]}
+ */
+exports.fetchAllGuildAccounts = async allyCodes => {
   try {
-    const promises = allyCodes.map((allyCode) => axios.get(`${apiUrls.gg.player}${allyCode}`));
+    const promises = allyCodes.map(allyCode => axios.get(`${apiUrls.gg.player}${allyCode}`));
     let results = await Promise.allSettled(promises);
-    return results.filter((result) => result.status === 'fulfilled').map((result) => result.value.data);
+    return results.filter(result => result.status === 'fulfilled').map(result => result.value.data);
   } catch (e) {
     return null;
   }
-}
+};
