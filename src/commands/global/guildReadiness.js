@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { fetchGuildProfile, fetchAllAccounts } = require('../../api/swgohgg');
 const { db } = require('../../database');
-const { guildChoices } = require('../../configs/guildChoices');
 
 function KAMReadiness(ggAccountData) {
   const shaakTrooperIDs = ['SHAAKTI', 'CT7567', 'CT210408', 'CT5555', 'ARCTROOPER501ST'];
@@ -89,7 +88,7 @@ module.exports = {
       o
         .setName('guild')
         .setDescription('The guild to pull member information about.')
-        .addChoices(guildChoices)
+        .setAutocomplete(true)
         .setRequired(true)
     )
     .addStringOption(o =>

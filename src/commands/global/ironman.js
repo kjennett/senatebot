@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { fetchGuildProfile } = require('../../api/swgohgg');
 const { db } = require('../../database');
-const { guildChoices } = require('../../configs/guildChoices');
 
 module.exports = {
   enabled: true,
@@ -12,7 +11,7 @@ module.exports = {
       o
         .setName('guild')
         .setDescription('The guild to pull member information about.')
-        .addChoices(guildChoices)
+        .setAutocomplete(true)
         .setRequired(true)
     ),
 
