@@ -1,6 +1,7 @@
 const { db } = require('../../database');
 const { config } = require('../../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const { guildChoices } = require('../../configs/guildChoices');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -18,7 +19,7 @@ module.exports = {
               o
                 .setName('guild')
                 .setDescription('The guild to change the recruitment tier of.')
-                .setAutocomplete(true)
+                .addChoices(...guildChoices)
                 .setRequired(true)
             )
             .addIntegerOption(option =>

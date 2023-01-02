@@ -6,6 +6,7 @@ const { generateTierPriority } = require('../../lib/recruitment/generateTierPrio
 const { db } = require('../../database');
 const { EmbedBuilder, SlashCommandBuilder, roleMention, userMention } = require('discord.js');
 const { removeRecruit } = require('../../lib/recruitment/removeRecruit');
+const { guildChoices } = require('../../configs/guildChoices');
 
 async function findStartingTier(gp) {
   const result = await db.collection('tiers').findOne({
@@ -55,7 +56,7 @@ module.exports = {
           option
             .setName('guild')
             .setDescription('The guild that is interested in this recruit.')
-            .setAutocomplete(true)
+            .addChoices(...guildChoices)
             .setRequired(true)
         )
         .addBooleanOption(option =>
@@ -70,7 +71,7 @@ module.exports = {
           option
             .setName('guild')
             .setDescription('The guild that is passing on this recruit.')
-            .setAutocomplete(true)
+            .addChoices(...guildChoices)
             .setRequired(true)
         )
         .addStringOption(option =>
@@ -104,7 +105,7 @@ module.exports = {
           option
             .setName('guild')
             .setDescription('The guild that is claiming the recruit.')
-            .setAutocomplete(true)
+            .addChoices(...guildChoices)
             .setRequired(true)
         )
     ),

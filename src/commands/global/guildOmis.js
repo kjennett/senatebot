@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const { fetchGuildProfile } = require('../../api/swgohgg');
 const { guildOmiSummary } = require('../../lib/guild/guildOmiSummary');
 const { db } = require('../../database');
+const { guildChoices } = require('../../configs/guildChoices');
 
 module.exports = {
   enabled: true,
@@ -12,7 +13,7 @@ module.exports = {
       o
         .setName('guild')
         .setDescription('The guild to pull omicron information about.')
-        .setAutocomplete(true)
+        .addChoices(...guildChoices)
         .setRequired(true)
     )
     .addBooleanOption(o =>
