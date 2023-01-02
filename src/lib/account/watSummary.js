@@ -18,21 +18,21 @@ exports.watSummary = async ggData => {
     // Check Galactic Power
     gbaRecs.push(
       gba.data.power >= 16500
-        ? `Power: ${gba.data.power.toLocaleString()} :white_check_mark:`
-        : `Power: ${gba.data.power.toLocaleString()} :no_entry_sign:\n -- Required: 16,500+`
+        ? `Power: ${gba.data.power.toLocaleString()} :white_check_mark:\n`
+        : `Power: ${gba.data.power.toLocaleString()} :no_entry_sign:\n -- Required: 16,500+\n`
     );
 
     // Check Gear Level
     if (gba.data.gear_level >= 12) {
       // Show Relic level
       if (gba.data.gear_level === 13) {
-        gbaRecs.push(`Relic Level: ${gba.data.relic_tier - 2} :white_check_mark:`);
+        gbaRecs.push(`Relic Level: ${gba.data.relic_tier - 2} :white_check_mark:\n`);
       } else {
-        gbaRecs.push(`Gear Level: ${gba.data.gear_level} :white_check_mark:`);
+        gbaRecs.push(`Gear Level: ${gba.data.gear_level} :white_check_mark:\n`);
       }
     } else {
       gbaRecs.push(
-        `Gear Level: ${gba.data.gear_level} :hammer:\n -- G12+ is __strongly__ recommended\n -- Relic tiers will add additional consistency`
+        `Gear Level: ${gba.data.gear_level} :hammer:\n -- G12+ is __strongly__ recommended\n -- Relic tiers will add consistency\n`
       );
     }
 
@@ -45,8 +45,11 @@ exports.watSummary = async ggData => {
     if (unlockedZetas === 0) gbaRecs.push(`Zetas: 0 :no_entry_sign:`);
     if (unlockedZetas === 1) gbaRecs.push(`Zetas: 1 :hammer:`);
     if (unlockedZetas === 2) gbaRecs.push(`Zetas: 2 :white_check_mark:`);
-    if (!queensWill) gbaRecs.push(" -- Queen's Will Zeta is nearly mandatory");
-    if (!geonosianSwarm) gbaRecs.push('Geonosian Swarm Zeta is __strongly recommended__');
+    if (!queensWill) {
+      if (geonosianSwarm) gbaRecs.push(" -- Queen's Will Zeta is nearly mandatory\n");
+      else gbaRecs.push(" -- Queen's Will Zeta is nearly mandatory");
+    }
+    if (!geonosianSwarm) gbaRecs.push(' -- Geonosian Swarm Zeta is __strongly recommended__');
 
     // Check Stats / Mods?
 
