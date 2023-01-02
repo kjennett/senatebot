@@ -98,7 +98,8 @@ module.exports = {
         .setRequired(true)
         /**
          * I removed the autocomplete flag here. The choices flag means the option input must be one of the provided choice options -
-         * since autocomplete responses could be anything, a command option can't use choices and autocomplete together.
+         * since autocomplete responses could be anything, a command option can't use choices and autocomplete together. The actual API error
+         * return says "autocomplete and choices are mutually exclusive".
          */
         .addChoices(
           { name: 'Wat Tambor', value: 'Wat Tambor' },

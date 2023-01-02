@@ -61,7 +61,7 @@ exports.fetchGuildProfile = async guildId => {
  * @param {number[]} allyCodes Array of valid nine-digit ally codes
  * @return {Object[]}
  */
-exports.fetchAllGuildAccounts = async allyCodes => {
+exports.fetchAllAccounts = async allyCodes => {
   try {
     const promises = allyCodes.map(allyCode => axios.get(`${apiUrls.gg.player}${allyCode}`));
     let results = await Promise.allSettled(promises);
