@@ -42,7 +42,7 @@ exports.watSummary = async ggData => {
     const geonosianSwarm = gba.data.zeta_abilities.includes('leaderskill_GEONOSIANBROODALPHA');
     gbaRecs.push(
       unlockedZetas === 2
-        ? gbaRecs.push(`Zetas: 2 :white_check_mark:`)
+        ? `Zetas: 2 :white_check_mark:`
         : unlockedZetas === 1
         ? `Zetas: 1 :hammer:`
         : `Zetas: 0 :no_entry_sign:`
