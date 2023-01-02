@@ -37,17 +37,18 @@ exports.watSummary = async ggData => {
     }
 
     // Check Zetas
-    let unlockedZetas = 0;
-    console.log(gba.data.ability_data);
-    const queensWill = gba.data.ability_data[5].has_zeta_learned;
-    const geonosianSwarm = gba.data.ability_data[4].has_zeta_learned;
-    if (queensWill) unlockedZetas++;
-    if (geonosianSwarm) unlockedZetas++;
-    if (unlockedZetas === 0) gbaRecs.push(`Zetas: 0 :no_entry_sign:`);
-    if (unlockedZetas === 1) gbaRecs.push(`Zetas: 1 :hammer:`);
-    if (unlockedZetas === 2) gbaRecs.push(`Zetas: 2 :white_check_mark:`);
+    const unlockedZetas = gba.data.zeta_abilities.length;
+    const queensWill = gba.data.zeta_abilities.includes('uniqueskill_GEONOSIANBROODALPHA01');
+    const geonosianSwarm = gba.data.zeta_abilities.includes('leaderskill_GEONOSIANBROODALPHA');
+    gbaRecs.push(
+      unlockedZetas === 2
+        ? gbaRecs.push(`Zetas: 2 :white_check_mark:`)
+        : unlockedZetas === 1
+        ? `Zetas: 1 :hammer:`
+        : `Zetas: 0 :no_entry_sign:`
+    );
     if (!queensWill) {
-      if (geonosianSwarm) gbaRecs.push(" -- Queen's Will Zeta is nearly mandatory\n");
+      if (geonosianSwarm) gbaRecs.push(" -- Queen's Will Zeta is __nearly mandatory__\n");
       else gbaRecs.push(" -- Queen's Will Zeta is nearly mandatory");
     }
     if (!geonosianSwarm) gbaRecs.push(' -- Geonosian Swarm Zeta is __strongly recommended__');
