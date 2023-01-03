@@ -72,6 +72,7 @@ exports.WatReadiness = (ggAccountData) => {
 const GI = 'GRANDINQUISITOR';
 const inquisitors = ['EIGHTHBROTHER', 'FIFTHBROTHER', 'NINTHSISTER', 'SECONDSISTER', 'SEVENTHSISTER', 'THIRDSISTER'];
 const REVA_MINIMUM_RELIC_TIER = 7;
+const INQUISITORS_NEEDED = 4;
 
 exports.RevaReadiness = (ggAccountData) => {
   let GIPass = false;
@@ -85,8 +86,10 @@ exports.RevaReadiness = (ggAccountData) => {
       if (unit.data.relic_tier - 2 < REVA_MINIMUM_RELIC_TIER) return Readiness.NOT_READY;
       GIPass = true;
 
-      // if we've seen GI and all inquisitors we need to check (or 4 have passed), we can break out of the loop.
-      if (inquisitorsSeen === inquisitors.length || inquisitorsPass >= 4) break;
+      // we've seen GI and if all inquisitors we need to check (or 4 have passed), we can break out of the loop.
+      if (inquisitorsSeen === inquisitors.length || inquisitorsPass >= INQUISITORS_NEEDED) break;
+      // short circuit if we can't reach the number of inquisitors needed with what we have and what we've seen
+      if (inquisitors.length - inquisitorsSeen + inquisitorsPass < INQUISITORS_NEEDED) return Readiness.NOT_READY;
     }
 
     if (inquisitors.includes(unit.data.base_id)) {
@@ -95,10 +98,12 @@ exports.RevaReadiness = (ggAccountData) => {
       if (unit.data.relic_tier - 2 >= REVA_MINIMUM_RELIC_TIER) inquisitorsPass++; // if above R7, increase passing counter
 
       // if GI has passed, and we've seen all inquisitors (or 4 inquisitors have passed), we're done
-      if (GIPass && (inquisitorsSeen === inquisitors.length || inquisitorsPass >= 4)) break;
+      if (GIPass && (inquisitorsSeen === inquisitors.length || inquisitorsPass >= INQUISITORS_NEEDED)) break;
+      // short circuit if we can't reach the number of inquisitors needed with what we have and what we've seen
+      if (inquisitors.length - inquisitorsSeen + inquisitorsPass < INQUISITORS_NEEDED) return Readiness.NOT_READY;
     }
   }
 
   // if we have GI and at least 4 inquisitors, technically ready, otherwise not.
-  return GIPass && inquisitorsPass >= 4 ? Readiness.READY : Readiness.NOT_READY;
+  return GIPass && inquisitorsPass >= INQUISITORS_NEEDED ? Readiness.READY : Readiness.NOT_READY;
 }
