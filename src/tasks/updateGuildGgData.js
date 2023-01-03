@@ -2,10 +2,9 @@ const cron = require('node-cron');
 const { db } = require('../database');
 const { fetchGuildProfile } = require('../api/swgohgg');
 
-async function updateGuildGgData() {
+exports.updateGuildGgData = async () => {
   const allGuilds = await db.collection('guilds').find({}).sort({ name: 1 }).toArray();
 
-  let i = 0;
   let failed = [];
   for (const guild of allGuilds) {
     if (!guild.gg) {
@@ -22,22 +21,16 @@ async function updateGuildGgData() {
     const members = guildData.data.member_count;
     const gp = guildData.data.galactic_power;
 
-    await db
-      .collection('guilds')
-      .findOneAndUpdate({ name: guild.name }, { $set: { members: members, gp: gp } });
-
-    i++;
+    await db.collection('guilds').findOneAndUpdate({ name: guild.name }, { $set: { members: members, gp: gp } });
   }
-
-  console.log(`Updated GP and member count data for ${i} of ${allGuilds.length} guilds.`);
   if (failed.length) console.log(`Unable to update the following guilds: ${failed.join(', ')}`);
-}
+};
 
 /** This task runs once every 12 hours  */
 cron.schedule(
   '1 */12 * * *',
   () => {
-    updateGuildGgData();
+    exports.updateGuildGgData();
   },
   {
     scheduled: true,

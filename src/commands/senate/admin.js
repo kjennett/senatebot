@@ -2,21 +2,16 @@ const { config } = require('../../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
+  adminOnly: true,
+
   data: new SlashCommandBuilder()
     .setName('a')
     .setDescription('Configuration and administration commands.')
-    .addSubcommand(s1 =>
-      s1
-        .setName('order66')
-        .setDescription('Remove all users from the server that meet purge criteria.')
-    ),
+    .addSubcommand(s1 => s1.setName('order66').setDescription('Remove all users from the server that meet purge criteria.')),
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
     console.timeEnd(`${i.id} Response`);
-
-    if (i.member.id !== process.env.OWNER)
-      return i.reply('Only the bot administrator may use admin commands.');
 
     const sub = await i.options.getSubcommand();
 
