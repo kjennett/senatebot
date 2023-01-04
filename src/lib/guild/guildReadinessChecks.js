@@ -7,45 +7,57 @@ const Readiness = Object.freeze({
 exports.Readiness = Readiness;
 
 const shaakTrooperIDs = ['SHAAKTI', 'CT7567', 'CT210408', 'CT5555', 'ARCTROOPER501ST'];
-// const badBatchIDs = ['BADBATCHHUNTER', 'BADBATCHECHO', 'BADBATCHTECH', 'BADBATCHWRECKER', 'BADBATCHOMEGA'];
+const badBatchIDs = ['BADBATCHHUNTER', 'BADBATCHECHO', 'BADBATCHTECH', 'BADBATCHWRECKER', 'BADBATCHOMEGA'];
 const KAM_MINIMUM_POWER_LEVEL = 22000;
 const KAM_RECOMMENDED_RELIC_TIER = 5;
 
 exports.KAMReadiness = (ggAccountData) => {
   let shaakTroopers = [];
-  // let badBatch = [];
+  let shaakTroopersFailed = false;
+  let badBatch = [];
+  let badBatchFailed = false;
 
   for (let i = 0; i < ggAccountData.units.length; i++) {
     const unit = ggAccountData.units[i];
     if (shaakTrooperIDs.includes(unit.data.base_id)) {
-      // if (unit.data.power < KAM_MINIMUM_POWER_LEVEL) shaakTroopers.push(Readiness.NOT_READY);
-      if (unit.data.power < KAM_MINIMUM_POWER_LEVEL) return Readiness.NOT_READY; // not checking BB, can short circuit here
-      else if (unit.data.relic_tier - 2 < KAM_RECOMMENDED_RELIC_TIER) shaakTroopers.push(Readiness.MAYBE_READY);
-      else shaakTroopers.push(Readiness.READY);
+      // can't be under minimum power level
+      if (unit.data.power < KAM_MINIMUM_POWER_LEVEL) {
+        shaakTroopers.push(Readiness.NOT_READY);
+        shaakTroopersFailed = true;
 
-      // end loop if we've looked at all necessary characters
-      // if (shaakTroopers.length === shaakTrooperIDs.length && badBatch.length === badBatchIDs.length) break;
-      if (shaakTroopers.length === shaakTrooperIDs.length) break;
+        // if both have failed, exit early
+        if (badBatchFailed) return Readiness.NOT_READY;
+      }
+      // under recommended relic is questionable
+      else if (unit.data.relic_tier - 2 < KAM_RECOMMENDED_RELIC_TIER) shaakTroopers.push(Readiness.MAYBE_READY);
+      else shaakTroopers.push(Readiness.READY); // okay
+
+      // if we've seen everyone, break out of the loop
+      if (shaakTroopers.length === shaakTrooperIDs.length && badBatch.length === badBatchIDs.length) break;
+    } else if (badBatchIDs.includes(unit.data.base_id)) {
+      // can't be under minimum power level
+      if (unit.data.power < KAM_MINIMUM_POWER_LEVEL) {
+        badBatch.push(Readiness.NOT_READY);
+        badBatchFailed = true;
+
+        // if both have failed, exit early
+        if (shaakTroopersFailed) return Readiness.NOT_READY;
+      }
+      // under recommended relic is questionable
+      else if (unit.data.relic_tier - 2 < KAM_RECOMMENDED_RELIC_TIER) badBatch.push(Readiness.MAYBE_READY);
+      else badBatch.push(Readiness.READY); // okay
+
+      // if we've seen everyone, break out of the loop
+      if (shaakTroopers.length === shaakTrooperIDs.length && badBatch.length === badBatchIDs.length) break;
     }
-    // if (badBatchIDs.includes(unit.data.base_id)) {
-    //   if (unit.data.power < KAM_MINIMUM_POWER_LEVEL) badBatch.push(Readiness.NOT_READY);
-    //   else if (unit.data.relic_tier - 2 < KAM_RECOMMENDED_RELIC_TIER) badBatch.push(Readiness.MAYBE_READY);
-    //   else badBatch.push(Readiness.READY);
-    //
-    //   // end loop if we've looked at all necessary characters
-    //   if (shaakTroopers.length === shaakTrooperIDs.length && badBatch.length === badBatchIDs.length) break;
-    // }
   }
 
-  // if we didn't find a character, not ready
-  // if (shaakTroopers.length < shaakTrooperIDs.length) shaakTroopers.push(Readiness.NOT_READY);
-  // if (badBatch.length < badBatchIDs.length) badBatch.push(Readiness.NOT_READY);
+  // if we haven't seen a necessary character for a team, push a not ready
+  if (shaakTroopers.length < shaakTrooperIDs.length) shaakTroopers.push(Readiness.NOT_READY);
+  if (badBatch.length < badBatchIDs.length) badBatch.push(Readiness.NOT_READY);
 
-  // return best case of bad batch and shaak trooper options using worst case from each.
-  // return Math.min(Math.max(...shaakTroopers), Math.max(...badBatch));
-
-  if (shaakTroopers.length < shaakTrooperIDs.length) return Readiness.NOT_READY;
-  else return Math.max(...shaakTroopers);
+  // return best case of the worst cases from shaak troopers and bad batch options
+  return Math.min(Math.max(...shaakTroopers), Math.max(...badBatch))
 }
 
 const geoIDs = ['GEONOSIANBROODALPHA', 'SUNFAC', 'GEONOSIANSOLDIER', 'GEONOSIANSPY', 'POGGLETHELESSER'];
@@ -57,20 +69,30 @@ exports.WatReadiness = (ggAccountData) => {
   for (let i = 0; i < ggAccountData.units.length; i++) {
     const unit = ggAccountData.units[i];
     if (geoIDs.includes(unit.data.base_id)) {
-      if (unit.data.power < WAT_MINIMUM_POWER_LEVEL) return Readiness.NOT_READY; // worst case, not ready, can short circuit
-      else if (unit.data.gear_level < WAT_RECOMMENDED_GEAR_LEVEL) geos.push(Readiness.MAYBE_READY); // maybe ready
-      else geos.push(Readiness.READY); // Should be ready
+      // can't be under minimum power level
+      if (unit.data.power < WAT_MINIMUM_POWER_LEVEL) return Readiness.NOT_READY;
+      // under recommended minimum gear level is questionable
+      else if (unit.data.gear_level < WAT_RECOMMENDED_GEAR_LEVEL) geos.push(Readiness.MAYBE_READY);
+      else geos.push(Readiness.READY); // should be okay
 
-      if (geos.length === geoIDs.length) break; // end loop if we've looked at all necessary characters
+      // if we've seen everyone, break out of the loop
+      if (geos.length === geoIDs.length) break;
     }
   }
 
   if (geos.length < geoIDs.length) return Readiness.NOT_READY; // missing someone, not ready
-  else return Math.max(...geos); // returns worst case geo for readiness indicator
+  else return Math.max(...geos); // returns worst case geo as readiness indicator
 }
 
 const GI = 'GRANDINQUISITOR';
-const inquisitors = ['EIGHTHBROTHER', 'FIFTHBROTHER', 'NINTHSISTER', 'SECONDSISTER', 'SEVENTHSISTER', 'THIRDSISTER'];
+const inquisitors = [
+  'EIGHTHBROTHER',
+  'FIFTHBROTHER',
+  'NINTHSISTER',
+  'SECONDSISTER',
+  'SEVENTHSISTER',
+  'THIRDSISTER'
+];
 const REVA_MINIMUM_RELIC_TIER = 7;
 const INQUISITORS_NEEDED = 4;
 
@@ -92,10 +114,12 @@ exports.RevaReadiness = (ggAccountData) => {
       if (inquisitors.length - inquisitorsSeen + inquisitorsPass < INQUISITORS_NEEDED) return Readiness.NOT_READY;
     }
 
+    // general inquisitor check
     if (inquisitors.includes(unit.data.base_id)) {
-      // general inquisitor check
       inquisitorsSeen++; // increase number seen
-      if (unit.data.relic_tier - 2 >= REVA_MINIMUM_RELIC_TIER) inquisitorsPass++; // if above R7, increase passing counter
+
+      // if above R7, increase passing counter
+      if (unit.data.relic_tier - 2 >= REVA_MINIMUM_RELIC_TIER) inquisitorsPass++;
 
       // if GI has passed, and we've seen all inquisitors (or 4 inquisitors have passed), we're done
       if (GIPass && (inquisitorsSeen === inquisitors.length || inquisitorsPass >= INQUISITORS_NEEDED)) break;
