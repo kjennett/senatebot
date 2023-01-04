@@ -52,9 +52,16 @@ module.exports = {
     if (!ggGuildData) return i.editReply(`Unable to retrieve SWGOH.GG guild profile data for ${guildName}.`);
 
     // get an array of valid ally codes from the .GG guild data member list
-    const allyCodes = ggGuildData.data.members.map(member => member.ally_code).filter(allyCode => allyCode !== null);
+    const allyCodes =
+      ggGuildData.data.members
+        .map(member => member.ally_code)
+        .filter(allyCode => allyCode !== null);
+
     // get a list of player names where ally code for the member was null and add it to the couldn't check list
-    let couldntCheck = ggGuildData.data.members.filter(member => member.ally_code === null).map(member => member.player_name);
+    let couldntCheck =
+      ggGuildData.data.members
+        .filter(member => member.ally_code === null)
+        .map(member => member.player_name);
 
     /** Added an "await" here - couldn't figure out why all the embeds were coming back empty! lol. */
     const ggAccountsData = await fetchAllAccounts(allyCodes);
@@ -68,7 +75,10 @@ module.exports = {
       // use the array we attempted to fetch and the array we did fetch to determine which ones failed.
       const failedToFetchAllyCodes = allyCodes.filter(allyCode => !successfullyFetchedAllyCodes.includes((allyCode)));
       // use the array of failed ally codes to grab player names from the .GG guild data
-      const failedToFetchMembers = ggGuildData.data.members.filter(member => failedToFetchAllyCodes.includes(member.ally_code)).map(member => member.player_name);
+      const failedToFetchMembers =
+        ggGuildData.data.members
+          .filter(member => failedToFetchAllyCodes.includes(member.ally_code))
+          .map(member => member.player_name);
       // add list of names that we couldn't check to the couldn't check array
       couldntCheck = couldntCheck.concat(failedToFetchMembers);
     }
@@ -94,20 +104,10 @@ module.exports = {
 
     for (let i = 0; i < ggAccountsData.length; i++) {
       const accountReadiness = readinessFunction(ggAccountsData[i]);
-      switch (accountReadiness) {
-        case Readiness.READY:
-          ready.push(ggAccountsData[i].data.name);
-          break;
-        case Readiness.MAYBE_READY:
-          maybeReady.push(ggAccountsData[i].data.name);
-          break;
-        case Readiness.NOT_READY:
-          notReady.push(ggAccountsData[i].data.name);
-          break;
-        default:
-          couldntCheck.push(ggAccountsData[i].data.name);
-          break;
-      }
+
+      if (accountReadiness === Readiness.READY) ready.push(ggAccountsData[i].data.name);
+      else if (accountReadiness === Readiness.MAYBE_READY) maybeReady.push(ggAccountsData[i].data.name);
+      else notReady.push(ggAccountsData[i].data.name);
     }
 
     const embed = new EmbedBuilder().setTitle(`${character} Readiness Accounts - ${guildName}`);
