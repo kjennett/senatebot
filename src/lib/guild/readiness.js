@@ -63,7 +63,7 @@ function WatReadiness (ggAccountData) {
     let geos = [];
 
     for (let i = 0; i < ggAccountData.units.length; i++) {
-        if (geoIDs.includes(ggAccountData.units[i].data.base_id)) {
+        if (GEO_IDS.includes(ggAccountData.units[i].data.base_id)) {
             // if a geo fails, we can exit early
             if (ggAccountData.units[i].data.power < WAT_MINIMUM_POWER) return Readiness.NOT_READY;
             // exceeds power level, but low gear.
@@ -71,12 +71,12 @@ function WatReadiness (ggAccountData) {
             // Exceeds power level requirement and minimum recommended gear
             else geos.push(Readiness.READY);
 
-            if (geos.length === geoIDs.length) break; // end loop if we've looked at all necessary characters
+            if (geos.length === GEO_IDS.length) break; // end loop if we've looked at all necessary characters
         }
     }
 
     // couldn't find at least one character, exit early
-    if (geos.length < geoIDs.length) return Readiness.NOT_READY
+    if (geos.length < GEO_IDS.length) return Readiness.NOT_READY
 
     return Math.max(...geos); // returns worst case geo for readiness indicator
 }
