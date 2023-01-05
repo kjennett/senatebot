@@ -75,21 +75,21 @@ module.exports = {
 
     let readinessFunction = GetReadinessFunction(character);
     if (readinessFunction === null) return i.editReply(`Unable to determine character readiness decision.`);
-    
+
     let notReady = [];
     let maybeReady = [];
     let ready = [];
-    
+
     // sort list before readiness checks ensures each sublist is also sorted
     ggAccountsData.sort((a, b) => a.data.name.localeCompare(b.data.name));
     // sort this too
     couldntCheck.sort();
 
-    for (let i = 0; i < ggAccountsData.length; i++) {
-      const accountReadiness = readinessFunction(ggAccountsData[i]);
-      if (accountReadiness === Readiness.READY) ready.push(ggAccountsData[i].data.name);
-      else if (accountReadiness === Readiness.MAYBE_READY) maybeReady.push(ggAccountsData[i].data.name);
-      else notReady.push(ggAccountsData[i].data.name);
+    for (const account of ggAccountsData) {
+      const accountReadiness = readinessFunction(account);
+      if (accountReadiness === Readiness.READY) ready.push(account.data.name);
+      else if (accountReadiness === Readiness.MAYBE_READY) maybeReady.push(account.data.name);
+      else notReady.push(account.data.name);
     }
 
     const embed = new EmbedBuilder().setTitle(`${character} Readiness Accounts - ${guildName}`);
