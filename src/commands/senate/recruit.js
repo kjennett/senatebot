@@ -153,6 +153,7 @@ module.exports = {
         await thread.send({ embeds: [notesEmbed] });
       }
       const priorityMessage = await thread.send('Tier Priority:');
+      await priorityMessage.pin();
 
       await db.collection('recruits').insertOne({
         ally_code: parsedAllyCode,
