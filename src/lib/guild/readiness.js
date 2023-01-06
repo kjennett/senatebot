@@ -140,4 +140,4 @@ function GetReadinessFunction(character) {
   }
 }
 
-module.exporst = { Readiness, WatReadiness, KAMReadiness, RevaReadiness, GetReadinessFunction };
+module.exports = { Readiness, WatReadiness, KAMReadiness, RevaReadiness, GetReadinessFunction };
