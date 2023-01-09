@@ -1,8 +1,8 @@
 const { db } = require('../../database');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
-const characterOptions = await db.collections('characters').find().toArray().map((character) => character.ability_classes).flat();
-const fleetOptions = await db.collections('ships').find().toArray().map((ship) => ship.ability_classes).flat();
+const characterClasses = await db.collections('characters').find().toArray().map((character) => character.ability_classes).flat();
+const shipClasses = await db.collections('ships').find().toArray().map((ship) => ship.ability_classes).flat();
 
 // should be an array of the format, I hope
 /**
@@ -13,7 +13,11 @@ const fleetOptions = await db.collections('ships').find().toArray().map((ship) =
  *  ...
  * ]
  */
-const options = [...(new Set(characterOptions.concat(fleetOptions)))].map((option) => { return { name: option, value: option } });
+const abilityClasses = [...(new Set(characterClasses.concat(shipClasses)))].map((abilityClass) => { return { name: abilityClass, value: abilityClass } });
+
+const characterTags = await db.collections('characters').find().toArray().map((character) => character.categories).flat();
+const shipTags = await db.collections('ships').find().toArray().map((character) => character.categories).flat();
+const tags = [...(new Set(characterTags.concat(shipTags)))].map((tag) => { return { name: tag, value: tag } });
 
 module.exports = {
   enabled: true,
@@ -26,7 +30,7 @@ module.exports = {
         .setName('class')
         .setDescription('The type of ability class.')
         .setRequired(true)
-        .addChoices(...options)
+        .addChoices(...abilityClasses)
     )
     .addStringOption(o =>
       o
@@ -37,6 +41,24 @@ module.exports = {
           { name: 'Ground', value: 'Ground' },
           { name: 'Fleet', value: 'Fleet' }
         )
+    )
+    .addStringOption(o =>
+      o
+        .setName('alignment')
+        .setDescription('Only units of this alignment.')
+        .setRequired(false)
+        .addChoices(
+          { name: 'Light Side', value: 'Light Side' },
+          { name: 'Dark Side', value: 'Dark Side' },
+          { name: 'Neutral', value: 'Neutral' },
+        )
+    )
+    .addStringOption(o =>
+      o
+        .setName('tag')
+        .setDescription('Only units with this tag.')
+        .setRequired(false)
+        .addChoices(...tags)
     ),
 
   async execute(i) {
@@ -49,10 +71,26 @@ module.exports = {
     const abilityClass = i.options.getString('class');
 
     // query
-    const units = db.collections(collection).find({ ability_classes: abilityClass }).toArray();
+    // must have ability class
+    let query = { ability_classes: abilityClass };
+    
+    // might have alignment
+    const alignment = i.options.getString('alignment');
+    const hasAlignment = alignment !== null && alignment !== undefined && alignment !== '';
+    if (hasAlignment) query.alignment = alignment;
+
+    // might have tag
+    const tag = i.options.getString('tag');
+    const hasTag = tag !== null && tag !== undefined && tag !== '';
+    if (hasTag) query.categories = tag;
+
+    const units = db.collections(collection).find(query).toArray();
 
     // end early if no reason to continue;
-    if (units.length === 0) return i.editReply(`No ${collection} found with ability class: ${abilityClass}.`);
+    const hasAlignmentString = hasAlignment ? `${alignment} ` : '';
+    const hasTagString = hasTag ? `with tag ${tag} ` : '';
+    const abilityClassString = `with ability class ${abilityClass}`;
+    if (units.length === 0) return i.editReply(`No ${hasAlignmentString}${collection} ${hasTagString}found ${abilityClassString}.`);
 
     // trying to build the search query for .gg
     // lower case ability class
