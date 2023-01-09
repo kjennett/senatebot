@@ -96,7 +96,7 @@ module.exports = {
     // lower case ability class
     // replace all non standard characters or whitespace with empty string (remove special characters?)
     // replace any whitespace of 1 or more length with a single -
-    const link = abilityClass.toLowerCase().replace(/[^a-z\s]/gi, '').replace(/\s+/gi, '-');
+    const link = abilityClass.toLowerCase().replace(/[^a-z\s]/gi, ' ').replace(/\s+/gi, '-');
     const url = `https://swgoh.gg/${collection}/f/${link}/?`;
 
     // sort characters
