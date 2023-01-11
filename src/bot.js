@@ -5,8 +5,8 @@ const { mongo } = require('./database');
 
 const { TOKEN, SENATESERVER, CLIENT } = process.env;
 
-// Computed absolute paths of task, event and command directories
-// (These will change from Windows dev to Linux prod)
+// Compute these relative paths dynamically - they will change
+// from dev environment (Windows) to production (Ubuntu)
 const eventsDir = join(__dirname, './events');
 const commandsDir = join(__dirname, './commands');
 const tasksDir = join(__dirname, './tasks');
@@ -17,10 +17,11 @@ class SBClient extends Client {
       intents: new IntentsBitField().add(
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMembers,
-        IntentsBitField.Flags.GuildMessages,
-        IntentsBitField.Flags.MessageContent
+        IntentsBitField.Flags.GuildMessages
       ),
     });
+
+    this.on('error', error => console.log(error));
   }
 
   registerEventListeners = () => {
@@ -33,8 +34,7 @@ class SBClient extends Client {
 
   commands = new Collection();
 
-  // If this variable is set to true, all prior command data for all scopes will be
-  // cleared prior to command registration
+  /** If true, will force clear all command data from Discord before deploy */
   redeploy = false;
 
   deployCommands = async () => {
@@ -43,7 +43,6 @@ class SBClient extends Client {
     const senateCommandData = [];
     const globalCommandData = [];
 
-    // SENATE commands deploy to "The Senate" server
     const senateFiles = readdirSync(`${commandsDir}/senate/`);
     if (senateFiles.length) {
       for (const file of senateFiles) {
@@ -55,7 +54,6 @@ class SBClient extends Client {
       await rest.put(Routes.applicationGuildCommands(CLIENT, SENATESERVER), { body: senateCommandData });
     }
 
-    // GLOBAL commands deploy to all servers the bot is in, as well as DMs
     const globalFiles = readdirSync(`${commandsDir}/global/`);
     if (globalFiles.length) {
       for (const file of globalFiles) {
@@ -82,11 +80,9 @@ class SBClient extends Client {
     console.info('Starting...');
 
     await mongo.connect();
-
     await this.scheduleTasks();
     await this.registerEventListeners();
     await this.deployCommands();
-
     await this.login(TOKEN);
 
     console.info('Startup complete.');
@@ -96,8 +92,6 @@ class SBClient extends Client {
 
 const client = new SBClient();
 
-// Catch-all logging for Discord client errors
-client.on('error', error => console.log(error));
-
 exports.client = client;
+
 client.start();
