@@ -1,8 +1,8 @@
-const { ActionRowBuilder, SelectMenuBuilder, AttachmentBuilder } = require('discord.js');
+const { ActionRowBuilder, StringSelectMenuBuilder, AttachmentBuilder } = require('discord.js');
 const Jimp = require('jimp');
 
 exports.welcomeMenu = new ActionRowBuilder().addComponents(
-  new SelectMenuBuilder()
+  new StringSelectMenuBuilder()
     .setCustomId('welcomeMenu')
     .setPlaceholder("I'm here to...")
     .addOptions([
