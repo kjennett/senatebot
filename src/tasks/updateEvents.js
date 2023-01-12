@@ -3,18 +3,17 @@ const ical = require('node-ical');
 const cron = require('node-cron');
 const { apiUrls } = require('../configs/apiUrls');
 
-/** Update the database with fresh event data from SWGOH Events, if it is available. */
-async function updateEvents() {
+exports.updateEvents = async () => {
   const calendar = await ical.async.fromURL(apiUrls.events);
   await db.collection('events').deleteMany();
   await db.collection('events').insertMany(Object.values(calendar));
-}
+  console.log('Game event schedule data updated.');
+};
 
-/** This task runs once every 12 hours  */
 cron.schedule(
-  '1 */12 * * *',
+  '1 */6 * * *', // Runs once every 6 hours
   () => {
-    updateEvents();
+    exports.updateEvents();
   },
   {
     scheduled: true,

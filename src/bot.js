@@ -6,7 +6,7 @@ const { mongo } = require('./database');
 const { TOKEN, SENATESERVER, CLIENT } = process.env;
 
 // Compute these relative paths dynamically - they will change
-// from dev environment (Windows) to production (Ubuntu)
+// from dev environment to production
 const eventsDir = join(__dirname, './events');
 const commandsDir = join(__dirname, './commands');
 const tasksDir = join(__dirname, './tasks');
@@ -76,22 +76,14 @@ class SBClient extends Client {
   };
 
   start = async () => {
-    console.info('--------------------');
-    console.info('Starting...');
-
     await mongo.connect();
     await this.scheduleTasks();
     await this.registerEventListeners();
     await this.deployCommands();
     await this.login(TOKEN);
-
-    console.info('Startup complete.');
-    console.info('--------------------');
+    console.info('----- Startup Complete -----');
   };
 }
 
-const client = new SBClient();
-
-exports.client = client;
-
-client.start();
+exports.client = new SBClient();
+exports.client.start();
