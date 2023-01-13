@@ -8,10 +8,10 @@
     ".npmrc",
     ".gitignore",
     ".eslintrc.js",
-    ".env",
     ".vscode",
     "node_modules",
-    ".github"
+    ".github",
+    ".env"
   ],
   "files.exclude": {
     "**/.git": true,
@@ -28,9 +28,9 @@
     ".npmrc": true,
     ".gitignore": true,
     ".eslintrc.js": true,
-    ".env": true,
     ".vscode": true,
     "node_modules": true,
-    ".github": true
+    ".github": true,
+    ".env": true
   }
 }

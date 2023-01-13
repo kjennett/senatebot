@@ -10,7 +10,7 @@ exports.config = Object.freeze({
     tradeFederation: '788851085666156545',
   }),
 
-  roles: {
+  roles: Object.freeze({
     potentialGuildMember: '543791694726823997',
     senateGuest: '518433712203890718',
     senateCitizen: '515880547415883797',
@@ -18,7 +18,7 @@ exports.config = Object.freeze({
     recruitment: '518434369455783936',
     allianceRecruitmentTeam: '907820888244781076',
     guildOfficer: '515880606790582284',
-  },
+  }),
 
   omicronModes: {
     TB: 7,
