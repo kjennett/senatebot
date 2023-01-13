@@ -5,14 +5,7 @@ module.exports = {
 
   async execute(i) {
     if (i.isCommand()) {
-      /**
-       * Trying to track down a pesky expired token bug that crops up every so often.
-       * Logging: time from interaction creation to start of this function (to identify gaps between Discord gateway and bot)
-       * and time from interaction processing start to initial response (needs to be <3 seconds)
-       */
       console.log(`User: ${i.member.displayName} | Command: ${i.toString()} | Channel: ${i.channel.name}`);
-      console.log(`${i.id} Execution Time: ${Date.now() - i.createdTimestamp} ms`);
-      console.time(`${i.id} Response`);
 
       const command = i.client.commands.get(i.commandName);
 

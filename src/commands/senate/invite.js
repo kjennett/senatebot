@@ -2,13 +2,10 @@ const { SlashCommandBuilder } = require('discord.js');
 const { config } = require('../../config');
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('invite')
-    .setDescription('Invite SenateBot to another server.'),
+  data: new SlashCommandBuilder().setName('invite').setDescription('Invite SenateBot to another server.'),
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
-    console.timeEnd(`${i.id} Response`);
 
     if (!i.member.roles.cache.has(config.roles.guildOfficer))
       return i.editReply('You must be a Guild Officer to use this command.');

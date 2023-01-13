@@ -3,13 +3,10 @@ const { db } = require('../../database');
 const { config } = require('../../config');
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('priority')
-    .setDescription('View the current recruitment priority for all tiers.'),
+  data: new SlashCommandBuilder().setName('priority').setDescription('View the current recruitment priority for all tiers.'),
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
-    console.timeEnd(`${i.id} Response`);
 
     // Check for Recruitment role
     if (!i.member.roles.cache.has(config.roles.recruitment))

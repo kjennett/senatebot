@@ -35,7 +35,7 @@ class SBClient extends Client {
   commands = new Collection();
 
   /** If true, will force clear all command data from Discord before deploy */
-  redeploy = true;
+  redeploy = false;
 
   deployCommands = async () => {
     const rest = new REST({ version: '10' }).setToken(TOKEN);

@@ -22,7 +22,6 @@ module.exports = {
 
   async execute(i) {
     await i.deferReply();
-    console.timeEnd(`${i.id} Response`);
 
     const guildName = i.options.getString('guild');
     const dbGuild = await db.collection('guilds').findOne({ name: guildName });

@@ -30,7 +30,6 @@ module.exports = {
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
-    console.timeEnd(`${i.id} Response`);
 
     const group = await i.options.getSubcommandGroup();
     const sub = await i.options.getSubcommand();

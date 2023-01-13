@@ -38,7 +38,6 @@ module.exports = {
 
   async execute(i) {
     await i.deferReply();
-    console.timeEnd(`${i.id} Response`);
 
     const guildName = i.options.getString('guild');
     const character = i.options.getString('character');
@@ -54,7 +53,9 @@ module.exports = {
     // get an array of valid ally codes from the .GG guild data member list
     const allyCodes = ggGuildData.data.members.map(member => member.ally_code).filter(allyCode => allyCode !== null);
     // get a list of player names where ally code for the member was null and add it to the couldn't check list
-    let couldntCheck = ggGuildData.data.members.filter(member => member.ally_code === null).map(member => member.player_name);
+    let couldntCheck = ggGuildData.data.members
+      .filter(member => member.ally_code === null)
+      .map(member => member.player_name);
 
     /** Added an "await" here - couldn't figure out why all the embeds were coming back empty! lol. */
     const ggAccountsData = await fetchAllAccounts(allyCodes);
@@ -66,9 +67,11 @@ module.exports = {
       // grab ally codes for the fulfilled .GG requests
       const successfullyFetchedAllyCodes = ggAccountsData.map(account => account.data.ally_code);
       // use the array we attempted to fetch and the array we did fetch to determine which ones failed.
-      const failedToFetchAllyCodes = allyCodes.filter(allyCode => !successfullyFetchedAllyCodes.includes((allyCode)));
+      const failedToFetchAllyCodes = allyCodes.filter(allyCode => !successfullyFetchedAllyCodes.includes(allyCode));
       // use the array of failed ally codes to grab player names from the .GG guild data
-      const failedToFetchMembers = ggGuildData.data.members.filter(member => failedToFetchAllyCodes.includes(member.ally_code)).map(member => member.player_name);
+      const failedToFetchMembers = ggGuildData.data.members
+        .filter(member => failedToFetchAllyCodes.includes(member.ally_code))
+        .map(member => member.player_name);
       // add list of names that we couldn't check to the couldn't check array
       couldntCheck = couldntCheck.concat(failedToFetchMembers);
     }
@@ -124,15 +127,17 @@ module.exports = {
           {
             name: `Couldn't Check: ${couldntCheck.length}/${ggGuildData.data.members.length}`,
             value: couldntCheck.join('\n'),
-          }
-        ])
+          },
+        ]);
       }
     } else {
       let descriptionStrings = [];
       if (ready.length > 0) descriptionStrings.push(`Ready: ${ready.length}/${ggGuildData.data.members.length}`);
-      if (maybeReady.length > 0) descriptionStrings.push(`Maybe Ready: ${maybeReady.length}/${ggGuildData.data.members.length}`);
+      if (maybeReady.length > 0)
+        descriptionStrings.push(`Maybe Ready: ${maybeReady.length}/${ggGuildData.data.members.length}`);
       if (notReady.length > 0) descriptionStrings.push(`Not Ready: ${notReady.length}/${ggGuildData.data.members.length}`);
-      if (couldntCheck.length > 0) descriptionStrings.push(`Couldn't Check: ${couldntCheck.length}/${ggGuildData.data.members.length}`);
+      if (couldntCheck.length > 0)
+        descriptionStrings.push(`Couldn't Check: ${couldntCheck.length}/${ggGuildData.data.members.length}`);
       embed.setDescription(descriptionStrings.join('\n'));
     }
 

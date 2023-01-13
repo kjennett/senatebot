@@ -15,7 +15,6 @@ module.exports = {
 
   async execute(i) {
     await i.deferReply();
-    console.timeEnd(`${i.id} Response`);
 
     const parsedAllyCode = extractAllyCode(i.options.getString('allycode'));
     if (!parsedAllyCode)

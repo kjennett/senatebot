@@ -112,7 +112,6 @@ module.exports = {
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
-    console.timeEnd(`${i.id} Response`);
 
     const sub = await i.options.getSubcommand();
 
