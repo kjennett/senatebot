@@ -1,7 +1,6 @@
 const axios = require('axios').default;
 const { apiUrls } = require('../configs/apiUrls');
 
-/** Fetch an array of character data objects from SWGOH.GG */
 exports.fetchAllCharacters = async () => {
   try {
     const result = await axios.get(apiUrls.gg.characters);
@@ -12,7 +11,6 @@ exports.fetchAllCharacters = async () => {
   }
 };
 
-/** Fetch an array of ship data objects from SWGOH.GG */
 exports.fetchAllShips = async () => {
   try {
     const result = await axios.get(apiUrls.gg.ships);
@@ -23,7 +21,6 @@ exports.fetchAllShips = async () => {
   }
 };
 
-/** Fetch an array of ability data objects from SWGOH.GG  */
 exports.fetchAllAbilities = async () => {
   try {
     const result = await axios.get(apiUrls.gg.abilities);
@@ -34,7 +31,6 @@ exports.fetchAllAbilities = async () => {
   }
 };
 
-/** Fetch an account data object from SWGOH.GG */
 exports.fetchAccount = async allyCode => {
   try {
     const result = await axios.get(`${apiUrls.gg.player}${allyCode}`);
@@ -45,7 +41,6 @@ exports.fetchAccount = async allyCode => {
   }
 };
 
-/** Fetch a guild profile data object from SWGOH.GG */
 exports.fetchGuildProfile = async guildId => {
   try {
     const result = await axios.get(`${apiUrls.gg.guildProfile}${guildId}`);
@@ -56,11 +51,6 @@ exports.fetchGuildProfile = async guildId => {
   }
 };
 
-/**
- * Fetch account profile data for multiple ally codes.
- * @param {number[]} allyCodes Array of valid nine-digit ally codes
- * @return {Object[]}
- */
 exports.fetchAllAccounts = async allyCodes => {
   try {
     const promises = allyCodes.map(allyCode => axios.get(`${apiUrls.gg.player}${allyCode}`));

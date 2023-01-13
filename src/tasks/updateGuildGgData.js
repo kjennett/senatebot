@@ -5,11 +5,11 @@ const { fetchGuildProfile } = require('../api/swgohgg');
 exports.updateGuildGgData = async () => {
   const allGuilds = await db.collection('guilds').find({}).sort({ name: 1 }).toArray();
 
-  let noGgGuilds = allGuilds.map(guild => guild.name).filter(guild => !guild.gg);
+  let noGgGuilds = allGuilds.map(guild => guild.name).filter(guild => guild.gg === null);
   if (noGgGuilds.length)
     console.log(`Unable to update the following guilds (no .GG guild ID found): ${noGgGuilds.join(', ')}`);
 
-  const validGuilds = allGuilds.filter(guild => guild.gg);
+  const validGuilds = allGuilds.filter(guild => guild.gg !== null);
 
   const failedGuilds = [];
   for (const guild of validGuilds) {
