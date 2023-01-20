@@ -10,7 +10,7 @@ exports.updateEvents = async () => {
   await db.collection('events').deleteMany();
   await db.collection('events').insertMany(events);
 
-  const gacEvents = db.collection('events').find({ categories: 'GA' }).sort({ start: 1 }).toArray();
+  const gacEvents = await db.collection('events').find({ categories: 'GA' }).sort({ start: 1 }).toArray();
   console.log(gacEvents);
 
   console.log('Game event schedule data updated.');
