@@ -9,10 +9,10 @@ module.exports = {
 
       const command = i.client.commands.get(i.commandName);
 
-      if (command.requiredRole && i.member.id !== process.env.OWNER)
-        return i.reply({ content: 'You are missing the required role to use this command.', ephemeral: true });
-      if (command.adminOnly && i.member.id !== process.env.OWNER)
-        return i.reply({ content: 'Only the bot administrator may use this command.', ephemeral: true });
+      // if (command.requiredRole && i.member.id !== process.env.OWNER)
+      //   return i.reply({ content: 'You are missing the required role to use this command.', ephemeral: true });
+      // if (command.adminOnly && i.member.id !== process.env.OWNER)
+      //   return i.reply({ content: 'Only the bot administrator may use this command.', ephemeral: true });
 
       await command.execute(i);
     }

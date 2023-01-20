@@ -5,8 +5,8 @@ const { mongo } = require('./database');
 
 const { TOKEN, SENATESERVER, CLIENT } = process.env;
 
-// Compute these relative paths dynamically - they will change
-// from dev environment to production
+// Need to compute these relative paths dynamically - they will
+// change from dev environment to production
 const eventsDir = join(__dirname, './events');
 const commandsDir = join(__dirname, './commands');
 const tasksDir = join(__dirname, './tasks');

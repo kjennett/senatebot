@@ -1,10 +1,5 @@
 const { db } = require('../../database');
 
-/**
- * @param {number} ally The ally code of the recruit to remove
- * @param {string} reason The reason the recruit is being removed from the system
- * @returns {boolean} True if successful, false if any error
- */
 exports.removeRecruit = async (ally, reason) => {
   const recruitThread = await db.collection('recruits').findOne({ ally_code: ally });
   if (!recruitThread) return false;

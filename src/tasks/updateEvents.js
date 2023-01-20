@@ -5,8 +5,14 @@ const { apiUrls } = require('../configs/apiUrls');
 
 exports.updateEvents = async () => {
   const calendar = await ical.async.fromURL(apiUrls.events);
+  const events = Object.values(calendar);
+
   await db.collection('events').deleteMany();
-  await db.collection('events').insertMany(Object.values(calendar));
+  await db.collection('events').insertMany(events);
+
+  const gacEvents = db.collection('events').find({ categories: 'GA' }).sort({ start: 1 }).toArray();
+  console.log(gacEvents);
+
   console.log('Game event schedule data updated.');
 };
 

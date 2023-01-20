@@ -4,13 +4,10 @@ const { config } = require('../../config');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('recruitmentrules')
-    .setDescription(
-      'Displays a view-only or edit link to the official Recruitment Rules, depending on your roles.'
-    ),
+    .setDescription('Displays a view-only or edit link to the official Recruitment Rules, depending on your roles.'),
 
   async execute(i) {
     await i.deferReply({ ephemeral: true });
-    console.timeEnd(`${i.id} Response`);
 
     if (!i.member.roles.cache.has(config.roles.recruitment))
       return i.editReply('You must have the Recruitment role to view the recruitment rules.');

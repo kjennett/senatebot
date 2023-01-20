@@ -15,10 +15,6 @@ exports.welcomeMenu = new ActionRowBuilder().addComponents(
     ])
 );
 
-/**
- * @param {string} name The Discord display name of the new server member
- * @returns {Promise<AttachmentBuilder>}
- */
 exports.welcomeImage = async name => {
   const [font, bg] = await Promise.all([
     Jimp.loadFont('src/lib/welcome/img/pathway.ttf.fnt'),

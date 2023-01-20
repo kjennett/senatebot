@@ -1,7 +1,6 @@
 {
   "hide-files.files": [
     "README.md",
-    "package.json",
     "license",
     "ecosystem.config.js",
     ".prettierrc",
@@ -11,7 +10,8 @@
     ".vscode",
     "node_modules",
     ".github",
-    ".env"
+    ".env",
+    "package.json"
   ],
   "files.exclude": {
     "**/.git": true,
@@ -21,7 +21,6 @@
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
     "README.md": true,
-    "package.json": true,
     "license": true,
     "ecosystem.config.js": true,
     ".prettierrc": true,
@@ -31,6 +30,7 @@
     ".vscode": true,
     "node_modules": true,
     ".github": true,
-    ".env": true
+    ".env": true,
+    "package.json": true
   }
 }
