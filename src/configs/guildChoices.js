@@ -3,6 +3,7 @@ exports.guildChoices = [
   { name: 'Alderaan (ALD)', value: 'Alderaan' },
   { name: 'Bespin (BPN)', value: 'Bespin' },
   { name: 'Concord Dawn (CCD)', value: 'Concord Dawn' },
+  { name: 'Corellia (CRL)', value: 'Corellia' },
   { name: 'Coruscant (COR)', value: 'Coruscant' },
   { name: 'Dagobah (DGB)', value: 'Dagobah' },
   { name: 'Endor (FOE)', value: 'Endor' },
