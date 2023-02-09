@@ -9,10 +9,8 @@ module.exports = {
   async execute(i) {
     await i.deferReply();
 
-    const allPhases = await db.collection('events').find({}).sort({ season: 1, name: 1 }).toArray();
-    const currentPhaseIndex = allPhases.findIndex(phase => {
-      phase.start <= Date.now() && phase.end >= Date.now();
-    });
+    const allPhases = await db.collection('events').find({}).toArray();
+    const currentPhaseIndex = allPhases.findIndex(phase => phase.start <= Date.now() && phase.end >= Date.now());
     if (currentPhaseIndex === -1) return i.editReply('No currently running GAC phase was found in the events database.');
 
     console.log(allPhases[currentPhaseIndex]);
