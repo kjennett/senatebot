@@ -10,7 +10,7 @@ exports.updateEvents = async () => {
   const events = Object.values(calendar);
 
   for (const event of events) {
-    if (!event.summary.includes('GA')) continue;
+    if (!event.summary || !event.summary.includes('GA')) continue;
 
     console.log(event.summary);
 
