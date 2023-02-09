@@ -21,7 +21,7 @@ exports.updateEvents = async () => {
 
     const phases = [];
 
-    const startTimestamp = Date.parse(event.start);
+    const startTimestamp = Date.parse(event.start) + 7.92e7;
     phases.push({
       name: `Event Join Phase`,
       season: title,
