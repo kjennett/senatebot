@@ -14,7 +14,7 @@ exports.updateEvents = async () => {
 
     const season = event.summary.slice(7, 9);
     const week = event.summary.slice(22, 24);
-    const type = event.summary.contains('5v5') ? '5v5' : '3v3';
+    const type = event.summary.includes('5v5') ? '5v5' : '3v3';
     const title = `GAC Season ${season} (${type}) Week ${week}`;
 
     const phases = [];
