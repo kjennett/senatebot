@@ -9,10 +9,9 @@ exports.updateEvents = async () => {
   const calendar = await ical.async.fromURL(apiUrls.events);
   const events = Object.values(calendar);
 
-  const gacEvents = events.filter(event => event.categories.includes('GA'));
-  if (gacEvents.length) await db.collection('events').deleteMany({});
+  for (const event of events) {
+    if (!event.summary.includes('GA')) continue;
 
-  for (const event of gacEvents) {
     const season = event.summary.slice(7, 9);
     const week = event.summary.slice(22, 24);
     const type = event.summary.contains('5v5') ? '5v5' : '3v3';
