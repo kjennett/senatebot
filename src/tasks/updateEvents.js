@@ -12,6 +12,8 @@ exports.updateEvents = async () => {
   for (const event of events) {
     if (!event.summary.includes('GA')) continue;
 
+    console.log(event.summary);
+
     const season = event.summary.slice(7, 9);
     const week = event.summary.slice(22, 24);
     const type = event.summary.includes('5v5') ? '5v5' : '3v3';
