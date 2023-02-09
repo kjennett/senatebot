@@ -9,7 +9,7 @@ exports.updateEvents = async () => {
   const calendar = await ical.async.fromURL(apiUrls.events);
   const events = Object.values(calendar);
 
-  const gacEvents = events.filter(event => event.categories[0] === 'GA');
+  const gacEvents = events.filter(event => event.categories.includes('GA'));
   if (gacEvents.length) await db.collection('events').deleteMany({});
 
   for (const event of gacEvents) {
