@@ -1,4 +1,5 @@
 const ggBase = 'http://api.swgoh.gg/';
+const comlinkBase = 'http://thesenate.gg:3000/';
 
 exports.apiUrls = Object.freeze({
   gg: Object.freeze({
@@ -12,4 +13,8 @@ exports.apiUrls = Object.freeze({
   events: 'https://swgohevents.com/ical',
 
   omega: `https://omegaapi.azurewebsites.net/OmegaApi/Modscore/`,
+
+  comlink: Object.freeze({
+    player: `${comlinkBase}player/`,
+  }),
 });
