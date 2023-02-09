@@ -9,28 +9,29 @@ module.exports = {
   async execute(i) {
     await i.deferReply();
 
-    const allPhases = await db.collection('events').find({}).sort({ name: 1, season: 1 }).toArray();
-    const filteredPhases = allPhases.filter(phase => {
+    const allPhases = await db.collection('events').find({}).sort({ season: 1, name: 1 }).toArray();
+    const currentPhaseIndex = allPhases.findIndex(phase => {
       phase.start <= Date.now() && phase.end >= Date.now();
     });
+    if (currentPhaseIndex === -1) return i.editReply('No currently running GAC phase was found in the events database.');
 
-    if (!filteredPhases.length === 1)
-      return i.editReply(
-        'No applicable GAC phase was found; there is either no GAC event active or the events calendar is out of date.'
-      );
-    const currentPhase = filteredPhases[0];
+    console.log(allPhases[currentPhaseIndex]);
 
     const embed = new EmbedBuilder()
-      .setTitle(currentPhase.name)
-      .setDescription(currentPhase.season)
+      .setTitle(allPhases[currentPhaseIndex].name)
+      .setDescription(allPhases[currentPhaseIndex].season)
       .addFields([
         {
           name: 'Start',
-          value: `<t:${Math.floor(currentPhase.start / 1000)}:f>\n<t:${Math.floor(currentPhase.start / 1000)}:R>`,
+          value: `<t:${Math.floor(allPhases[currentPhaseIndex].start / 1000)}:f>\n<t:${Math.floor(
+            allPhases[currentPhaseIndex].start / 1000
+          )}:R>`,
         },
         {
           name: 'End',
-          value: `<t:${Math.floor(currentPhase.end / 1000)}:f>\n<t:${Math.floor(currentPhase.end / 1000)}:R>`,
+          value: `<t:${Math.floor(allPhases[currentPhaseIndex].end / 1000)}:f>\n<t:${Math.floor(
+            allPhases[currentPhaseIndex].end / 1000
+          )}:R>`,
         },
       ])
       .setThumbnail('https://cdn.discordapp.com/attachments/1034667391570940046/1073378286958284910/gac.jpg');
