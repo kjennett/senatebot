@@ -5,7 +5,6 @@ const { guildChoices } = require('../../configs/guildChoices');
 const { Readiness, GetReadinessFunction } = require('../../lib/guild/readiness');
 
 module.exports = {
-  enabled: true,
   data: new SlashCommandBuilder()
     .setName('guildreadiness')
     .setDescription('Displays guild readiness for TB Character Special Missions.')

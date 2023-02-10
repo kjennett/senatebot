@@ -4,8 +4,6 @@ const { fetchAccount } = require('../../api/swgohgg');
 const { extractAllyCode } = require('../../lib/account/extractAllyCode');
 
 module.exports = {
-  enabled: true,
-
   data: new SlashCommandBuilder()
     .setName('wat')
     .setDescription('Generate a detailed report on the Wat SM readiness of an account, with recommendations')

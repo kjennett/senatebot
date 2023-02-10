@@ -4,8 +4,6 @@ const { fetchAccount } = require('../../api/swgohgg');
 const { extractAllyCode } = require('../../lib/account/extractAllyCode');
 
 module.exports = {
-  enabled: true,
-
   data: new SlashCommandBuilder()
     .setName('accountsummary')
     .setDescription('Display a summary showing the current state of an account.')

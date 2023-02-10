@@ -19,9 +19,11 @@ exports.updateEvents = async () => {
     const type = event.summary.includes('5v5') ? '5v5' : '3v3';
     const title = `GAC Season ${season} (${type}) Week ${week}`;
 
+    // Add 22 hours to 00:00 UTC timestamp to reach actual start times
+    const startTimestamp = Date.parse(event.start) + 7.92e7;
+
     const phases = [];
 
-    const startTimestamp = Date.parse(event.start) + 7.92e7;
     phases.push({
       name: `Event Join Phase`,
       season: title,
@@ -70,7 +72,7 @@ exports.updateEvents = async () => {
 };
 
 cron.schedule(
-  '1 */6 * * *', // Runs once every 6 hours
+  '1 */3 * * *', // Runs once every 3 hours
   () => {
     exports.updateEvents();
   },

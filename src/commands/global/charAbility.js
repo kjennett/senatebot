@@ -2,8 +2,6 @@ const { db } = require('../../database');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-  enabled: true,
-
   data: new SlashCommandBuilder()
     .setName('charability')
     .setDescription('View information about an in-game CHARACTER ability.')

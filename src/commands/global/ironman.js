@@ -4,7 +4,6 @@ const { db } = require('../../database');
 const { guildChoices } = require('../../configs/guildChoices');
 
 module.exports = {
-  enabled: true,
   data: new SlashCommandBuilder()
     .setName('ironman')
     .setDescription('Lists guild members sorted by the time they joined the guild.')

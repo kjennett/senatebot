@@ -5,7 +5,6 @@ const { db } = require('../../database');
 const { guildChoices } = require('../../configs/guildChoices');
 
 module.exports = {
-  enabled: true,
   data: new SlashCommandBuilder()
     .setName('guildomis')
     .setDescription('Generates a report of omicron statistics for a guild.')
