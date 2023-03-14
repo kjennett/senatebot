@@ -3,6 +3,8 @@ const { readdirSync } = require('fs');
 const { join } = require('path');
 const { mongo } = require('./database');
 
+/* ------------------- Discord Client ------------------- */
+
 class SBClient extends Client {
   constructor() {
     super({
@@ -14,6 +16,12 @@ class SBClient extends Client {
     });
   }
 
+  /* -------------- Command Data Collection ------------- */
+
+  commands = new Collection();
+
+  /* ----------------- Startup Processes ---------------- */
+
   registerEventListeners = () => {
     const eventsFolder = join(__dirname, './events');
     const files = readdirSync(eventsFolder);
@@ -24,7 +32,6 @@ class SBClient extends Client {
     }
   };
 
-  commands = new Collection();
   deployCommands = async () => {
     const commandsFolder = join(__dirname, './commands');
     const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
@@ -67,13 +74,14 @@ class SBClient extends Client {
     }
   };
 
+  /* --------------------- Bot Startup -------------------- */
+
   start = async () => {
     await mongo.connect();
     await this.scheduleTasks();
     await this.registerEventListeners();
     await this.deployCommands();
     await this.login(process.env.TOKEN);
-    console.info('----- Startup Complete -----');
   };
 }
 

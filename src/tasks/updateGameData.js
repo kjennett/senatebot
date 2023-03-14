@@ -2,6 +2,8 @@ const cron = require('node-cron');
 const { db } = require('../database');
 const { fetchAllAbilities, fetchAllCharacters, fetchAllShips } = require('../api/swgohgg');
 
+/* ------------------ Game Data Updater ----------------- */
+
 exports.updateGameData = async () => {
   const [characters, ships, abilities] = await Promise.allSettled([
     fetchAllCharacters(),
@@ -26,6 +28,8 @@ exports.updateGameData = async () => {
 
   console.log('Static game data updated.');
 };
+
+/* ------------------- Task Scheduler ------------------- */
 
 cron.schedule(
   '5 */6 * * *', // Runs once every 6 hours

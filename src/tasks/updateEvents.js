@@ -3,6 +3,8 @@ const ical = require('node-ical');
 const cron = require('node-cron');
 const { apiUrls } = require('../configs/apiUrls');
 
+/* ------------------ Event Update Task ----------------- */
+
 exports.updateEvents = async () => {
   const calendar = await ical.async.fromURL(apiUrls.events);
   const events = Object.values(calendar);
@@ -69,6 +71,8 @@ exports.updateEvents = async () => {
     await db.collection('events').insertMany(phases);
   }
 };
+
+/* ------------------- Task Scheduler ------------------- */
 
 cron.schedule(
   '1 */3 * * *', // Runs once every 3 hours

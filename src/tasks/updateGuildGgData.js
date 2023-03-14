@@ -2,6 +2,8 @@ const cron = require('node-cron');
 const { db } = require('../database');
 const { fetchGuildProfile } = require('../api/swgohgg');
 
+/* ----------------- Guild Data Updater ----------------- */
+
 exports.updateGuildGgData = async () => {
   const allGuilds = await db.collection('guilds').find({}).sort({ name: 1 }).toArray();
 
@@ -28,6 +30,8 @@ exports.updateGuildGgData = async () => {
   if (failedGuilds.length) console.log(`Failed to fetch data for the following guilds: ${failedGuilds.name}`);
   console.log('Guild member count and galactic power data updated.');
 };
+
+/* ------------------- Task Scheduler ------------------- */
 
 cron.schedule(
   '10 */6 * * *', // Runs once every 6 hours

@@ -4,6 +4,8 @@ const { senateRoles } = require('../configs/senateRoles');
 const { senateChannels } = require('../configs/senateChannels');
 const { EmbedBuilder } = require('discord.js');
 
+/* ------------------ Member Purge Task ----------------- */
+
 exports.order66 = async () => {
   const server = await client.guilds.fetch(process.env.SENATESERVER);
   const allMembers = await server.members.fetch();
@@ -42,6 +44,8 @@ exports.order66 = async () => {
     });
   }
 };
+
+/* ------------------- Task Scheduler ------------------- */
 
 cron.schedule(
   '15 */3 * * *', // Runs once every 3 hours

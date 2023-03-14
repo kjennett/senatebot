@@ -1,9 +1,0 @@
-[] Retrieval of records from previous recruitment visits
-
-[] Easy way to roll back priority changes
-
-[] Recruit thread auto-ping at 60 minutes
-
-[] All threads update priority list any time priority changes
-
-[] Custom requirements - buttons?
