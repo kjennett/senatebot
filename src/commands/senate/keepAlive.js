@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { config } = require('../../config');
 const { db } = require('../../database');
+const { senateRoles } = require('../../configs/senateRoles');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -16,7 +16,7 @@ module.exports = {
     // Guild Officer Permission Check
     // --------------------
 
-    if (!i.member.roles.cache.has(config.roles.guildOfficer) && !i.member.roles.cache.has(process.env.OWNER))
+    if (!i.member.roles.cache.has(senateRoles.guildOfficer) && !i.member.roles.cache.has(process.env.OWNER))
       return i.editReply('You must have the Guild Officer role to use this command!');
 
     // --------------------

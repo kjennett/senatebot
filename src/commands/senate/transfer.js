@@ -1,8 +1,9 @@
 const { extractAllyCode } = require('../../lib/account/extractAllyCode');
 const { fetchAccount } = require('../../api/swgohgg');
-const { config } = require('../../config');
 const { accountSummary } = require('../../lib/account/accountSummary');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const { senateRoles } = require('../../configs/senateRoles');
+const { senateChannels } = require('../../configs/senateChannels');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -25,7 +26,7 @@ module.exports = {
   async execute(i) {
     await i.deferReply({ ephemeral: true });
 
-    if (!i.member.roles.cache.has(config.roles.guildOfficer))
+    if (!i.member.roles.cache.has(senateRoles.guildOfficer))
       return i.editReply('You must have the Guild Officer role to list players for transfer.');
 
     const [type, allycode, notes] = await Promise.all([
@@ -49,7 +50,7 @@ module.exports = {
     const summary = await accountSummary(ggData);
 
     // Create a thread for the recruit in the recruitment channel
-    const tradeChannel = await i.client.channels.fetch(config.channels.tradeFederation);
+    const tradeChannel = await i.client.channels.fetch(senateChannels.tradeFederation);
     const thread = await tradeChannel.threads.create({
       name: `${type} - ${ggData.data.name}`,
       autoArchiveDuration: 10080,

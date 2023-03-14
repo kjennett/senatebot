@@ -3,8 +3,6 @@ const ical = require('node-ical');
 const cron = require('node-cron');
 const { apiUrls } = require('../configs/apiUrls');
 
-const oneDay = 8.64e7;
-
 exports.updateEvents = async () => {
   const calendar = await ical.async.fromURL(apiUrls.events);
   const events = Object.values(calendar);
@@ -13,6 +11,8 @@ exports.updateEvents = async () => {
 
   for (const event of events) {
     if (!event.summary || !event.summary.includes('GA')) continue;
+
+    const oneDay = 8.64e7;
 
     const season = event.summary.slice(7, 9);
     const week = event.summary.slice(23, 24);
@@ -23,7 +23,6 @@ exports.updateEvents = async () => {
     const startTimestamp = Date.parse(event.start) + 7.92e7;
 
     const phases = [];
-
     phases.push({
       name: `Event Join Phase`,
       season: title,

@@ -1,12 +1,13 @@
 const { extractAllyCode } = require('../../lib/account/extractAllyCode');
 const { fetchAccount } = require('../../api/swgohgg');
-const { config } = require('../../config');
 const { accountSummary } = require('../../lib/account/accountSummary');
 const { generateTierPriority } = require('../../lib/recruitment/generateTierPriority');
 const { db } = require('../../database');
 const { EmbedBuilder, SlashCommandBuilder, roleMention, userMention } = require('discord.js');
 const { removeRecruit } = require('../../lib/recruitment/removeRecruit');
 const { guildChoices } = require('../../configs/guildChoices');
+const { senateRoles } = require('../../configs/senateRoles');
+const { senateChannels } = require('../../configs/senateChannels');
 
 async function findStartingTier(gp) {
   const result = await db.collection('tiers').findOne({
@@ -140,7 +141,7 @@ module.exports = {
 
       const summary = await accountSummary(ggData);
 
-      const recruitmentChannel = await i.client.channels.fetch(config.channels.recruitmentRoom);
+      const recruitmentChannel = await i.client.channels.fetch(senateChannels.recruitmentRoom);
       const thread = await recruitmentChannel.threads.create({
         name: `${discorduser.username} (T${startingTier})`,
         autoArchiveDuration: 10080,
@@ -391,8 +392,8 @@ module.exports = {
 
       const user = await i.guild.members.fetch(recruit.discord_user_id);
       await user.roles.add(await i.guild.roles.fetch(guildResult.member_role_id));
-      await user.roles.add(await i.guild.roles.fetch(config.roles.senateCitizen));
-      await user.roles.remove(await i.guild.roles.fetch(config.roles.potentialGuildMember));
+      await user.roles.add(await i.guild.roles.fetch(senateRoles.senateCitizen));
+      await user.roles.remove(await i.guild.roles.fetch(senateRoles.potentialGuildMember));
 
       await i.channel.send(`${guild} has claimed this recruit! Archiving recruit thread... (Claimed by ${i.member})`);
       await i.channel.edit({

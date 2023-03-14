@@ -1,17 +1,18 @@
 const { EmbedBuilder, roleMention, userMention, hyperlink, ComponentType } = require('discord.js');
-const { config } = require('../config');
 const { welcomeImage, welcomeMenu } = require('../lib/welcome/welcome');
+const { senateRoles } = require('../configs/senateRoles');
+const { senateChannels } = require('../configs/senateChannels');
 
 module.exports = {
   name: 'guildMemberAdd',
 
   async execute(m) {
     if (m.user.bot) return;
-    await m.roles.add(await m.guild.roles.fetch(config.roles.potentialGuildMember));
+    await m.roles.add(await m.guild.roles.fetch(senateRoles.potentialGuildMember));
 
     const image = await welcomeImage(m.user.username);
 
-    const landingBay = await m.client.channels.fetch(config.channels.landingBay);
+    const landingBay = await m.client.channels.fetch(senateChannels.landingBay);
     await landingBay.send({ files: [image] });
     const menuMessage = await landingBay.send({
       content: `Greetings, ${m.user}, and welcome to THE SENATE!\nTo help us serve you, please select an option from the following menu.`,
@@ -37,8 +38,8 @@ module.exports = {
         ]);
         const selected = i.values.join();
 
-        const recruitment = await m.client.channels.fetch(config.channels.recruitmentRoom);
-        const art = await m.client.channels.fetch(config.channels.allianceRecruitmentTeam);
+        const recruitment = await m.client.channels.fetch(senateChannels.recruitmentRoom);
+        const art = await m.client.channels.fetch(senateChannels.allianceRecruitmentTeam);
 
         if (selected === 'kick') {
           await recruitment.send(
@@ -50,7 +51,7 @@ module.exports = {
         if (selected === 'newguild') {
           embed.setDescription('is looking for a __guild to join__!');
           await recruitment.send({
-            content: `${roleMention(config.roles.greeter)}`,
+            content: `${roleMention(senateRoles.greeter)}`,
             embeds: [embed],
           });
           return menuMessage.edit({
@@ -62,7 +63,7 @@ module.exports = {
         if (selected === 'merger') {
           embed.setDescription('is here to __discuss a merger__');
           await art.send({
-            content: `${roleMention(config.roles.allianceRecruitmentTeam)}`,
+            content: `${roleMention(senateRoles.allianceRecruitmentTeam)}`,
             embeds: [embed],
           });
           await recruitment.send(
@@ -77,7 +78,7 @@ module.exports = {
         if (selected === 'omegabot') {
           embed.setDescription('is here to __learn about OmegaBot__!');
           await recruitment.send({
-            content: `${roleMention(config.roles.greeter)}`,
+            content: `${roleMention(senateRoles.greeter)}`,
             embeds: [embed],
           });
           return menuMessage.edit({
@@ -90,7 +91,7 @@ module.exports = {
         if (selected === 'shard') {
           embed.setDescription('is here to __find someone from their arena shard__!');
           await recruitment.send({
-            content: `${roleMention(config.roles.greeter)}`,
+            content: `${roleMention(senateRoles.greeter)}`,
             embeds: [embed],
           });
           return menuMessage.edit({
@@ -102,7 +103,7 @@ module.exports = {
         if (selected === 'other') {
           embed.setDescription('is here for __an unspecified reason__');
           await recruitment.send({
-            content: `${roleMention(config.roles.greeter)}`,
+            content: `${roleMention(senateRoles.greeter)}`,
             embeds: [embed],
           });
           return menuMessage.edit({

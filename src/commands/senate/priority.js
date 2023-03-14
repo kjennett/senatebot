@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { db } = require('../../database');
-const { config } = require('../../config');
+const { senateRoles } = require('../../configs/senateRoles');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('priority').setDescription('View the current recruitment priority for all tiers.'),
@@ -9,7 +9,7 @@ module.exports = {
     await i.deferReply({ ephemeral: true });
 
     // Check for Recruitment role
-    if (!i.member.roles.cache.has(config.roles.recruitment))
+    if (!i.member.roles.cache.has(senateRoles.recruitment))
       return i.editReply('You must have the Recruitment role to use this command!');
 
     const tiers = await db.collection('tiers').find().sort({ number: -1 }).toArray();

@@ -1,7 +1,7 @@
 const { db } = require('../../database');
-const { config } = require('../../config');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const { guildChoices } = require('../../configs/guildChoices');
+const { senateChannels } = require('../../configs/senateChannels');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -82,7 +82,7 @@ module.exports = {
           );
         }
 
-        const recruitment = await i.client.channels.fetch(config.channels.recruitmentRoom);
+        const recruitment = await i.client.channels.fetch(senateChannels.recruitmentRoom);
         await recruitment.send({
           embeds: [
             new EmbedBuilder({
